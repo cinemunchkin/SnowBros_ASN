@@ -2,11 +2,7 @@
 #include <EngineCore\Actor.h>
 #include "SnowBros_Helper.h"
 
-// FSM에 대해서 알아보자.
-// 한번에 한가지 상태만을 가진다.
-// 플레이어가 한번에 1개의 함수만을 실행한다.
 
-// 설명 :
 class APlay_Player : public AActor
 {
 
@@ -53,6 +49,7 @@ protected:
 	void Jump(float _DeltaTime);
 	void Run(float _DeltaTime);
 	void DownJump(float _DeltaTime);
+	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	// 상태 시작 함수들
 	void IdleStart();

@@ -23,9 +23,8 @@ void USnowBros_Core::BeginPlay()
 	//                           1024                960
 	MainWindow.SetWindowScale({ 1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/ });
 	MainWindow.SetWindowPosition({ 200/* * 1.5f*/, 0/* * 1.5f*/ });
-	// 1200 
 
-	// 800 16
+
 
 	UEngineCore::BeginPlay();
 

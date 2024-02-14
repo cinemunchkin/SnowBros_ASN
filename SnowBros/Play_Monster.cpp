@@ -14,8 +14,8 @@ void APlay_Monster::BeginPlay()
 
 	{
 		UImageRenderer* Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
-		Renderer->SetTransform({ {0,0}, {100, 100} });
-		Renderer->SetImage("TestFolderAnimation");
+		Renderer->SetTransform({ {0,0}, {32, 32} });
+		Renderer->SetImage("boss_1.png");
 	}
 
 	{
@@ -33,7 +33,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 	{
 		// 이런식으로 상대를 사용할수 있다.
 		//UCollision* Collision = Result[0];
-		//ATestPlayer* Player = dynamic_cast<ATestPlayer*>(Collision->GetOwner());
+		//APlay_Player* Player = dynamic_cast<APlay_Player*>(Collision->GetOwner());
 		Destroy();
 	}
 

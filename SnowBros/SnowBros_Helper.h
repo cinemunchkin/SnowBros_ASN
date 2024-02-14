@@ -10,6 +10,17 @@ enum class SnowBrosRenderOrder
 	Player
 };
 
+
+
+enum class SnowBrosCollisionOrder
+{
+	PlayerAttack,
+	SnowBall,
+	Monster,
+	Player
+};
+
+
 enum class EActorDir
 {
 	Left,
@@ -25,7 +36,8 @@ enum class EPlayState
 	Idle,
 	Run,
 	Jump,
-	DownJump
+	DownJump,
+	Fly
 };
 
 
