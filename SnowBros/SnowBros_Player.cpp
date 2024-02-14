@@ -26,16 +26,16 @@ void SnowBros_Player::BeginPlay()
 	{
 		BodyRenderer = CreateImageRenderer(0);
 		BodyRenderer->SetPosition({ 0, 30 });
-		BodyRenderer->SetImageToScale("CB2.bmp");
+		BodyRenderer->SetImageToScale("Snow.bmp");
 		// BodyRenderer->SetScale({ 80, 80 });
 	}
 
 
-	{
-		HeadRenderer = CreateImageRenderer(0);
-		HeadRenderer->SetPosition({ 0, -25 });
-		HeadRenderer->SetImageToScale("CB2.bmp");
-	}
+	//{
+	//	HeadRenderer = CreateImageRenderer(0);
+	//	HeadRenderer->SetPosition({ 0, -25 });
+	//	HeadRenderer->SetImageToScale("CB2.bmp");
+	//}
 	// UImageRenderer* Ptr = CreateRenderer();
 	// 플레이어 기준
 	// Ptr->SetPosition({0.0, -50.0f}); // 500, 500

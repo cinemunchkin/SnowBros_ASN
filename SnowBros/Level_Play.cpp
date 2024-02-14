@@ -1,8 +1,7 @@
 #include "Level_Play.h"
-#include "SnowBros_Player.h"
-#include <EngineCore\EngineResourcesManager.h>
-#include <EngineBase\EngineDirectory.h>
-#include <EngineBase\EngineFile.h>
+#include "Play_Player.h"
+#include "Play_Map.h"
+#include <EngineCore\EngineCore.h>
 
 ULevel_Play::ULevel_Play()
 {
@@ -12,39 +11,34 @@ ULevel_Play::~ULevel_Play()
 {
 }
 
-
 void ULevel_Play::BeginPlay()
 {
-	// 실행경로가 나와야 한다고 생각합니다.
-	UEngineDirectory NewPath;
+	ULevel::BeginPlay();
 
-	// NewPath.Move("ContentsResources");
-	NewPath.MoveParent();
-
-	NewPath.Move("ContentsResources");
-	NewPath.Move("Texture");
+	APlay_Map* Map = SpawnActor<APlay_Map>();
+	Map->SetMapImage("SnowBros_Lv_1.png");
+	Map->SetColMapImage("SnowBros_Lv_1_Col.png");
+	// Map->SwitchDebug();
 
 
-	// 확장자도 마찬가지 대소문자 구분을 무조건 대문자로 바꿔서 찾을것이다..
-	std::list<UEngineFile> AllFileList = NewPath.AllFile({ ".png", ".bmp" }, true);
+	APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
+	Player->SetActorLocation({ 200, 200 });
+}
 
-	for (UEngineFile& File : AllFileList)
-	{
-		std::string FullPath = File.GetFullPath();
-		// 싱글톤 잊지 말라고 일부러 GetInst를 사용하겠습니다.
-		UEngineResourcesManager::GetInst().LoadImg(FullPath);
-	}
+void ULevel_Play::Tick(float _DeltaTime)
+{
+	ULevel::Tick(_DeltaTime);
+}
 
-	// CherryBomb_0.png
-
-	// ULevel* const This = this;
-	this->SpawnActor<SnowBros_Player>();
-
-	// SpawnActor<SnowBros_Player>();
-
-	// 할일은 
-	// 플레이어
-	// 배경
-	// 몬스터
-	// 등등등을 코드로 여기서 다 만들어야 한다.
+void ULevel_Play::LevelStart(ULevel* _Level)
+{
+	// 여기서 리소스를 로드하고
+	// 액터도 여기서 만들고
+	int a = 0;
+}
+void ULevel_Play::LevelEnd(ULevel* _Level)
+{
+	// 리소스도 날려요.
+	// 액터를 삭제한다.
+	int a = 0;
 }

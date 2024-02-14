@@ -1,40 +1,66 @@
 #include "SnowBros_Core.h"
-#include "SnowBros_Player.h"
 #include "Level_Title.h"
 #include "Level_Play.h"
+#include <EngineBase\EngineDirectory.h>
+#include <EngineBase\EngineFile.h>
+#include <EngineCore\EngineResourcesManager.h>
 
-SnowBros_Core::SnowBros_Core()
-	: EngineCore()
+USnowBros_Core::USnowBros_Core()
 {
 }
 
-SnowBros_Core::~SnowBros_Core()
+USnowBros_Core::~USnowBros_Core()
 {
 }
 
-// 게임시작
-void SnowBros_Core::BeginPlay()
+void USnowBros_Core::BeginPlay()
 {
-	SetFrame(60);
+	// 800 / 600은 너무 작죠.
+	// MainWindow.SetWindowScale({1280, 720});
 
-	// 이곳에서 필요한 모든 리소스를 싸그리 로드하는 방법 <= 추천하지 않는다.
-	// 리소스 낭비를 하겠다는것 사용하지도 않을 리소스를 미리다 로드해 놓겠다.
-	// 보통 엔진이라면 내가 현재 사용하는 리소스만 깔끔하게 로드하는 방법을 마련해 놔야하면서
-	// 동시에 그걸 사용자가 눈치채지 못하게 해야 한다. 
+	// 중요한건 크기가 아니라 비율
+	//MainWindow.SetWindowPosition({500, 100});
+	//                           1024                960
+	MainWindow.SetWindowScale({ 1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/ });
+	MainWindow.SetWindowPosition({ 200/* * 1.5f*/, 0/* * 1.5f*/ });
+	// 1200 
 
-	// "Title Level" + "을 만들다가 에러가 났습니다";
+	// 800 16
 
-	CreateLevel<ULevel_Title>("Level_Title");
-	CreateLevel<ULevel_Play>("Level_Play");
+	UEngineCore::BeginPlay();
 
-	ChangeLevel("Level_Play");
+	// D:\Project\GM\WIn\App
+	UEngineDirectory NewDir;
+
+	// D:\Project\GM\WIn
+	NewDir.MoveParent();
+
+	// D:\Project\GM\WIn\ContentsResources
+	NewDir.Move("SnowBros_Resources");
+
+	std::list<UEngineFile> NewList = NewDir.AllFile({ ".png", ".bmp" }, true);
+
+	// 엔진만의 규칙을 정할거냐.
+	for (UEngineFile& File : NewList)
+	{
+		UEngineResourcesManager::GetInst().LoadImg(File.GetFullPath());
+	}
+	
+
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_Jump.png", 7, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
+	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
+	//UEngineResourcesManager::GetInst().LoadFolder(NewDir.AppendPath("PlayLevel"));
+
+	// 리로스를 여기서 로드할수도 있다.
+
+	// 우리가 제공하는건 Level
+	CreateLevel<ULevel_Title>("Title");
+	CreateLevel<ULevel_Play>("Play");
+	ChangeLevel("Title");
 }
 
-void SnowBros_Core::Tick(float _DeltaTime)
+void USnowBros_Core::Tick(float _DeltaTime)
 {
-	// 플레이어 움직여야 한다.
-}
-
-void SnowBros_Core::End()
-{
+	UEngineCore::Tick(_DeltaTime);
 }

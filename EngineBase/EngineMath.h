@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <cmath>
 
 struct float4
 {
@@ -11,10 +13,24 @@ public:
 	static const float4 Up;
 	static const float4 Down;
 
-	float X; // 2D
-	float Y; // 2D
-	float Z;
-	float W;
+	union
+	{
+		struct
+		{
+			float X; // 2D
+			float Y; // 2D
+			float Z;
+			float W;
+		};
+
+		struct
+		{
+			float R; // 2D
+			float G; // 2D
+			float B;
+			float A;
+		};
+	};
 
 	// 생성자를 한번 만들게 되면 리스트 이니셜라이저가 동작하지 않아서
 	// 내가 생성하는 방식을 다 정의해야 합니다.
@@ -57,36 +73,46 @@ public:
 
 
 public:
-	int iX()
+	std::string ToString()
 	{
-		return static_cast<int>(X);
+		return "[X : " + std::to_string(X) + " Y : " + std::to_string(Y) + " Z : " + std::to_string(Z) + " W : " + std::to_string(W) + "]";
 	}
 
-	int iY()
+	float4 Half2D()
 	{
-		return static_cast<int>(Y);
+		return { hX(), hY() };
+	}
+
+	int iX() const
+	{
+		return std::lround(X);
+	}
+
+	int iY() const
+	{
+		return std::lround(Y);
 	}
 
 
-	float hX()
+	float hX() const
 	{
 		return X * 0.5f;
 	}
 
-	float hY()
+	float hY() const
 	{
 		return Y * 0.5f;
 	}
 
 
-	int ihY()
+	int ihY() const
 	{
-		return static_cast<int>(hY());
+		return std::lround(hY());
 	}
 
-	int ihX()
+	int ihX() const
 	{
-		return static_cast<int>(hX());
+		return std::lround(hX());
 	}
 
 	float4 operator+(const float4& _Other)
@@ -143,6 +169,16 @@ public:
 		return *this;
 	}
 
+	float4 operator-() 
+	{
+		float4 Result;
+		Result.X = -X;
+		Result.Y = -Y;
+		Result.Z = -Z;
+		return Result;
+	}
+
+
 	float4 operator-(const float4& _Other)
 	{
 		float4 Result = *this;
@@ -163,20 +199,87 @@ public:
 };
 
 using FVector = float4;
+using FColor = float4;
+
+class Color8Bit
+{
+	// 현실에서의 색상은
+	// 물감으로 치면 다섞으면 어두운색
+	// 빛으로 치면 다섞으면 흰색
+	// 컴퓨터는 빛의 삼원색을 사용합니다.
+public:
+	static const Color8Bit Black;
+	static const Color8Bit Red;
+	static const Color8Bit Green;
+	static const Color8Bit Blue;
+	static const Color8Bit White;
+	static const Color8Bit Magenta;
+	static const Color8Bit Cyan;
+
+	static const Color8Bit BlackA;
+	static const Color8Bit RedA;
+	static const Color8Bit GreenA;
+	static const Color8Bit BlueA;
+	static const Color8Bit WhiteA;
+	static const Color8Bit MagentaA;
+	static const Color8Bit CyanA;
+
+
+	union
+	{
+		struct
+		{
+			unsigned char R;
+			unsigned char G;
+			unsigned char B;
+			unsigned char A;
+		};
+
+		unsigned char Arr1D[4] = { 0,0,0,255 };
+		unsigned int Color;
+	};
+
+	Color8Bit()
+	{
+
+	}
+
+	Color8Bit(
+		unsigned char _R,
+		unsigned char _G,
+		unsigned char _B,
+		unsigned char _A
+	)
+		:R(_R), G(_G), B(_B), A(_A)
+	{
+
+	}
+
+
+	bool operator==(Color8Bit _Color)
+	{
+		return Color == _Color.Color;
+	}
+
+	Color8Bit ZeroAlphaColor() const
+	{
+		return Color8Bit{ R,G,B,0 };
+	}
+};
 
 // 설명 :
-class UEngineMath
+class EngineMath
 {
 public:
 	// constrcuter destructer
-	UEngineMath();
-	~UEngineMath();
+	EngineMath();
+	~EngineMath();
 
 	// delete Function
-	UEngineMath(const UEngineMath& _Other) = delete;
-	UEngineMath(UEngineMath&& _Other) noexcept = delete;
-	UEngineMath& operator=(const UEngineMath& _Other) = delete;
-	UEngineMath& operator=(UEngineMath&& _Other) noexcept = delete;
+	EngineMath(const EngineMath& _Other) = delete;
+	EngineMath(EngineMath&& _Other) noexcept = delete;
+	EngineMath& operator=(const EngineMath& _Other) = delete;
+	EngineMath& operator=(EngineMath&& _Other) noexcept = delete;
 
 protected:
 

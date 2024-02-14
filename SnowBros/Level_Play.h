@@ -1,5 +1,6 @@
 #pragma once
 #include <EngineCore\Level.h>
+
 // Ό³Έν :
 class ULevel_Play : public ULevel
 {
@@ -14,9 +15,12 @@ public:
 	ULevel_Play& operator=(const ULevel_Play& _Other) = delete;
 	ULevel_Play& operator=(ULevel_Play&& _Other) noexcept = delete;
 
-
 protected:
 	void BeginPlay() override;
+	void Tick(float _DeltaTime) override;
+	void LevelStart(ULevel* _Level) override;
+	void LevelEnd(ULevel* _Level) override;
+
 
 private:
 

@@ -2,23 +2,22 @@
 #include <EngineCore\EngineCore.h>
 
 // Ό³Έν :
-class SnowBros_Core : public EngineCore
+class USnowBros_Core : public UEngineCore
 {
 public:
 	// constrcuter destructer
-	SnowBros_Core();
-	~SnowBros_Core();
+	USnowBros_Core();
+	~USnowBros_Core();
 
 	// delete Function
-	SnowBros_Core(const SnowBros_Core& _Other) = delete;
-	SnowBros_Core(SnowBros_Core&& _Other) noexcept = delete;
-	SnowBros_Core& operator=(const SnowBros_Core& _Other) = delete;
-	SnowBros_Core& operator=(SnowBros_Core&& _Other) noexcept = delete;
+	USnowBros_Core(const USnowBros_Core& _Other) = delete;
+	USnowBros_Core(USnowBros_Core&& _Other) noexcept = delete;
+	USnowBros_Core& operator=(const USnowBros_Core& _Other) = delete;
+	USnowBros_Core& operator=(USnowBros_Core&& _Other) noexcept = delete;
 
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
-	void End() override;
 
 private:
 

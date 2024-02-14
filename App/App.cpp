@@ -8,7 +8,7 @@
 // 사용자가 하고 싶을일을 어떻게 어디에 정의하게 만들거냐?
 // 내가 윈도우 크기를 변경하고 싶어.
 
-//ENGINESTART(SnowBros_Core);
+// ENGINESTART(UContentExCore);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, 
 	_In_opt_ HINSTANCE hPrevInstance, 
@@ -16,6 +16,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ int       nCmdShow) 
 { 
 	LeakCheck; 
-	SnowBros_Core NewUserCore = SnowBros_Core();
-	EngineCore::EngineStart(hInstance, &NewUserCore);
+	USnowBros_Core NewUserCore = USnowBros_Core();
+	NewUserCore.EngineStart(hInstance);
 }
