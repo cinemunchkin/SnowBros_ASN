@@ -1,8 +1,8 @@
 #include "EngineInput.h"
 
-std::map<int, EngineInput::EngineKey> EngineInput::AllKeys;
+std::map<int, UEngineInput::EngineKey> UEngineInput::AllKeys;
 
-void EngineInput::EngineKey::KeyCheck()
+void UEngineInput::EngineKey::KeyCheck()
 {
 	// 이 키가 눌렸다는 거죠?
 	// if (0 != GetAsyncKeyState('A'))
@@ -48,15 +48,15 @@ void EngineInput::EngineKey::KeyCheck()
 	}
 }
 
-EngineInput::EngineInput()
+UEngineInput::UEngineInput()
 {
 }
 
-EngineInput::~EngineInput()
+UEngineInput::~UEngineInput()
 {
 }
 
-void EngineInput::InputInit()
+void UEngineInput::InputInit()
 {
 	AllKeys[VK_LBUTTON] = EngineKey(VK_LBUTTON);
 	AllKeys[VK_RBUTTON] = EngineKey(VK_RBUTTON);
@@ -163,7 +163,7 @@ void EngineInput::InputInit()
 
 }
 
-void EngineInput::KeyCheckTick(float _DeltaTime)
+void UEngineInput::KeyCheckTick(float _DeltaTime)
 {
 	for (std::pair<const int, EngineKey>& Key : AllKeys)
 	{
@@ -178,7 +178,7 @@ class InputInitCreator
 public:
 	InputInitCreator()
 	{
-		EngineInput::InputInit();
+		UEngineInput::InputInit();
 	}
 };
 

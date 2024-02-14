@@ -3,7 +3,7 @@
 #include <EngineCore\EngineCore.h>
 #include <EngineCore\ImageRenderer.h>
 
-enum SnowBrosRenderOrder
+enum class SnowBrosRenderOrder
 {
 	Map,
 	Monster,
@@ -23,8 +23,9 @@ enum class EPlayState
 	CameraFreeMove,
 	FreeMove,
 	Idle,
-	Move,
+	Run,
 	Jump,
+	DownJump
 };
 
 

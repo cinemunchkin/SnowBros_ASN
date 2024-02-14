@@ -18,6 +18,9 @@
     </ClInclude>
     <ClInclude Include="SnowBros_Core.h" />
     <ClInclude Include="SnowBros_Helper.h" />
+    <ClInclude Include="Play_Monster.h">
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level_Title.cpp">
@@ -37,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="SnowBros_Core.cpp" />
     <ClCompile Include="SnowBros_Helper.cpp" />
+    <ClCompile Include="Play_Monster.cpp">
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Object">

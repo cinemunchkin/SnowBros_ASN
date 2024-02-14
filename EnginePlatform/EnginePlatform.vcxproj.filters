@@ -12,7 +12,7 @@
     <ClCompile Include="EngineWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="EngineInput.cpp">
+    <ClCompile Include="UEngineInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="WindowImage.cpp">
@@ -23,7 +23,7 @@
     <ClInclude Include="EngineWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="EngineInput.h">
+    <ClInclude Include="UEngineInput.h">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="WindowImage.h">

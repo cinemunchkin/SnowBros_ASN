@@ -14,6 +14,7 @@ const Color8Bit Color8Bit::White = { 255, 255, 255, 255 };
 const Color8Bit Color8Bit::Magenta = { 255, 0, 255, 255 };
 const Color8Bit Color8Bit::Cyan = { 0, 255, 255, 255 };
 
+
 const Color8Bit Color8Bit::BlackA = { 0, 0, 0, 0 };
 const Color8Bit Color8Bit::RedA = { 255, 0, 0, 0 };
 const Color8Bit Color8Bit::GreenA = { 0, 255, 0, 0 };

@@ -9,7 +9,15 @@
 // 설명 :
 class APlay_Player : public AActor
 {
+
+private:
+	static APlay_Player* MainPlayer;
+
+
 public:
+	
+	static APlay_Player* GetMainPlayer();
+	
 	// constrcuter destructer
 	APlay_Player();
 	~APlay_Player();
@@ -25,12 +33,12 @@ protected:
 	void Tick(float _DeltaTime) override;
 
 	// 상태 보조 함수
-	void GravityCheck(float _DeltaTime);
+	//void GravityCheck(float _DeltaTime);
 
 	// 각 상태마다 언제나 가장 위에 실행되어야 한다.
 	void DirCheck();
 
-	void GravityOff(float _DeltaTime);
+	void GravityOff(float _DeltaTime);//내가만든건디 곧 지워줍시다
 
 	std::string GetAnimationName(std::string _Name);
 
@@ -43,7 +51,7 @@ protected:
 	void FreeMove(float _DeltaTime);
 	void Idle(float _DeltaTime);
 	void Jump(float _DeltaTime);
-	void Move(float _DeltaTime);
+	void Run(float _DeltaTime);
 	void DownJump(float _DeltaTime);
 
 	// 상태 시작 함수들
@@ -56,19 +64,52 @@ protected:
 	std::string CurAnimationName = "None";
 
 private:
+	UCollision* BodyCollision = nullptr;
+
 	UImageRenderer* Renderer = nullptr;
 	float AnimationTime = 0.0f;
 	int AnimationFrame = 0;
 
+
 	float AlphaTime = 0.0f;
 	bool Dir = false;
 
+
+
 	float FreeMoveSpeed = 1000.0f;
-	float JumpHeight = 50.0f;
-	float JumpTiming = 20.0f;
+
+	//float JumpHeight = 50.0f;
+	//float JumpTiming = 20.0f;
 	
 
-	float MoveSpeed = 500.0f;
-	float Gravity = 500.0f;
+	// y는 존재하지 않는다.
+	//가속도 필요 없음  + 점프 띠용 자연스럽게 구현 -> 중력만 잘 조절
+
+	FVector MoveVector = FVector::Zero;
+	FVector MoveAcc = FVector::Right * 500.0f;
+	float MoveMaxSpeed = 500.0f;
+	void AddMoveVector(const FVector& _DirDelta);
+
+	FVector GravityAcc = FVector::Down * 2000.0f;
+	FVector GravityVector = FVector::Zero;
+
+
+	FVector JumpPower = FVector::Up * 1000;
+	FVector JumpVector = FVector::Zero;
+
+	// 내가 나갈 모든 방향의 합
+	FVector LastMoveVector = FVector::Zero;
+
+	// 무브 업데이트는 상태가 아닙니다.
+	// 이동
+	void CalLastMoveVector(float _DeltaTime);
+	void CalMoveVector(float _DeltaTime);
+	void CalJumpVector(float _DeltaTime);
+	void CalGravityVector(float _DeltaTime);
+	void CamMoveLastMoveVector(float _DeltaTime);
+	void MoveUpdate(float _DeltaTime);
+	void GroundUp();
+
+
 };
 
