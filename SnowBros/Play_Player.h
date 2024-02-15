@@ -34,7 +34,7 @@ protected:
 	// 각 상태마다 언제나 가장 위에 실행되어야 한다.
 	void DirCheck();
 
-	void GravityOff(float _DeltaTime);//내가만든건디 곧 지워줍시다
+	
 
 	std::string GetAnimationName(std::string _Name);
 
@@ -55,6 +55,7 @@ protected:
 	void IdleStart();
 	void MoveStart();
 	void JumpStart();
+	void DownJumpStart();
 
 	EPlayState State = EPlayState::None;
 	EActorDir DirState = EActorDir::Right;
@@ -103,9 +104,9 @@ private:
 	void CalMoveVector(float _DeltaTime);
 	void CalJumpVector(float _DeltaTime);
 	void CalGravityVector(float _DeltaTime);
-	void CamMoveLastMoveVector(float _DeltaTime);
+	//void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
-	void GroundUp();
+	//void GroundUp();
 
 
 };

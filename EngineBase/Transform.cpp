@@ -9,7 +9,7 @@ class CollisionFunctionInit
 public:
 	CollisionFunctionInit()
 	{
-		FTransform::CollisionFunction[static_cast<int>(ECollisionType::CirCle)][static_cast<int>(ECollisionType::CirCle)] = FTransform::CircleToCircle;
+		FTransform::CollisionFunction[static_cast<int>(ECollisionType::Circle)][static_cast<int>(ECollisionType::Circle)] = FTransform::CircleToCircle;
 	}
 	~CollisionFunctionInit()
 	{

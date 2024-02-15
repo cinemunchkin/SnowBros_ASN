@@ -23,14 +23,14 @@ void ULevel_Play::BeginPlay()
 
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
-		 Player->SetActorLocation({ 200, 200 });
+		 Player->SetActorLocation({ 100, 100 });
 		 Player->SetName("Player");
 	 }
 
 	 {
 		 APlay_Monster* Monster = SpawnActor<APlay_Monster>();
 		 Monster->SetName("Monster");
-		 Monster->SetActorLocation({ 400, 200 });
+		 Monster->SetActorLocation({ 100, 150 });
 	 }
 
 

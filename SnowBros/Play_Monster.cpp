@@ -20,7 +20,8 @@ void APlay_Monster::BeginPlay()
 
 	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 100, 100 });
+		BodyCollision->SetScale({ 32, 32 });
+		BodyCollision->SetColType(ECollisionType::Circle);
 	}
 }
 
@@ -31,9 +32,18 @@ void APlay_Monster::Tick(float _DeltaTime)
 	std::vector<UCollision*> Result;
 	if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
 	{
+
 		// 이런식으로 상대를 사용할수 있다.
-		//UCollision* Collision = Result[0];
-		//APlay_Player* Player = dynamic_cast<APlay_Player*>(Collision->GetOwner());
+		UCollision* Collision = Result[0];
+		AActor* Ptr = Collision->GetOwner();
+		APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
+
+
+		if (nullptr == Player)
+		{
+			MsgBoxAssert("터져야겠지....");
+		}
+
 		Destroy();
 	}
 

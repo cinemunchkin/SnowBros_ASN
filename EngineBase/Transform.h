@@ -4,7 +4,7 @@
 enum ECollisionType
 {
 	Point,
-	CirCle,
+	Circle,
 	Rect,
 };
 

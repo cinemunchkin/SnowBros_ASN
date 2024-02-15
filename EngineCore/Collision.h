@@ -16,6 +16,12 @@ public:
 	UCollision& operator=(const UCollision& _Other) = delete;
 	UCollision& operator=(UCollision&& _Other) noexcept = delete;
 
+
+	void SetColType(ECollisionType _Type)
+	{
+		ColType = _Type;
+	}
+
 	void SetOrder(int _Order) override;
 
 	template<typename EnumType>
@@ -30,6 +36,6 @@ protected:
 	void BeginPlay() override;
 
 private:
-	ECollisionType ColType = ECollisionType::CirCle;
+	ECollisionType ColType = ECollisionType::Circle;
 };
 
