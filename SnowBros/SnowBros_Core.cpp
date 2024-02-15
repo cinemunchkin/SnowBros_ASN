@@ -46,8 +46,10 @@ void USnowBros_Core::BeginPlay()
 	}
 	
 
-	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_Jump.png", 7, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_Jump.png", 8, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
+
 	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
 	//UEngineResourcesManager::GetInst().LoadFolder(NewDir.AppendPath("PlayLevel"));
 

@@ -13,14 +13,17 @@ void APlay_Monster::BeginPlay()
 	AActor::BeginPlay();
 
 	{
-		UImageRenderer* Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
+		UImageRenderer* Renderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		Renderer->SetTransform({ {0,0}, {32, 32} });
-		Renderer->SetImage("boss_1.png");
+		Renderer->SetImage("Monster_01.png");
+		Renderer->CreateAnimation("Idle", "Monster_01.png", 0,5, 0.5f, true);
+		
 	}
+
 
 	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 32, 32 });
+		BodyCollision->SetScale({ 64, 32 });
 		BodyCollision->SetColType(ECollisionType::Circle);
 	}
 }
@@ -62,7 +65,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 	// MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	AddActorLocation(MonsterDirNormal * _DeltaTime * 300.0f);
+	AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
 
 	// 플레이어를 알아야 한다.
 	// 

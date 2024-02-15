@@ -21,9 +21,14 @@ void ULevel_Play::BeginPlay()
 	Map->SetColMapImage("SnowBros_Lv_1_Col.png");
 	 Map->SwitchDebug();
 
+	//APlay_UIMap* UIMap = SpawnActor<APlay_UIMap>();
+	//UIMap->SetMapImage("SnowBros_UI.png");
+	 {
+		// APlay_Map* Map = SpawnActor<APlay_Map>();
+	 }
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
-		 Player->SetActorLocation({ 100, 100 });
+		 Player->SetActorLocation({ 100, 300 });
 		 Player->SetName("Player");
 	 }
 

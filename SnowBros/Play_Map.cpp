@@ -16,6 +16,8 @@ void APlay_Map::SetMapImage(std::string_view _MapImageName)
 	UWindowImage* Image = Renderer->GetImage();
 	FVector ImageScale = Image->GetScale();
 	Renderer->SetTransform({ ImageScale.Half2D(), ImageScale });
+
+
 }
 
 void APlay_Map::SetColMapImage(std::string_view _MapImageName)

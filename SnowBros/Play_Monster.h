@@ -17,9 +17,13 @@ public:
 	APlay_Monster& operator=(const APlay_Monster& _Other) = delete;
 	APlay_Monster& operator=(APlay_Monster&& _Other) noexcept = delete;
 
+	
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
+
+
+
 
 private:
 	UCollision* BodyCollision;

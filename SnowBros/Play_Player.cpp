@@ -3,124 +3,6 @@
 #include <EngineBase\EngineDebug.h>
 #include "SnowBros_Helper.h"
 
-
-//// 이동관련! 가속도 빼고, 점프 ㄱㄱ
-
-
-
-
-void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
-{
-	
-
-	MoveVector = _DirDelta * MoveAcc;
-}
-
-void APlay_Player::CalMoveVector(float _DeltaTime)
-{
-
-
-	FVector CheckPos = GetActorLocation();
-	switch (DirState)
-	{
-	case EActorDir::Left:
-		CheckPos.X -= 30;
-		break;
-	case EActorDir::Right:
-		CheckPos.X += 30;
-		break;
-	default:
-		break;
-	}
-	CheckPos.Y -= 30;
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-	}
-
-
-	////////////////가속도 계산 함수
-	//if (true == UEngineInput::IsFree(VK_LEFT) && true == UEngineInput::IsFree(VK_RIGHT))
-	//{
-	//	// 방향키 아무것도 안누르고 있으면, 가속도 점차 감소. 
-	//	if (0.001 <= MoveVector.Size2D()) // 가속도 조금이라도 있으면, 점점 감소
-	//	{
-	//		MoveVector += (-MoveVector.Normalize2DReturn()) * _DeltaTime * MoveAcc;
-	//	}
-	//	else 
-	//	{ // 땅에 닿음
-	//		MoveVector = float4::Zero;
-	//	}
-	//}
-
-	//if (MoveMaxSpeed <= MoveVector.Size2D()) // 가속도 리미트 설정. 가속도가 최대치를 찍으면
-	//{
-	//	MoveVector = MoveVector.Normalize2DReturn() * MoveMaxSpeed; // 가속도 Normalize
-	//}
-}
-
-void APlay_Player::CalJumpVector(float _DeltaTime)
-{
-
-}
-
-// 이것도 나한텐 필요없을거가튼뎅
-void APlay_Player::CalGravityVector(float _DeltaTime)
-{
-	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		GravityVector = FVector::Zero;// 땅에 닿으면 0으로 초기화 
-	}
-}
-
-
-
-// 나는 카메라 Y축으로 움직여야함? 아니면 카메라는 놔두고, 스테이지 이동할 때만 어떻게든 움직이는걸로
-//void APlay_Player::CamMoveLastMoveVector(float _DeltaTime)
-//{
-//	// 카메라는 x축으로만 움직여야 하니까.
-//	GetWorld()->AddCameraPos(MoveVector * _DeltaTime);
-//	AddActorLocation(LastMoveVector * _DeltaTime);
-//}
-
-void APlay_Player::CalLastMoveVector(float _DeltaTime)
-{
-	// 제로로 만들어서 초기화 시킨다.
-	LastMoveVector = FVector::Zero;
-	LastMoveVector = LastMoveVector + MoveVector;
-	LastMoveVector = LastMoveVector + JumpVector;
-	LastMoveVector = LastMoveVector + GravityVector;
-	LastMoveVector + JumpVector; // 왜 또 더해줌?
-	// 최종 위치 = x축으로 움직인 위치 + 점프+ 중력
-
-}
-
-
-
-void APlay_Player::MoveUpdate(float _DeltaTime)
-{
-	CalMoveVector(_DeltaTime);
-	CalGravityVector(_DeltaTime);
-	CalLastMoveVector(_DeltaTime);
-	//CamMoveLastMoveVector(_DeltaTime);
-	//GroundUp();
-	
-}
-
-////////////////////////////////
-
-APlay_Player* APlay_Player::MainPlayer = nullptr;
-
-APlay_Player* APlay_Player::GetMainPlayer()
-{
-	return MainPlayer;
-}
-
-
 APlay_Player::APlay_Player()
 {
 }
@@ -130,21 +12,19 @@ APlay_Player::~APlay_Player()
 }
 
 
+
+//// 이동관련! 가속도 빼고, 점프 ㄱㄱ
+
+
+
+
+
+
 void APlay_Player::BeginPlay()
 {
 	AActor::BeginPlay();
 	MainPlayer = this;  // 아오 이걸 주석처리해놔서 계속 플레이어 없음이 떴네 ..
 
-
-	/*{ // 폰트 만드는 함수
-		UImageRenderer* Render = CreateImageRenderer(SnowBrosRenderOrder::Text);
-		Render->SetFont("Segment7");
-		Render->SetText("fasdfsad");
-		Render->SetTextSize(50);
-	}*/
-
-				/* APlay_Player* ATestPalyer:: MainPlayer, APlay_Player* = This */
-				/*static APlay_Player* MainPlayer*/
 
 
 	{
@@ -160,29 +40,23 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Jump_Left", "SnowBros_Test_Jump.png", 0, 6, 0.1f, true);
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Test_Jump.png", 0, 0, 0.1f, true);
 
+		StateChange(EPlayState::Idle);
 	}
 	
-
-
-	{
+	/*{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
 		BodyCollision->SetScale({ 64, 64 });
 		BodyCollision->SetColType(ECollisionType::Circle);
-	}
+	}*/
 
-
-
-	StateChange(EPlayState::Idle);
 }
-
-
-
 
 
 
 void APlay_Player::DirCheck()
 {
 	EActorDir Dir = DirState;
+
 	if (UEngineInput::IsPress(VK_LEFT))
 	{
 		Dir = EActorDir::Left;
@@ -229,31 +103,6 @@ std::string APlay_Player::GetAnimationName(std::string _Name)
 
 }
 
-void APlay_Player::IdleStart()
-{
-	Renderer->ChangeAnimation(GetAnimationName("Idle"));
-	DirCheck();
-}
-
-void APlay_Player::MoveStart()
-{
-	Renderer->ChangeAnimation(GetAnimationName("Move"));
-	DirCheck();
-}
-
-void APlay_Player::JumpStart()
-{
-	JumpVector = JumpPower;
-	Renderer->ChangeAnimation(GetAnimationName("Jump"));
-	DirCheck();
-}
-
-void APlay_Player::DownJumpStart()
-{
-	Renderer->ChangeAnimation(GetAnimationName("DownJump"));
-	DirCheck();
-}
-
 
 
 void APlay_Player::StateChange(EPlayState _State)
@@ -285,14 +134,41 @@ void APlay_Player::StateChange(EPlayState _State)
 
 }
 
+
+void APlay_Player::IdleStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("Idle"));
+	DirCheck();
+}
+
+void APlay_Player::MoveStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("Move"));
+	DirCheck();
+}
+
+void APlay_Player::JumpStart()
+{
+	JumpVector = JumpPower;
+	Renderer->ChangeAnimation(GetAnimationName("Jump"));
+	DirCheck();
+}
+
+void APlay_Player::DownJumpStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("DownJump"));
+	DirCheck();
+}
+
+
 void APlay_Player::StateUpdate(float _DeltaTime)
 {
 	switch (State)
 	{
-	case EPlayState::CameraFreeMove:
+	case EPlayState::CameraFreeMove: //안씀
 		CameraFreeMove(_DeltaTime);
 		break;
-	case EPlayState::FreeMove:
+	case EPlayState::FreeMove: //안씀
 		FreeMove(_DeltaTime);
 		break;
 	case EPlayState::Idle:
@@ -318,11 +194,8 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 void APlay_Player::Idle(float _DeltaTime)
 {
 
-//////////////////////////////////////////
-	if (
-		true == UEngineInput::IsPress(VK_LEFT) ||
-		true == UEngineInput::IsPress(VK_RIGHT)
-		)
+	if (true == UEngineInput::IsPress(VK_LEFT) ||
+		true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		StateChange(EPlayState::Run);
 		return;
@@ -330,35 +203,41 @@ void APlay_Player::Idle(float _DeltaTime)
 
 
 
-	if (
-		true == UEngineInput::IsDown('z')
-		)
+	if (true == UEngineInput::IsDown(VK_LSHIFT))
 	{
 		StateChange(EPlayState::Jump);
 		return;
 	}
+
+
 	MoveUpdate(_DeltaTime);
 
 }
 
 
 
-
-
-void APlay_Player::Jump(float _DeltaTime)
+void APlay_Player::Run(float _DeltaTime)
 {
-
-	if (true == UEngineInput::IsFree('z')
-		&& UEngineInput::IsFree(VK_RIGHT)
-		&& UEngineInput::IsFree(VK_LEFT))
+	DirCheck();
+	MoveUpdate(_DeltaTime);
+	
+	//양쪽 방향키 둘다 안눌렸으면 ; Idle
+	if (true == UEngineInput::IsFree(VK_LEFT) 
+		&& UEngineInput::IsFree(VK_RIGHT))
 	{
-		JumpVector = FVector::Zero;
 		StateChange(EPlayState::Idle);
 		return;
 	}
 
+	// Run상태에서 Jump키 누르는 순간 변경
+	if (true == UEngineInput::IsDown(VK_LSHIFT))
+	{
+		StateChange(EPlayState::Jump);
+		return;
+	}
 
 
+	//방향키 누르는 방향으로 전진 - 가속도 필요없음
 	if (UEngineInput::IsPress(VK_LEFT))
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);
@@ -371,16 +250,84 @@ void APlay_Player::Jump(float _DeltaTime)
 
 
 
+	FVector CheckPos = GetActorLocation();
+	switch (DirState)
+	{
+	case EActorDir::Left:
+		CheckPos.X -= 30;
+		break;
+	case EActorDir::Right:
+		CheckPos.X += 30;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 30;
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	if (Color != Color8Bit(0, 255, 255, 0))
+	{
+		AddActorLocation(MoveVector); /// 이거 잘봐!!
+		//GetWorld()->AddCameraPos(MovePos);
+	}
 
 	MoveUpdate(_DeltaTime);
+}
 
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
+
+
+
+void APlay_Player::Jump(float _DeltaTime)
+{
+	FVector JumpPos;
+
+	if (true == UEngineInput::IsFree(VK_LSHIFT)
+		&& UEngineInput::IsFree(VK_RIGHT)
+		&& UEngineInput::IsFree(VK_LEFT))
 	{
 		JumpVector = FVector::Zero;
 		StateChange(EPlayState::Idle);
 		return;
 	}
+	if (UEngineInput::IsPress(VK_LEFT))
+	{
+		AddMoveVector(FVector::Left * _DeltaTime);
+	}
+		if (UEngineInput::IsPress(VK_RIGHT))
+	{
+		AddMoveVector(FVector::Right * _DeltaTime);
+	}
+
+
+
+
+
+	if (UEngineInput::IsDown(VK_LSHIFT))
+	{
+	
+		JumpPos =  JumpPower;
+		CalGravityVector(_DeltaTime);
+		// 수정 필요
+		AddActorLocation(JumpPos);
+		if (UEngineInput::IsUp(VK_LSHIFT))
+		{
+			JumpPos = FVector::Zero;
+			StateChange(EPlayState::Idle);
+		}
+
+	}
+
+	MoveUpdate(_DeltaTime);
+			
+		
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
+	{
+		JumpPos = FVector::Zero;
+	//	JumpVector = FVector::Zero;
+		StateChange(EPlayState::Idle);
+		return;
+	}
+
 
 }
 
@@ -412,35 +359,16 @@ void APlay_Player::DownJump(float _DeltaTime)
 
 
 
-void APlay_Player::Run(float _DeltaTime)
+
+void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {
-	DirCheck();
-		
-(_DeltaTime);
-
-	if (true == UEngineInput::IsFree(VK_LEFT) && UEngineInput::IsFree(VK_RIGHT))
-	{
-		StateChange(EPlayState::Idle);
-		return;
-	}
 
 
-	if (true == UEngineInput::IsDown('z'))
-	{// Move상태에서 Jump키 누르는 순간 status 변경
-		StateChange(EPlayState::Jump);
-		return;
-	}
+	MoveVector = _DirDelta * MoveAcc;
+}
 
-
-	if (UEngineInput::IsPress(VK_LEFT))
-	{
-		AddMoveVector(FVector::Left * _DeltaTime);
-	}
-
-	if (UEngineInput::IsPress(VK_RIGHT))
-	{
-		AddMoveVector(FVector::Right * _DeltaTime);
-	}
+void APlay_Player::CalMoveVector(float _DeltaTime)
+{
 
 
 	FVector CheckPos = GetActorLocation();
@@ -457,16 +385,76 @@ void APlay_Player::Run(float _DeltaTime)
 	}
 	CheckPos.Y -= 30;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	if (Color != Color8Bit(0, 255, 255, 0))
+
+	if (Color == Color8Bit(0, 255, 255, 0))
 	{
-		AddActorLocation(MoveVector); /// 이거 잘봐!!
-		//GetWorld()->AddCameraPos(MovePos);
+		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 	}
 
-	MoveUpdate(_DeltaTime);
+
+}
+
+void APlay_Player::CalJumpVector(float _DeltaTime)
+{
+
+}
+
+void APlay_Player::CalGravityVector(float _DeltaTime)
+{
+	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
+	{
+		GravityVector = FVector::Zero;// 땅에 닿으면 0으로 초기화 
+	}
 }
 
 
+
+// 나는 카메라 Y축으로 움직여야함? 아니면 카메라는 놔두고, 스테이지 이동할 때만 어떻게든 움직이는걸로
+void APlay_Player::CamMoveLastMoveVector(float _DeltaTime)
+{
+	// 카메라는 x축으로만 움직여야 하니까.
+	//GetWorld()->AddCameraPos(MoveVector * _DeltaTime);
+	AddActorLocation(LastMoveVector * _DeltaTime);
+}
+
+void APlay_Player::CalLastMoveVector(float _DeltaTime)
+{
+	// 제로로 만들어서 초기화 시킨다.
+	LastMoveVector = FVector::Zero;
+	LastMoveVector = LastMoveVector + MoveVector;
+	LastMoveVector = LastMoveVector + JumpVector;
+	LastMoveVector = LastMoveVector + GravityVector;
+	 // 왜 또 더해줌?
+	// 최종 위치 = x축으로 움직인 위치 + 점프+ 중력
+
+}
+
+
+
+void APlay_Player::MoveUpdate(float _DeltaTime)
+{
+	CalMoveVector(_DeltaTime);
+	CalGravityVector(_DeltaTime);
+	CalLastMoveVector(_DeltaTime);
+	CamMoveLastMoveVector(_DeltaTime);
+
+	//GroundUp();
+
+}
+
+////////////////////////////////
+
+APlay_Player* APlay_Player::MainPlayer = nullptr;
+
+APlay_Player* APlay_Player::GetMainPlayer()
+{
+	return MainPlayer;
+}
+
+
+//////////////////
 
 
 void APlay_Player::CameraFreeMove(float _DeltaTime)

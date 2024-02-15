@@ -92,7 +92,7 @@ private:
 	FVector GravityVector = FVector::Zero;
 
 
-	FVector JumpPower = FVector::Up * 1000;
+	FVector JumpPower = FVector::Up * 600.0f;
 	FVector JumpVector = FVector::Zero;
 
 	// 내가 나갈 모든 방향의 합
@@ -104,7 +104,7 @@ private:
 	void CalMoveVector(float _DeltaTime);
 	void CalJumpVector(float _DeltaTime);
 	void CalGravityVector(float _DeltaTime);
-	//void CamMoveLastMoveVector(float _DeltaTime);
+	void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
 	//void GroundUp();
 
