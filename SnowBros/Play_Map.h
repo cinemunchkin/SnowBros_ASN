@@ -16,8 +16,8 @@ public:
 	APlay_Map& operator=(const APlay_Map& _Other) = delete;
 	APlay_Map& operator=(APlay_Map&& _Other) noexcept = delete;
 
-	void SetMapImage(std::string_view _MapImageName);
 	void SetColMapImage(std::string_view _MapImageName);
+	void SetMapImage(std::string_view _MapImageName);
 
 	void SwitchDebug();
 

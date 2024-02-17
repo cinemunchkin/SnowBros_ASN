@@ -29,25 +29,27 @@ void APlay_Player::BeginPlay()
 
 	{
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
-		Renderer->SetImage("SnowBros_Test_char.png");
+		Renderer->SetImage("SnowBros_Run_R.png");
 		Renderer->SetTransform({ {0,0}, {64, 128} });
-		Renderer->CreateAnimation("Idle_Right", "SnowBros_Test_char.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Move_Right", "SnowBros_Test_char.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Jump_Right", "SnowBros_Test_Jump.png", 0, 6, 0.1f, true);
+		Renderer->CreateAnimation("Idle_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		Renderer->CreateAnimation("Idle_Left", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		
+		Renderer->CreateAnimation("Move_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		Renderer->CreateAnimation("Move_Left", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
 
-		Renderer->CreateAnimation("Idle_Left", "SnowBros_Test_char.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Move_Left", "SnowBros_Test_char.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Jump_Left", "SnowBros_Test_Jump.png", 0, 6, 0.1f, true);
-		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Test_Jump.png", 0, 0, 0.1f, true);
+		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.1f, true);
+		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 12, 0.1f, true);
+		
+		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Jump_R.png", 0, 0, 0.1f, true);
 
 		StateChange(EPlayState::Idle);
 	}
 	
-	/*{
+	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
 		BodyCollision->SetScale({ 64, 64 });
 		BodyCollision->SetColType(ECollisionType::Circle);
-	}*/
+	}
 
 }
 

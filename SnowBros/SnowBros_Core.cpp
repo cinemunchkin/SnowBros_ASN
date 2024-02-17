@@ -4,6 +4,7 @@
 #include <EngineBase\EngineDirectory.h>
 #include <EngineBase\EngineFile.h>
 #include <EngineCore\EngineResourcesManager.h>
+#include "SnowBros_Helper.h"
 
 USnowBros_Core::USnowBros_Core()
 {
@@ -46,8 +47,8 @@ void USnowBros_Core::BeginPlay()
 	}
 	
 
-	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_Jump.png", 8, 1);
-	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Jump_R.png", 8, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_R.png", 4, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
 
 	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
@@ -65,3 +66,5 @@ void USnowBros_Core::Tick(float _DeltaTime)
 {
 	UEngineCore::Tick(_DeltaTime);
 }
+
+

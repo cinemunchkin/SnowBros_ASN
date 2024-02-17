@@ -18,8 +18,10 @@ void ULevel_Play::BeginPlay()
 
 	APlay_Map* Map = SpawnActor<APlay_Map>();
 	Map->SetMapImage("SnowBros_Lv_1.png");
+	
 	Map->SetColMapImage("SnowBros_Lv_1_Col.png");
-	 Map->SwitchDebug();
+	
+	// Map->SwitchDebug();
 
 	//APlay_UIMap* UIMap = SpawnActor<APlay_UIMap>();
 	//UIMap->SetMapImage("SnowBros_UI.png");
