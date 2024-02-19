@@ -30,15 +30,17 @@ void APlay_Player::BeginPlay()
 	{
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		Renderer->SetImage("SnowBros_Run_R.png");
+		Renderer->SetImage("SnowBros_Run_L.png");
+		Renderer->SetImage("SnowBros_Jump_R.png");
 		Renderer->SetTransform({ {0,0}, {64, 128} });
-		Renderer->CreateAnimation("Idle_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Idle_Left", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
+		Renderer->CreateAnimation("Idle_Left", "SnowBros_Idle_L.png", 0, 0, 1.0f, true);
 		
-		Renderer->CreateAnimation("Move_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
-		Renderer->CreateAnimation("Move_Left", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		Renderer->CreateAnimation("Run_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
+		Renderer->CreateAnimation("Run_Left", "SnowBros_Run_L.png", 0, 3, 0.1f, true);
 
-		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.1f, true);
-		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 12, 0.1f, true);
+		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
+		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Jump_R.png", 0, 0, 0.1f, true);
 
@@ -59,11 +61,11 @@ void APlay_Player::DirCheck()
 {
 	EActorDir Dir = DirState;
 
-	if (UEngineInput::IsPress(VK_LEFT))
+	if (UEngineInput::IsDown(VK_LEFT))
 	{
 		Dir = EActorDir::Left;
 	}
-	if (UEngineInput::IsPress(VK_RIGHT))
+	if (UEngineInput::IsDown(VK_RIGHT))
 	{
 		Dir = EActorDir::Right;
 	}
@@ -81,6 +83,15 @@ void APlay_Player::DirCheck()
 	}
 }
 
+
+void APlay_Player::Tick(float _DeltaTime)
+{
+	AActor::Tick(_DeltaTime);
+
+
+
+	StateUpdate(_DeltaTime);
+}
 
 
 std::string APlay_Player::GetAnimationName(std::string _Name)
@@ -118,7 +129,7 @@ void APlay_Player::StateChange(EPlayState _State)
 			IdleStart();
 			break;
 		case EPlayState::Run:
-			MoveStart();
+			RunStart();
 			break;
 		case EPlayState::Jump:
 			JumpStart();
@@ -143,9 +154,9 @@ void APlay_Player::IdleStart()
 	DirCheck();
 }
 
-void APlay_Player::MoveStart()
+void APlay_Player::RunStart()
 {
-	Renderer->ChangeAnimation(GetAnimationName("Move"));
+	Renderer->ChangeAnimation(GetAnimationName("Run"));
 	DirCheck();
 }
 
@@ -211,6 +222,7 @@ void APlay_Player::Idle(float _DeltaTime)
 		return;
 	}
 
+	//JumpVector = FVector::Zero;
 
 	MoveUpdate(_DeltaTime);
 
@@ -221,58 +233,62 @@ void APlay_Player::Idle(float _DeltaTime)
 void APlay_Player::Run(float _DeltaTime)
 {
 	DirCheck();
-	MoveUpdate(_DeltaTime);
+	
+
 	
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
 	if (true == UEngineInput::IsFree(VK_LEFT) 
-		&& UEngineInput::IsFree(VK_RIGHT))
+		&& true == UEngineInput::IsFree(VK_RIGHT)
+		&& true == UEngineInput::IsFree(VK_LSHIFT))
 	{
 		StateChange(EPlayState::Idle);
+		//MoveUpdate(_DeltaTime);
 		return;
 	}
 
-	// Run상태에서 Jump키 누르는 순간 변경
+	//뛰는 동안에 점프키 누르면 점프
 	if (true == UEngineInput::IsDown(VK_LSHIFT))
 	{
 		StateChange(EPlayState::Jump);
-		return;
+		return;		
 	}
-
 
 	//방향키 누르는 방향으로 전진 - 가속도 필요없음
-	if (UEngineInput::IsPress(VK_LEFT))
+	if (true==UEngineInput::IsPress(VK_LEFT))
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);
+		//return;
 	}
 
-	if (UEngineInput::IsPress(VK_RIGHT))
+	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		AddMoveVector(FVector::Right * _DeltaTime);
+		AddMoveVector(FVector::Right*_DeltaTime);	
 	}
-
-
+	
+	MoveUpdate(_DeltaTime);
 
 	FVector CheckPos = GetActorLocation();
+	
 	switch (DirState)
 	{
 	case EActorDir::Left:
-		CheckPos.X -= 30;
+		CheckPos.X -= 15;
 		break;
 	case EActorDir::Right:
-		CheckPos.X += 30;
+		CheckPos.X += 15;
 		break;
 	default:
 		break;
 	}
-	CheckPos.Y -= 30;
+	CheckPos.Y -= 15;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	if (Color != Color8Bit(0, 255, 255, 0))
+	if (Color != Color8Bit(0, 255, 255, 0)) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
 	{
 		AddActorLocation(MoveVector); /// 이거 잘봐!!
-		//GetWorld()->AddCameraPos(MovePos);
+		return;
 	}
 
-	MoveUpdate(_DeltaTime);
+	//MoveUpdate(_DeltaTime);
 }
 
 
@@ -280,6 +296,7 @@ void APlay_Player::Run(float _DeltaTime)
 
 void APlay_Player::Jump(float _DeltaTime)
 {
+
 	FVector JumpPos;
 
 	if (true == UEngineInput::IsFree(VK_LSHIFT)
@@ -290,46 +307,55 @@ void APlay_Player::Jump(float _DeltaTime)
 		StateChange(EPlayState::Idle);
 		return;
 	}
-	if (UEngineInput::IsPress(VK_LEFT))
+
+
+	if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		AddMoveVector(FVector::Left * _DeltaTime);
+		StateChange(EPlayState::Idle);
+		
+		return;
 	}
-		if (UEngineInput::IsPress(VK_RIGHT))
+
+
+
+	if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown(VK_LSHIFT))
 	{
-		AddMoveVector(FVector::Right * _DeltaTime);
+		StateChange(EPlayState::Run);
+		JumpPower = FVector::Zero;
+		return;
+		//AddMoveVector(FVector::Left * _DeltaTime);
+	}
+	if (UEngineInput::IsPress(VK_RIGHT) && UEngineInput::IsDown(VK_LSHIFT))
+	{
+		StateChange(EPlayState::Run);
+		JumpPower = FVector::Zero;
+		return; 
+		//AddMoveVector(FVector::Right * _DeltaTime);
 	}
 
 
-
+	MoveUpdate(_DeltaTime);
 
 
 	if (UEngineInput::IsDown(VK_LSHIFT))
 	{
-	
-		JumpPos =  JumpPower;
-		CalGravityVector(_DeltaTime);
-		// 수정 필요
-		AddActorLocation(JumpPos);
-		if (UEngineInput::IsUp(VK_LSHIFT))
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+		//FVector ColPos = USnowBros_Helper::ActorPos->GetActorLocation(); // 플레이어의 위치와  Colmap의 위치를 비교해보자
+		if (Color == Color8Bit(0, 255, 255, 0))
 		{
-			JumpPos = FVector::Zero;
+			JumpPower = FVector::Zero;
 			StateChange(EPlayState::Idle);
+			//return;
 		}
 
-	}
+		JumpVector = JumpPower;
 
+		CalGravityVector(_DeltaTime);
+		// 수정 필요
+
+	}
+	//JumpPos = FVector::Zero;
 	MoveUpdate(_DeltaTime);
-			
-		
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		JumpPos = FVector::Zero;
-	//	JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
-	}
-
 
 }
 
@@ -337,7 +363,8 @@ void APlay_Player::Jump(float _DeltaTime)
 
 
 void APlay_Player::DownJump(float _DeltaTime)
-{// Down키 + Jump키  = 아래단으로 내려가기 => 그 순간에만 바닥 충돌 컬러 바꾸면 되나!?
+{
+	// Down키 + Jump키  = 아래단으로 내려가기 => 그 순간에만 바닥 충돌 컬러 바꾸면 되나!?
 
 	DirCheck();
 
@@ -351,14 +378,7 @@ void APlay_Player::DownJump(float _DeltaTime)
 	}
 
 
-	FVector MovePos;
-
-	
-
-
 }
-
-
 
 
 
@@ -368,6 +388,7 @@ void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로
 
 	MoveVector = _DirDelta * MoveAcc;
 }
+
 
 void APlay_Player::CalMoveVector(float _DeltaTime)
 {
@@ -385,7 +406,7 @@ void APlay_Player::CalMoveVector(float _DeltaTime)
 	default:
 		break;
 	}
-	CheckPos.Y -= 30;
+	CheckPos.Y -= 32.0f;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 
 	if (Color == Color8Bit(0, 255, 255, 0))
@@ -393,6 +414,10 @@ void APlay_Player::CalMoveVector(float _DeltaTime)
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 	}
 
+	if (true == UEngineInput::IsFree(VK_LEFT) && true == UEngineInput::IsFree(VK_RIGHT))
+	{
+		MoveVector = FVector::Zero;
+	}
 
 }
 
@@ -403,7 +428,8 @@ void APlay_Player::CalJumpVector(float _DeltaTime)
 
 void APlay_Player::CalGravityVector(float _DeltaTime)
 {
-	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
+	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. \
+
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
@@ -426,8 +452,8 @@ void APlay_Player::CalLastMoveVector(float _DeltaTime)
 	// 제로로 만들어서 초기화 시킨다.
 	LastMoveVector = FVector::Zero;
 	LastMoveVector = LastMoveVector + MoveVector;
-	LastMoveVector = LastMoveVector + JumpVector;
 	LastMoveVector = LastMoveVector + GravityVector;
+	LastMoveVector = LastMoveVector + JumpVector;
 	 // 왜 또 더해줌?
 	// 최종 위치 = x축으로 움직인 위치 + 점프+ 중력
 
@@ -441,6 +467,7 @@ void APlay_Player::MoveUpdate(float _DeltaTime)
 	CalGravityVector(_DeltaTime);
 	CalLastMoveVector(_DeltaTime);
 	CamMoveLastMoveVector(_DeltaTime);
+	
 
 	//GroundUp();
 
@@ -524,15 +551,3 @@ void APlay_Player::FreeMove(float _DeltaTime)
 }
 
 
-
-
-
-
-void APlay_Player::Tick(float _DeltaTime)
-{
-	AActor::Tick(_DeltaTime);
-
-
-
-	StateUpdate(_DeltaTime);
-}

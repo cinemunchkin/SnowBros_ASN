@@ -1,6 +1,7 @@
 #include "SnowBros_Core.h"
 #include "Level_Title.h"
 #include "Level_Play.h"
+#include "Level_End.h"
 #include <EngineBase\EngineDirectory.h>
 #include <EngineBase\EngineFile.h>
 #include <EngineCore\EngineResourcesManager.h>
@@ -48,7 +49,14 @@ void USnowBros_Core::BeginPlay()
 	
 
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Jump_R.png", 8, 1);
+
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Idle_R.png", 1, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Idle_L.png", 1, 1);
+
+
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_R.png", 4, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_L.png", 4, 1);
+
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
 
 	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
@@ -59,6 +67,9 @@ void USnowBros_Core::BeginPlay()
 	// 우리가 제공하는건 Level
 	CreateLevel<ULevel_Title>("Title");
 	CreateLevel<ULevel_Play>("Play");
+	CreateLevel<ULevel_End>("End");
+
+
 	ChangeLevel("Title");
 }
 

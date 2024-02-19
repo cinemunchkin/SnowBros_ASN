@@ -14,7 +14,7 @@ void ATitle_Map::BeginPlay()
 
 	UImageRenderer* Renderer = CreateImageRenderer();
 
-	Renderer->SetImage("Title.png");
+	Renderer->SetImage("Title_Start_01.png");
 	// 이미지가 나올 위치
 	SetActorLocation({ 720 / 2,498 / 2 });
 	Renderer->SetTransform({ {0,0}, {1440 / 2,996 / 2} });
