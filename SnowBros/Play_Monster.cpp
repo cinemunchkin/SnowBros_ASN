@@ -54,6 +54,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 	//}
 
 
+
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 
 	if (nullptr == Player)
