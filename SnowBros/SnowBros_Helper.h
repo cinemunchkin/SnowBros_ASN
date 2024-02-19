@@ -2,6 +2,7 @@
 #include <EngineBase\EngineMath.h>
 #include <EngineCore\EngineCore.h>
 #include <EngineCore\ImageRenderer.h>
+#include <EngineCore\Actor.h>
 
 enum class SnowBrosRenderOrder
 {
@@ -47,6 +48,7 @@ class USnowBros_Helper
 {
 public:
 	static UWindowImage* ColMapImage;
+	//static AActor* ActorPos; 
 	static FVector GetMousePos();
 
 private:
