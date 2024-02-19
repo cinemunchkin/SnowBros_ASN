@@ -32,7 +32,7 @@ public:
 		Transform = _Value;
 	}
 
-	FTransform GetTransform() /*const*/ // 이거 붙여도 되나 -> 물어보기!!!
+	FTransform GetTransform()
 	{
 		return Transform;
 	}
