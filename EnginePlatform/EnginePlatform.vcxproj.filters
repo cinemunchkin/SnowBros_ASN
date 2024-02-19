@@ -7,38 +7,27 @@
     <Filter Include="Window">
       <UniqueIdentifier>{0c30e8fe-edfa-4cd9-baa8-9be3627dda8b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ThirdParty">
-      <UniqueIdentifier>{e353e444-461f-4799-8599-4c6cf40f7205}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\FMOD">
-      <UniqueIdentifier>{580dc89b-f788-453b-80fb-c4a9cd787c72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\FMOD\inc">
-      <UniqueIdentifier>{aa2db331-71bb-4b6e-9a40-7cc3f2d20627}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\FMOD\Debug">
-      <UniqueIdentifier>{a4c5c074-2f2a-48aa-9a5e-759dfeb26717}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\FMOD\Release">
-      <UniqueIdentifier>{85169c43-9dcb-4d36-bc54-971b82e46927}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="UEngineInput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
     <ClCompile Include="WindowImage.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="EngineInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="UEngineInput.h">
+      <Filter>Input</Filter>
+    </ClInclude>
     <ClInclude Include="WindowImage.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="EngineInput.h" />
   </ItemGroup>
 </Project>
