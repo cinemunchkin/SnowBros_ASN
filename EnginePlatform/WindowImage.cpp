@@ -338,14 +338,14 @@ void UWindowImage::TransCopy(UWindowImage* _CopyImage, const FTransform& _Trans,
 	// 이미지의 어떤 부위를 그릴지를 정해줄수가 있다.
 }
 
-void UWindowImage::AlphaCopy(UWindowImage* _CopyImage, const FTransform& _Trans, int _Index, Color8Bit _Color/*, Color8Bit::Black*/)
+void UWindowImage::AlphaCopy(UWindowImage* _CopyImage, const FTransform& _Trans, int _Index, Color8Bit _Color /*= Color8Bit::Black*/)
 {
 	if (nullptr == _CopyImage)
 	{
 		MsgBoxAssert("nullptr 인 이미지를 복사할 수 없습니다");
 	}
 
-	if (_Index >= _CopyImage->Infos.size())//인덱스 수가, CopyImage의 크기보다 클때 
+	if (_Index >= _CopyImage->Infos.size())
 	{
 		MsgBoxAssert(GetName() + "이미지 정보의 인덱스를 오버하여 사용했습니다");
 	}

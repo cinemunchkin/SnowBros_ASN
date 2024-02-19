@@ -18,13 +18,16 @@ void ULevel_Play::BeginPlay()
 
 	APlay_Map* Map = SpawnActor<APlay_Map>();
 	Map->SetMapImage("SnowBros_Lv_1.png");
+	
 	Map->SetColMapImage("SnowBros_Lv_1_Col.png");
 	
 	// Map->SwitchDebug();
 
 	//APlay_UIMap* UIMap = SpawnActor<APlay_UIMap>();
 	//UIMap->SetMapImage("SnowBros_UI.png");
- 
+	 {
+		// APlay_Map* Map = SpawnActor<APlay_Map>();
+	 }
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
 		 Player->SetActorLocation({ 100, 300 });
@@ -46,16 +49,6 @@ void ULevel_Play::BeginPlay()
 void ULevel_Play::Tick(float _DeltaTime)
 {
 	ULevel::Tick(_DeltaTime);
-
-	if (UEngineInput::IsDown('E'))
-	{
-		GEngine->ChangeLevel("End");
-	
-
-	}
-
-	
-
 }
 
 void ULevel_Play::LevelStart(ULevel* _Level)

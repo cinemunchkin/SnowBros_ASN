@@ -17,9 +17,9 @@ void APlay_Monster::BeginPlay()
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
-		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
+		MonsterRenderer->SetTransform({ {0,0}, {32, 32} });
 		MonsterRenderer->SetImage("Monster_01.png");
-		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0,5, 0.05f, true);
+		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0,5, 0.1f, true);
 		StateChange(EPlayState::Idle);
 	}
 
@@ -52,7 +52,6 @@ void APlay_Monster::Tick(float _DeltaTime)
 
 	//	Destroy();
 	//}
-
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();

@@ -30,8 +30,6 @@ void ULevel_Title::Tick(float _DeltaTime)
 		GEngine->ChangeLevel("Play");
 	}
 
-
-	
 }
 void ULevel_Title::LevelStart(ULevel* _Level)
 {

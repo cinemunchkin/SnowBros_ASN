@@ -38,10 +38,7 @@ void APlay_Map::Tick(float _DeltaTime)
 	if (UEngineInput::IsDown('O'))
 	{
 		SwitchDebug();
-		
 	}
-
-
 }
 
 

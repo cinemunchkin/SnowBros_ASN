@@ -1,9 +1,8 @@
 #pragma once
 #include <EngineCore\Level.h>
-#include <EngineCore\Actor.h>
 
 // Ό³Έν :
-class ULevel_Play : public ULevel, public AActor
+class ULevel_Play : public ULevel
 {
 public:
 	// constrcuter destructer

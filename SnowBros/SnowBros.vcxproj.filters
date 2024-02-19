@@ -2,98 +2,63 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Level_Title.h">
-      <Filter>SnowBros_Object\Level_Title</Filter>
+      <Filter>Object\Level_Title</Filter>
     </ClInclude>
     <ClInclude Include="Level_Play.h">
-      <Filter>SnowBros_Object\Level_Play</Filter>
+      <Filter>Object\Level_Play</Filter>
     </ClInclude>
     <ClInclude Include="Play_Map.h">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
     <ClInclude Include="Title_Map.h">
-      <Filter>SnowBros_Object\Level_Title\Actor_Level_Title</Filter>
+      <Filter>Object\Level_Title\Actor_Level_Title</Filter>
     </ClInclude>
     <ClInclude Include="Play_Player.h">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
+    <ClInclude Include="SnowBros_Core.h" />
+    <ClInclude Include="SnowBros_Helper.h" />
     <ClInclude Include="Play_Monster.h">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
-    </ClInclude>
-    <ClInclude Include="Play_Actor_Core.h">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
-    </ClInclude>
-    <ClInclude Include="Ending_Map.h">
-      <Filter>SnowBros_Object\Level_End\Actor_Level_End</Filter>
-    </ClInclude>
-    <ClInclude Include="Level_End.h">
-      <Filter>SnowBros_Object\Level_End</Filter>
-    </ClInclude>
-    <ClInclude Include="SnowBros_Core.h">
-      <Filter>SnowBros_Core</Filter>
-    </ClInclude>
-    <ClInclude Include="SnowBros_Helper.h">
-      <Filter>SnowBros_Core</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level_Title.cpp">
-      <Filter>SnowBros_Object\Level_Title</Filter>
+      <Filter>Object\Level_Title</Filter>
     </ClCompile>
     <ClCompile Include="Level_Play.cpp">
-      <Filter>SnowBros_Object\Level_Play</Filter>
+      <Filter>Object\Level_Play</Filter>
     </ClCompile>
     <ClCompile Include="Play_Map.cpp">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
     <ClCompile Include="Title_Map.cpp">
-      <Filter>SnowBros_Object\Level_Title\Actor_Level_Title</Filter>
+      <Filter>Object\Level_Title\Actor_Level_Title</Filter>
     </ClCompile>
     <ClCompile Include="Play_Player.cpp">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
+    <ClCompile Include="SnowBros_Core.cpp" />
+    <ClCompile Include="SnowBros_Helper.cpp" />
     <ClCompile Include="Play_Monster.cpp">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
-    </ClCompile>
-    <ClCompile Include="Play_Actor_Core.cpp">
-      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
-    </ClCompile>
-    <ClCompile Include="Ending_Map.cpp">
-      <Filter>SnowBros_Object\Level_End\Actor_Level_End</Filter>
-    </ClCompile>
-    <ClCompile Include="Level_End.cpp">
-      <Filter>SnowBros_Object\Level_End</Filter>
-    </ClCompile>
-    <ClCompile Include="SnowBros_Core.cpp">
-      <Filter>SnowBros_Core</Filter>
-    </ClCompile>
-    <ClCompile Include="SnowBros_Helper.cpp">
-      <Filter>SnowBros_Core</Filter>
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="SnowBros_Object">
+    <Filter Include="Object">
       <UniqueIdentifier>{56336e28-143b-4284-8d13-28e7d87fa6b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SnowBros_Object\Level_Title">
+    <Filter Include="Object\Level_Title">
       <UniqueIdentifier>{5b78fee0-f7ca-43ee-b33e-f591550b581c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SnowBros_Object\Level_Title\Actor_Level_Title">
+    <Filter Include="Object\Level_Title\Actor_Level_Title">
       <UniqueIdentifier>{cf686fa8-189e-444e-a88c-f2a87c16995b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SnowBros_Object\Level_Play">
+    <Filter Include="Object\Level_Play">
       <UniqueIdentifier>{9d33b6d2-d7d2-4993-ae09-b7370938df8c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SnowBros_Object\Level_Play\Actor_Level_Play">
+    <Filter Include="Object\Level_Play\Actor_Level_Play">
       <UniqueIdentifier>{5e1154ab-6cdf-46bd-884c-0e944d46d0ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SnowBros_Object\Level_End">
-      <UniqueIdentifier>{5dc56c5b-c47a-4980-bd7d-87a3139339de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SnowBros_Object\Level_End\Actor_Level_End">
-      <UniqueIdentifier>{1168f7c8-bf2f-4d54-96d4-6d088fc60f83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SnowBros_Core">
-      <UniqueIdentifier>{e3615f62-e6ef-42b1-a296-03b9dde171bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
