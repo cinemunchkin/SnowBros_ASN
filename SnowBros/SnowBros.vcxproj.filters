@@ -21,6 +21,15 @@
     <ClInclude Include="Play_Monster.h">
       <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
+    <ClInclude Include="Play_Actor_Core.h">
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending_Map.h">
+      <Filter>Object\Level_End\Actor_Level_End</Filter>
+    </ClInclude>
+    <ClInclude Include="Level_End.h">
+      <Filter>Object\Level_End</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level_Title.cpp">
@@ -43,6 +52,15 @@
     <ClCompile Include="Play_Monster.cpp">
       <Filter>Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
+    <ClCompile Include="Play_Actor_Core.cpp">
+      <Filter>Object\Level_Play\Actor_Level_Play</Filter>
+    </ClCompile>
+    <ClCompile Include="Ending_Map.cpp">
+      <Filter>Object\Level_End\Actor_Level_End</Filter>
+    </ClCompile>
+    <ClCompile Include="Level_End.cpp">
+      <Filter>Object\Level_End</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Object">
@@ -59,6 +77,12 @@
     </Filter>
     <Filter Include="Object\Level_Play\Actor_Level_Play">
       <UniqueIdentifier>{5e1154ab-6cdf-46bd-884c-0e944d46d0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Level_End">
+      <UniqueIdentifier>{5dc56c5b-c47a-4980-bd7d-87a3139339de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Level_End\Actor_Level_End">
+      <UniqueIdentifier>{1168f7c8-bf2f-4d54-96d4-6d088fc60f83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

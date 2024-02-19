@@ -280,6 +280,7 @@ void APlay_Player::Run(float _DeltaTime)
 
 void APlay_Player::Jump(float _DeltaTime)
 {
+	//MoveUpdate(_DeltaTime);
 	FVector JumpPos;
 
 	if (true == UEngineInput::IsFree(VK_LSHIFT)
@@ -290,11 +291,11 @@ void APlay_Player::Jump(float _DeltaTime)
 		StateChange(EPlayState::Idle);
 		return;
 	}
-	if (UEngineInput::IsPress(VK_LEFT))
+	if (UEngineInput::IsPress(VK_LEFT)&& UEngineInput::IsDown(VK_LSHIFT))
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);
 	}
-		if (UEngineInput::IsPress(VK_RIGHT))
+		if (UEngineInput::IsPress(VK_RIGHT) && UEngineInput::IsDown(VK_LSHIFT))
 	{
 		AddMoveVector(FVector::Right * _DeltaTime);
 	}
@@ -305,30 +306,31 @@ void APlay_Player::Jump(float _DeltaTime)
 
 	if (UEngineInput::IsDown(VK_LSHIFT))
 	{
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			JumpPos = FVector::Zero;
+			StateChange(EPlayState::Idle);
+			return;
+		}
 	
 		JumpPos =  JumpPower;
 		CalGravityVector(_DeltaTime);
 		// 수정 필요
-		AddActorLocation(JumpPos);
-		if (UEngineInput::IsUp(VK_LSHIFT))
-		{
-			JumpPos = FVector::Zero;
-			StateChange(EPlayState::Idle);
-		}
 
 	}
-
+	JumpPos = FVector::Zero;
 	MoveUpdate(_DeltaTime);
 			
 		
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		JumpPos = FVector::Zero;
-	//	JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
-	}
+	//Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	//if (Color == Color8Bit(0, 255, 255, 0))
+	//{
+	//	JumpPos = FVector::Zero;
+	////	JumpVector = FVector::Zero;
+	//	StateChange(EPlayState::Idle);
+	//	return;
+	//}
 
 
 }
