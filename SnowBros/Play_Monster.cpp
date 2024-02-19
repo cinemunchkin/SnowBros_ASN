@@ -17,9 +17,9 @@ void APlay_Monster::BeginPlay()
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
-		MonsterRenderer->SetTransform({ {0,0}, {32, 32} });
+		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
 		MonsterRenderer->SetImage("Monster_01.png");
-		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0,5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0,5, 0.05f, true);
 		StateChange(EPlayState::Idle);
 	}
 
