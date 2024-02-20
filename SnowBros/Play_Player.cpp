@@ -307,6 +307,13 @@ void APlay_Player::Jump(float _DeltaTime)
 		return;
 	}
 
+	if (true == UEngineInput::IsUp(VK_LSHIFT))
+	{
+		JumpVector = FVector::Zero;
+		MoveUpdate(_DeltaTime);
+		//return;
+
+	}
 
 	if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 	{
