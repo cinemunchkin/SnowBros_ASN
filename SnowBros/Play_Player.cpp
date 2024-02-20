@@ -345,7 +345,7 @@ void APlay_Player::Jump(float _DeltaTime)
 
 		JumpVector = JumpPower;
 
-		CalGravityVector(_DeltaTime);
+		//CalGravityVector(_DeltaTime);
 		// 수정 필요
 
 	}
