@@ -50,7 +50,11 @@ void ULevel_Play::Tick(float _DeltaTime)
 	if (UEngineInput::IsDown('E'))
 	{
 		GEngine->ChangeLevel("End");
+<<<<<<< HEAD
 	
+=======
+		
+>>>>>>> ..
 
 	}
 
