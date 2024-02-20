@@ -22,7 +22,7 @@ void USnowBros_Core::BeginPlay()
 
 	// 중요한건 크기가 아니라 비율
 	//MainWindow.SetWindowPosition({500, 100});
-	//                           1024                960
+	//                         // 배율 쉽게 조정하게 전역변수 만들기
 	MainWindow.SetWindowScale({ 1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/ });
 	MainWindow.SetWindowPosition({ 200/* * 1.5f*/, 0/* * 1.5f*/ });
 

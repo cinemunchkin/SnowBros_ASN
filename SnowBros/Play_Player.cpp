@@ -298,6 +298,15 @@ void APlay_Player::Jump(float _DeltaTime)
 {
 	FVector JumpPos;
 
+	if (true == UEngineInput::IsUp(VK_LSHIFT))
+	{
+
+		JumpVector = FVector::Zero;
+		StateChange(EPlayState::Idle);
+		MoveUpdate(_DeltaTime);
+		//return;
+
+	}
 	if (true == UEngineInput::IsFree(VK_LSHIFT)
 		&& UEngineInput::IsFree(VK_RIGHT)
 		&& UEngineInput::IsFree(VK_LEFT))
@@ -307,13 +316,6 @@ void APlay_Player::Jump(float _DeltaTime)
 		return;
 	}
 
-	if (true == UEngineInput::IsUp(VK_LSHIFT))
-	{
-		JumpVector = FVector::Zero;
-		MoveUpdate(_DeltaTime);
-		//return;
-
-	}
 
 	if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 	{
@@ -341,22 +343,22 @@ void APlay_Player::Jump(float _DeltaTime)
 	MoveUpdate(_DeltaTime);
 			
 		
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		JumpPos = FVector::Zero;
-	//	JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
-	}
+	//Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	//if (Color == Color8Bit(0, 255, 255, 0))
+	//{
+	//	JumpPos = FVector::Zero;
+	////	JumpVector = FVector::Zero;
+	//	StateChange(EPlayState::Idle);
+	//	return;
+	//}
 
-		JumpVector = JumpPower;
+		//JumpVector = JumpPower;
 
 		//CalGravityVector(_DeltaTime);
 		// 수정 필요
 
 	}
-	//JumpPos = FVector::Zero;
+	JumpPos = FVector::Zero;
 	MoveUpdate(_DeltaTime);
 
 }
