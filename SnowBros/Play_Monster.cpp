@@ -14,7 +14,6 @@ void APlay_Monster::BeginPlay()
 	
 
 	{
-
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
@@ -25,21 +24,24 @@ void APlay_Monster::BeginPlay()
 
 
 	
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 64, 64 });
-		BodyCollision->SetColType(ECollisionType::Circle);
-	
 }
 
 void APlay_Monster::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
+
+	{
+		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
+		BodyCollision->SetScale({ 100, 100 });
+		BodyCollision->SetColType(ECollisionType::Rect);
+	}
+
 	std::vector<UCollision*> Result;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, Result))
 	{
 		// 이런식으로 상대를 사용할수 있다.
-		BodyCollision->SetActive(true, 1.0f);
+		BodyCollision->SetActive(true, 0.5f);
 		// BodyCollision = nullptr;
 	}
 

@@ -25,6 +25,7 @@ void APlay_Player::BeginPlay()
 {
 	AActor::BeginPlay();
 	MainPlayer = this;  // 아오 이걸 주석처리해놔서 계속 플레이어 없음이 떴네 ..
+	
 
 
 
@@ -50,13 +51,6 @@ void APlay_Player::BeginPlay()
 
 		StateChange(EPlayState::Idle);
 	}
-	
-	{
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		BodyCollision->SetScale({ 64, 64 });
-		BodyCollision->SetColType(ECollisionType::Circle);
-	}
-
 }
 
 
@@ -93,6 +87,15 @@ void APlay_Player::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 	// 충돌 순간 = 0.0 으로 초기화 해줘야하는구나
 	
+
+	{
+		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		BodyCollision->SetScale({ 100, 100 });
+		BodyCollision->SetColType(ECollisionType::Rect);
+
+	}
+
+
 	APlay_Player::Strobe(_DeltaTime);
 
 
