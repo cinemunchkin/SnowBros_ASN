@@ -75,6 +75,8 @@ void AActor::Destroy(float _DestroyTime /*= 0.0f*/)
 	}
 }
 
+
+
 void AActor::DestroyUpdate(float _DeltaTime)
 {
 	// 부모의 함수를 호출하는게 기본이다.

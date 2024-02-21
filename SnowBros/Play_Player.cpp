@@ -173,6 +173,31 @@ void APlay_Player::DownJumpStart()
 	DirCheck();
 }
 
+void APlay_Player::Col_Strobe(float _DeltaTime)
+{
+std::vector<UCollision*> Result;
+//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
+
+
+	// 이런식으로 상대를 사용할수 있다.
+	UCollision* Collision = Result[0];
+	AActor* Ptr = Collision->GetOwner();
+	APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
+
+
+	if (nullptr == Player)
+	{
+		MsgBoxAssert("터져야겠지....");
+	}
+
+	//Destroy();
+	Strobe();
+
+
+}
+
+
+
 
 void APlay_Player::StateUpdate(float _DeltaTime)
 {
@@ -343,19 +368,17 @@ void APlay_Player::Jump(float _DeltaTime)
 	MoveUpdate(_DeltaTime);
 			
 		
-	//Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	//if (Color == Color8Bit(0, 255, 255, 0))
-	//{
-	//	JumpPos = FVector::Zero;
-	////	JumpVector = FVector::Zero;
-	//	StateChange(EPlayState::Idle);
-	//	return;
-	//}
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
+	{
+		JumpPos = FVector::Zero;
+	//	JumpVector = FVector::Zero;
+		StateChange(EPlayState::Idle);
+		return;
+	}
 
 		//JumpVector = JumpPower;
 
-		//CalGravityVector(_DeltaTime);
-		// 수정 필요
 
 	}
 	JumpPos = FVector::Zero;

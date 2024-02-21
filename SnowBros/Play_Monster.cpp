@@ -11,7 +11,7 @@ APlay_Monster::~APlay_Monster()
 void APlay_Monster::BeginPlay()
 {
 	AActor::BeginPlay();
-	//MainPlayer = this;
+	
 
 	{
 
@@ -24,34 +24,34 @@ void APlay_Monster::BeginPlay()
 	}
 
 
-	/*{
+	
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 64, 32 });
+		BodyCollision->SetScale({ 32, 32 });
 		BodyCollision->SetColType(ECollisionType::Circle);
-	}*/
+	
 }
 
 void APlay_Monster::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
-	//std::vector<UCollision*> Result;
+	std::vector<UCollision*> Result;
 	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
-	//{
+	{
 
-	//	// 이런식으로 상대를 사용할수 있다.
-	//	UCollision* Collision = Result[0];
-	//	AActor* Ptr = Collision->GetOwner();
-	//	APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
+		// 이런식으로 상대를 사용할수 있다.
+		UCollision* Collision = Result[0];
+		AActor* Ptr = Collision->GetOwner();
+		APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
 
 
-	//	if (nullptr == Player)
-	//	{
-	//		MsgBoxAssert("터져야겠지....");
-	//	}
+		if (nullptr == Player)
+		{
+			MsgBoxAssert("터져야겠지....");
+		}
 
-	//	Destroy();
-	//}
+		Destroy();
+	}
 
 
 
@@ -89,7 +89,7 @@ void APlay_Monster::DirCheck() //다시 설정 필요
 		Dir = EActorDir::Right;
 	}
 
-	/*여기에 Jump를 추가하니까, '그런 이름의 애니메이션은 없다~'라고. */
+	
 
 	if (Dir != DirState)
 	{
