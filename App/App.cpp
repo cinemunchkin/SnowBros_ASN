@@ -16,7 +16,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance, 
 	_In_ LPWSTR    lpCmdLine, 
 	_In_ int       nCmdShow) 
+
 { 
+  // D2R 사용해서 단위각도 활용한 함수 만들기
+
 	LeakCheck; 
 	USnowBros_Core NewUserCore = USnowBros_Core();
 	NewUserCore.EngineStart(hInstance);

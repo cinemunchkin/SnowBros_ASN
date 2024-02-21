@@ -1,6 +1,8 @@
 #pragma once
 #include <EngineCore\Actor.h>
+#include "Play_Physics_Core.h"
 #include "SnowBros_Helper.h"
+#include "Play_Monster.h"
 
 
 class APlay_Player : public AActor
@@ -41,15 +43,16 @@ protected:
 	// 상태 주요 업데이트
 	void StateChange(EPlayState _State);
 	void StateUpdate(float _DeltaTime);
-	void Col_Strobe(float _DeltaTime)
+	void Col_Strobe(float _DeltaTime);
 
 	// 상태 함수들
-	void CameraFreeMove(float _DeltaTime);
-	void FreeMove(float _DeltaTime);
+	//void CameraFreeMove(float _DeltaTime);
+	//void FreeMove(float _DeltaTime);
 	void Idle(float _DeltaTime);
 	void Jump(float _DeltaTime);
 	void Run(float _DeltaTime);
 	void DownJump(float _DeltaTime);
+	void Strobe(float _StrobeTime);
 	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	// 상태 시작 함수들
@@ -57,6 +60,7 @@ protected:
 	void RunStart();
 	void JumpStart();
 	void DownJumpStart();
+
 
 	EPlayState State = EPlayState::None;
 	EActorDir DirState = EActorDir::Right;
@@ -107,6 +111,7 @@ private:
 	void CalGravityVector(float _DeltaTime);
 	void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
+	void StrobeUpdate(float _DeltaTime);
 	//void GroundUp();
 
 

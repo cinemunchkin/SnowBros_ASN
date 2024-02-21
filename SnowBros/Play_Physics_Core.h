@@ -14,10 +14,20 @@ public:
 	APlay_Physics_Core& operator=(APlay_Physics_Core&& _Other) noexcept = delete;
 
 
-	void Player_Strobe(float _DestroyTime = 0.0f) override;
+	/*void Player_Strobe(float _StrobeTime);*/
+	
+	
+	/*void Strobe(float _StrobeTime = 0.0f);*/
+	
+
 
 protected:
 
 private:
+
+
+	//bool IsStrobeUpdate = false;
+	//float Strobetime = 0.0f;
+	//bool IsStrobeValue = false;
 
 };

@@ -38,6 +38,7 @@ enum class EPlayState
 	Run,
 	Jump,
 	DownJump,
+	Strobe,
 	Fly
 };
 

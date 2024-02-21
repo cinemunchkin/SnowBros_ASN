@@ -57,6 +57,10 @@ void USnowBros_Core::BeginPlay()
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_R.png", 4, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_L.png", 4, 1);
 
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Melt.png", 7, 1);
+
+	
+
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
 
 	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);

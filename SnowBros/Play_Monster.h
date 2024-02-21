@@ -49,7 +49,8 @@ protected:
 
 
 private:
-	UCollision* BodyCollision;
+	UCollision* BodyCollision= nullptr;
+
 
 
 	UImageRenderer* MonsterRenderer = nullptr;

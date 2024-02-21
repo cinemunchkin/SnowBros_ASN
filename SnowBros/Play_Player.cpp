@@ -1,7 +1,8 @@
-#include "Play_Player.h"
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
 #include "SnowBros_Helper.h"
+#include "Play_Player.h"
+#include "Play_Physics_Core.h"
 
 APlay_Player::APlay_Player()
 {
@@ -32,6 +33,8 @@ void APlay_Player::BeginPlay()
 		Renderer->SetImage("SnowBros_Run_R.png");
 		Renderer->SetImage("SnowBros_Run_L.png");
 		Renderer->SetImage("SnowBros_Jump_R.png");
+		Renderer->SetImage("SnowBros_Melt.png");
+
 		Renderer->SetTransform({ {0,0}, {64, 128} });
 		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
 		Renderer->CreateAnimation("Idle_Left", "SnowBros_Idle_L.png", 0, 0, 1.0f, true);
@@ -42,7 +45,8 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		
-		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Jump_R.png", 0, 0, 0.1f, true);
+		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
+		
 
 		StateChange(EPlayState::Idle);
 	}
@@ -87,12 +91,105 @@ void APlay_Player::DirCheck()
 void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
+	// 충돌 순간 = 0.0 으로 초기화 해줘야하는구나
+	
+	APlay_Player::Strobe(_DeltaTime);
 
+
+	//std::vector<UCollision*> Result;
+	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
+	//{
+
+	//	
+	//	UCollision* CollisionPlay = Result[0];
+	//
+
+	//	if (_DeltaTime < 0.5f)
+	//	{
+	//		APlay_Player::Strobe(_DeltaTime);
+	//	}
+	//	else
+	//	{
+	//		StateChange(EPlayState::Idle);
+	//	}
+
+	//}
+
+
+
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+
+	if (nullptr == Player)
+	{
+		MsgBoxAssert("플레이어가 존재하지 않습니다.");
+	}
+
+	FVector PlayerPos = Player->GetActorLocation();
+	
 
 
 	StateUpdate(_DeltaTime);
 }
 
+
+
+
+void APlay_Player::Strobe(float _StrobeTime)
+{
+	StrobeUpdate(_StrobeTime);
+
+	//IsStrobeUpdate = false;
+	float Strobetime = _StrobeTime;
+	//if -> 0초보다 크면, 점점 줄어들고 그동안 깜빡
+	//if (0.0f <= _StrobeTime)
+	//{
+	//	for (_StrobeTime; _StrobeTime == 0.0f; _StrobeTime--)
+	//	{
+	//		StrobeUpdate(_StrobeTime);
+	//		//깜빡거리는거지 
+	//	}
+	//}
+	//else
+	//{
+	//	APlay_Player::StateChange(EPlayState::Idle);
+	//}
+}
+
+
+void APlay_Player::StrobeUpdate(float _DeltaTime)
+{
+
+	AlphaTime += _DeltaTime;
+
+	if (0.1f <= AlphaTime)
+	{
+		Dir = !Dir;
+		AlphaTime = 0.0f;
+	}
+
+	if (true == Dir)
+	{
+		Renderer->SetAlpha(AlphaTime);
+	}
+
+	else
+	{
+		Renderer->SetAlpha(0.5f - AlphaTime);
+	}
+
+	if(AlphaTime > 5.0f)
+	{
+		Renderer->ChangeAnimation(GetAnimationName("Idle"));
+
+
+		/*StateChange(EPlayState::Idle);*/
+	
+				
+	}
+
+
+
+}
 
 std::string APlay_Player::GetAnimationName(std::string _Name)
 {
@@ -137,6 +234,7 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::DownJump:
 			DownJumpStart();
 			break;
+	
 		default:
 			break;
 		}
@@ -173,28 +271,6 @@ void APlay_Player::DownJumpStart()
 	DirCheck();
 }
 
-void APlay_Player::Col_Strobe(float _DeltaTime)
-{
-std::vector<UCollision*> Result;
-//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
-
-
-	// 이런식으로 상대를 사용할수 있다.
-	UCollision* Collision = Result[0];
-	AActor* Ptr = Collision->GetOwner();
-	APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
-
-
-	if (nullptr == Player)
-	{
-		MsgBoxAssert("터져야겠지....");
-	}
-
-	//Destroy();
-	Strobe();
-
-
-}
 
 
 
@@ -204,10 +280,10 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 	switch (State)
 	{
 	case EPlayState::CameraFreeMove: //안씀
-		CameraFreeMove(_DeltaTime);
+		//CameraFreeMove(_DeltaTime);
 		break;
 	case EPlayState::FreeMove: //안씀
-		FreeMove(_DeltaTime);
+		//FreeMove(_DeltaTime);
 		break;
 	case EPlayState::Idle:
 		Idle(_DeltaTime);
@@ -409,6 +485,8 @@ void APlay_Player::DownJump(float _DeltaTime)
 
 
 
+
+
 void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {
 
@@ -512,69 +590,69 @@ APlay_Player* APlay_Player::GetMainPlayer()
 
 //////////////////
 
-
-void APlay_Player::CameraFreeMove(float _DeltaTime)
-{
-	if (UEngineInput::IsPress(VK_LEFT))
-	{
-		GetWorld()->AddCameraPos(FVector::Left * _DeltaTime * 500.0f);
-		// AddActorLocation(FVector::Left * _DeltaTime * 500.0f);
-	}
-
-	if (UEngineInput::IsPress(VK_RIGHT))
-	{
-		GetWorld()->AddCameraPos(FVector::Right * _DeltaTime * 500.0f);
-	}
-
-	if (UEngineInput::IsPress(VK_UP))
-	{
-		GetWorld()->AddCameraPos(FVector::Up * _DeltaTime * 500.0f);
-		// AddActorLocation(FVector::Up * _DeltaTime * 500.0f);
-	}
-
-	if (UEngineInput::IsPress(VK_DOWN))
-	{
-		GetWorld()->AddCameraPos(FVector::Down * _DeltaTime * 500.0f);
-		// AddActorLocation(FVector::Down * _DeltaTime * 500.0f);
-	}
-
-	if (UEngineInput::IsDown('2'))
-	{
-		StateChange(EPlayState::Idle);
-	}
-}
-
-void APlay_Player::FreeMove(float _DeltaTime)
-{
-	FVector MovePos;
-
-	if (UEngineInput::IsPress(VK_LEFT))
-	{
-		MovePos += FVector::Left * _DeltaTime * FreeMoveSpeed;
-	}
-
-	if (UEngineInput::IsPress(VK_RIGHT))
-	{
-		MovePos += FVector::Right * _DeltaTime * FreeMoveSpeed;
-	}
-
-	if (UEngineInput::IsPress(VK_UP))
-	{
-		MovePos += FVector::Up * _DeltaTime * FreeMoveSpeed;
-	}
-
-	if (UEngineInput::IsPress(VK_DOWN))
-	{
-		MovePos += FVector::Down * _DeltaTime * FreeMoveSpeed;
-	}
-
-	AddActorLocation(MovePos);
-	GetWorld()->AddCameraPos(MovePos);
-
-	if (UEngineInput::IsDown('1'))
-	{
-		StateChange(EPlayState::Idle);
-	}
-}
-
+//
+//void APlay_Player::CameraFreeMove(float _DeltaTime)
+//{
+//	if (UEngineInput::IsPress(VK_LEFT))
+//	{
+//		GetWorld()->AddCameraPos(FVector::Left * _DeltaTime * 500.0f);
+//		// AddActorLocation(FVector::Left * _DeltaTime * 500.0f);
+//	}
+//
+//	if (UEngineInput::IsPress(VK_RIGHT))
+//	{
+//		GetWorld()->AddCameraPos(FVector::Right * _DeltaTime * 500.0f);
+//	}
+//
+//	if (UEngineInput::IsPress(VK_UP))
+//	{
+//		GetWorld()->AddCameraPos(FVector::Up * _DeltaTime * 500.0f);
+//		// AddActorLocation(FVector::Up * _DeltaTime * 500.0f);
+//	}
+//
+//	if (UEngineInput::IsPress(VK_DOWN))
+//	{
+//		GetWorld()->AddCameraPos(FVector::Down * _DeltaTime * 500.0f);
+//		// AddActorLocation(FVector::Down * _DeltaTime * 500.0f);
+//	}
+//
+//	if (UEngineInput::IsDown('2'))
+//	{
+//		StateChange(EPlayState::Idle);
+//	}
+//}
+//
+//void APlay_Player::FreeMove(float _DeltaTime)
+//{
+//	FVector MovePos;
+//
+//	if (UEngineInput::IsPress(VK_LEFT))
+//	{
+//		MovePos += FVector::Left * _DeltaTime * FreeMoveSpeed;
+//	}
+//
+//	if (UEngineInput::IsPress(VK_RIGHT))
+//	{
+//		MovePos += FVector::Right * _DeltaTime * FreeMoveSpeed;
+//	}
+//
+//	if (UEngineInput::IsPress(VK_UP))
+//	{
+//		MovePos += FVector::Up * _DeltaTime * FreeMoveSpeed;
+//	}
+//
+//	if (UEngineInput::IsPress(VK_DOWN))
+//	{
+//		MovePos += FVector::Down * _DeltaTime * FreeMoveSpeed;
+//	}
+//
+//	AddActorLocation(MovePos);
+//	GetWorld()->AddCameraPos(MovePos);
+//
+//	if (UEngineInput::IsDown('1'))
+//	{
+//		StateChange(EPlayState::Idle);
+//	}
+//}
+//
 

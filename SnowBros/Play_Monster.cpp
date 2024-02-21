@@ -15,7 +15,7 @@ void APlay_Monster::BeginPlay()
 
 	{
 
-		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
+		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
 		MonsterRenderer->SetImage("Monster_01.png");
@@ -26,7 +26,7 @@ void APlay_Monster::BeginPlay()
 
 	
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 32, 32 });
+		BodyCollision->SetScale({ 64, 64 });
 		BodyCollision->SetColType(ECollisionType::Circle);
 	
 }
@@ -36,21 +36,11 @@ void APlay_Monster::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 
 	std::vector<UCollision*> Result;
-	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, Result))
 	{
-
 		// 이런식으로 상대를 사용할수 있다.
-		UCollision* Collision = Result[0];
-		AActor* Ptr = Collision->GetOwner();
-		APlay_Player* Player = dynamic_cast<APlay_Player*>(Ptr); //다운캐스트 한 꼴
-
-
-		if (nullptr == Player)
-		{
-			MsgBoxAssert("터져야겠지....");
-		}
-
-		Destroy();
+		BodyCollision->SetActive(true, 1.0f);
+		// BodyCollision = nullptr;
 	}
 
 
