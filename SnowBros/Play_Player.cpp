@@ -46,6 +46,9 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
+
+		Renderer->CreateAnimation("Attack_Right", "SnowBros_Melt.png", 0, 6, 0.1f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 		
 
 		StateChange(EPlayState::Idle);
@@ -220,34 +223,82 @@ std::string APlay_Player::GetAnimationName(std::string _Name)
 
 
 void APlay_Player::StateChange(EPlayState _State)
-{
-
+{ // 애니메이션용
+	
 	if (State != _State)
 	{
 		switch (_State)
 		{
-		case EPlayState::Idle:
+		case EPlayState::Idle: // 가만히
 			IdleStart();
 			break;
-		case EPlayState::Run:
+		case EPlayState::Run: // 달리기
 			RunStart();
 			break;
-		case EPlayState::Jump:
+		case EPlayState::Jump: //위로 점프
 			JumpStart();
 			break;
-		case EPlayState::DownJump:
+		case EPlayState::DownJump: // 아래로 점프
 			DownJumpStart();
 			break;
-		case EPlayState::Attack:
+		case EPlayState::Attack: // 공격
 			AttackStart();
 			break;
-			
+		case EPlayState::Strobe: // 공격받으면 깜빡깜빡
+			StrobeStart();
+			break;
+		case EPlayState::FastRun: // 포션먹고 빨리달리기
+			FastRunStart();
+			break;
+		
+		case EPlayState::Fly: // Stage이동할 때 날기
+			FlyStart();
+			break;
+				
 		default:
 			break;
 		}
 	}
 
 	State = _State;
+
+
+}
+
+void APlay_Player::StateUpdate(float _DeltaTime)
+{ // 함수용
+	switch (State)
+	{
+	case EPlayState::CameraFreeMove: //안씀
+		//CameraFreeMove(_DeltaTime);
+		break;
+	case EPlayState::FreeMove: //안씀
+		//FreeMove(_DeltaTime);
+		break;
+	case EPlayState::Idle: // 가만히
+		Idle(_DeltaTime);
+		break;
+	case EPlayState::Run: //달리기
+		Run(_DeltaTime);
+		break;
+	case EPlayState::FastRun: // 포션먹고빠르게달리기
+		FastRun(_DeltaTime);
+		break;
+	case EPlayState::Jump: // 위로 점프
+		Jump(_DeltaTime);
+		break;
+	case EPlayState::DownJump: //아래로 점프
+		DownJump(_DeltaTime);
+		break;
+	case EPlayState::Attack: // 기본 공격
+		Attack(_DeltaTime);
+		break;
+	case EPlayState::Strobe: // 충돌시 깜빡깜빡
+		Strobe(_DeltaTime);
+		break;
+	default:
+		break;
+	}
 
 
 }
@@ -279,74 +330,77 @@ void APlay_Player::DownJumpStart()
 }
 
 
-void APlay_Player::AttackStart()
+void APlay_Player::FastRunStart()
 {
-	Renderer->ChangeAnimation(GetAnimationName("Attack"));
-	Fire_Bullet();
+	Renderer->ChangeAnimation(GetAnimationName("FastRun"));
 	DirCheck();
 
 }
 
-void APlay_Player::Fire_Bullet()
+
+void APlay_Player::StrobeStart()
 {
-
-	BulletFired();
-	
-
-// APlay_Bullet::BulletFired실행만 만들기 
-
+	Renderer->ChangeAnimation(GetAnimationName("Strobe"));
+	DirCheck();
 
 }
 
-void APlay_Player::StateUpdate(float _DeltaTime)
-{
-	switch (State)
-	{
-	case EPlayState::CameraFreeMove: //안씀
-		//CameraFreeMove(_DeltaTime);
-		break;
-	case EPlayState::FreeMove: //안씀
-		//FreeMove(_DeltaTime);
-		break;
-	case EPlayState::Idle:
-		Idle(_DeltaTime);
-		break;
-	case EPlayState::Run:
-		Run(_DeltaTime);
-		break;
-	case EPlayState::Jump:
-		Jump(_DeltaTime);
-		break;
-	case EPlayState::DownJump:
-		DownJump(_DeltaTime);
-		break;
-	default:
-		break;
-	}
 
+void APlay_Player::FlyStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("Fly"));
 
 }
+
+void APlay_Player::AttackStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("Attack"));
+	//Fire_Bullet();
+	DirCheck();
+
+	/*
+	if (Player->DirState == EActorDir::Right)
+		{
+			this->SetBulletDir(FVector::Right);
+		}
+		else
+		{
+			return;
+		}
+	*/
+
+}
+
+
+
+
+
 
 
 void APlay_Player::Idle(float _DeltaTime)
 {
-
+	//Idle상태에서
+	///방향키를 누르면 왼/오 이동
 	if (true == UEngineInput::IsPress(VK_LEFT) ||
 		true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		StateChange(EPlayState::Run);
 		return;
 	}
-
-
-
-	if (true == UEngineInput::IsDown(VK_LSHIFT))
+	///왼쪽Shift로 점프
+	if (true == UEngineInput::IsDown('Z'))
 	{
 		StateChange(EPlayState::Jump);
 		return;
 	}
+	///Z키로 공격
+	if (true == UEngineInput::IsDown('X'))
+	{
+		StateChange(EPlayState::Attack);
+		return;
 
-	//JumpVector = FVector::Zero;
+
+	}
 
 	MoveUpdate(_DeltaTime);
 
@@ -363,7 +417,7 @@ void APlay_Player::Run(float _DeltaTime)
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
 	if (true == UEngineInput::IsFree(VK_LEFT) 
 		&& true == UEngineInput::IsFree(VK_RIGHT)
-		&& true == UEngineInput::IsFree(VK_LSHIFT))
+		&& true == UEngineInput::IsFree('Z'))
 	{
 		StateChange(EPlayState::Idle);
 		//MoveUpdate(_DeltaTime);
@@ -371,7 +425,7 @@ void APlay_Player::Run(float _DeltaTime)
 	}
 
 	//뛰는 동안에 점프키 누르면 점프
-	if (true == UEngineInput::IsDown(VK_LSHIFT))
+	if (true == UEngineInput::IsDown('Z'))
 	{
 		StateChange(EPlayState::Jump);
 		return;		
@@ -415,23 +469,65 @@ void APlay_Player::Run(float _DeltaTime)
 	//MoveUpdate(_DeltaTime);
 }
 
+void APlay_Player::FastRun(float _DeltaTime)
+{
+}
+
+
+void APlay_Player::Attack(float _DeltaTime)
+{
+	DirCheck();
+	Fire_Bullet();
+	if (Renderer->IsCurAnimationEnd())
+	{
+		StateChange(EPlayState::Idle);
+		return; 
+	}
+
+	MoveUpdate(_DeltaTime);
+
+}
+
+void APlay_Player::Fire_Bullet()
+{
+	//APlay_Player* Player = nullptr;
+	APlay_Bullet* Bullet = GetWorld()->SpawnActor<APlay_Bullet>();
+	Bullet->SetName("Bullet");
+	Bullet->SetActorLocation(this->GetActorLocation());
+
+
+
+	//fvector                float
+	//Bullet->SetBulletDir(Player->DirState);
+	// 아 이거 이렇게 바꾸면 좋은데.. 바꾸는 법을 모르겟다
+
+	return;
+
+
+
+	// APlay_Bullet::BulletFired실행 만들기 
+
+
+}
+
 
 
 
 void APlay_Player::Jump(float _DeltaTime)
-{
+{	
+	DirCheck();
 	FVector JumpPos;
 
-	if (true == UEngineInput::IsUp(VK_LSHIFT))
+	if (true == UEngineInput::IsUp('Z'))
 	{
 
 		JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
+		
 		MoveUpdate(_DeltaTime);
 		//return;
 
 	}
-	if (true == UEngineInput::IsFree(VK_LSHIFT)
+	if (true == UEngineInput::IsFree('Z')
 		&& UEngineInput::IsFree(VK_RIGHT)
 		&& UEngineInput::IsFree(VK_LEFT))
 	{
@@ -441,50 +537,58 @@ void APlay_Player::Jump(float _DeltaTime)
 	}
 
 
-	if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
+	if (/*true == UEngineInput::IsPress(VK_LEFT) ||*/ true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		StateChange(EPlayState::Idle);
+		JumpPos += FVector::Left * _DeltaTime;
 		
-		return;
+		/*StateChange(EPlayState::Idle);
+		
+		return;*/
 	}
 
-
-
-	if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown(VK_LSHIFT))
+	if (true == UEngineInput::IsPress(VK_LEFT) /*|| true == UEngineInput::IsPress(VK_RIGHT)*/)
 	{
-	
-		JumpPos =  JumpPower;
+		JumpPos += FVector::Right * _DeltaTime;
+
+		/*StateChange(EPlayState::Idle);
+
+		return;*/
+	}
+
+	if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown('Z'))
+	{
+
+		JumpPos = JumpPower;
 		CalGravityVector(_DeltaTime);
 		// 수정 필요
 		AddActorLocation(JumpPos);
-		if (UEngineInput::IsUp(VK_LSHIFT))
+		if (UEngineInput::IsUp('Z'))
 		{
 			JumpPos = FVector::Zero;
 			StateChange(EPlayState::Idle);
 		}
 
-
-	MoveUpdate(_DeltaTime);
-			
-		
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
-	{
-		JumpPos = FVector::Zero;
-	//	JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
 	}
+		MoveUpdate(_DeltaTime);
 
-		//JumpVector = JumpPower;
+
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			JumpPos = FVector::Zero;
+			//	JumpVector = FVector::Zero;
+			StateChange(EPlayState::Idle);
+			return;
+		}
+
+	
 
 
-	}
-	JumpPos = FVector::Zero;
-	MoveUpdate(_DeltaTime);
+	
+	//JumpPos = FVector::Zero;
+	//MoveUpdate(_DeltaTime);
 
 }
-
 
 
 
@@ -495,7 +599,7 @@ void APlay_Player::DownJump(float _DeltaTime)
 	DirCheck();
 
 	//Jump 상태에서, 스페이스바나 방향키 모두 안눌려있을때 -> Idle로 돌아가기
-	if (true == UEngineInput::IsFree(VK_SPACE)
+	if (true == UEngineInput::IsFree('X')
 		&& UEngineInput::IsFree(VK_RIGHT)
 		&& UEngineInput::IsFree(VK_LEFT))
 	{
@@ -508,6 +612,10 @@ void APlay_Player::DownJump(float _DeltaTime)
 
 
 
+
+void APlay_Player::Fly(float _DeltaTime)
+{
+}
 
 
 void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈

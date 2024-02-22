@@ -36,19 +36,22 @@ enum class EPlayState
 	None,
 	CameraFreeMove,
 	FreeMove,
+	
 	Idle,
 	Run,
+	Attack,
 	Jump,
 	DownJump,
+	
 	Strobe,
-	Attack,
+	FastRun,
 	Fly
 };
 
 enum class EBulletState
 {	None,
-	NormalAttack,
-	ColAttack
+	AttackNormal,
+	AttackCol
 
 };
 

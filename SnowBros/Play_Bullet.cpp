@@ -29,7 +29,7 @@ void APlay_Bullet::BeginPlay()
 		
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.1f, true);
 
-		StateChange(EBulletState::NormalAttack);
+		StateChange(EBulletState::AttackNormal);
 	
 	}
 
@@ -55,11 +55,29 @@ void APlay_Bullet::Tick(float _DeltaTime)
 		// 총알이 몸 바깥으로 가도록 어떻게하지
 		FVector BulletDir = FVector::Right;
 
+
+		if (true == UEngineInput::IsPress(VK_LEFT))
+		{
+			BulletDir = FVector::Left;
+		}
+		if (true == UEngineInput::IsPress(VK_RIGHT))
+		{
+			BulletDir = FVector::Right;
+		}
+		else
+		{
+			BulletDir = FVector::Right;
+		}
+
+
 		//BulletDir = FVector::Zero;
 
 		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
 
-		AddActorLocation(BulletDirNormal * _DeltaTime* PlayerPos);
+		//AddActorLocation(BulletDirNormal * _DeltaTime* PlayerPos);
+		// 아 오키 방향을 정해줘야하는구만 ㅇㅋㅇㅋ
+		
+		AddActor
 	}
 
 }
@@ -102,12 +120,12 @@ void APlay_Bullet::StateChange(EBulletState _State)
 	{
 		switch (_State)
 		{
-		case EBulletState::NormalAttack:
-			BulletFired();
+		case EBulletState::AttackNormal:
+			BulletNormal();
 			break;
 			
 
-		case EBulletState::ColAttack:
+		case EBulletState::AttackCol:
 			BulletCol();
 			break;
 					
@@ -122,33 +140,17 @@ void APlay_Bullet::StateChange(EBulletState _State)
 }
 
 
-void APlay_Bullet::BulletFired()
+
+void APlay_Bullet::BulletNormal()
 {
-	
-	
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-	
-	BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
-	
-	if (true == UEngineInput::IsPress(VK_SPACE))
-	{
-
-		////키를 누르면 -> 그때 스폰이 되어야 하는디 흠 
-		//APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
-		//Bullet->SetName("Bullet");
-		//Bullet->SetActorLocation(Player->GetActorLocation());
-	}
-
-
 
 }
-
 void APlay_Bullet::BulletCol()
 {
 
 }
 
-void APlay_Bullet::Bullet_Destroy()
+void APlay_Bullet::BulletDestroy()
 {
 
 }
@@ -193,40 +195,3 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 }
 
 
-
-
-
-
-//
-//
-//
-//void APlay_Bullet::DirCheck() //다시 설정 필요
-//{
-//	EActorDir Dir = DirState;
-//
-//	//APlay_Bullet* NewBullet = APlay_Bullet
-//
-//	
-//	/*APlay_Player* Player = APlay_Player::GetMainPlayer();
-//
-//	if (DirCheck() == GetActorLocation())
-//	{
-//		Dir = EActorDir::Left;
-//	}
-//	if (UEngineInput::IsPress(VK_RIGHT))
-//	{
-//		Dir = EActorDir::Right;
-//	}*/
-//
-//
-//
-//	if (Dir != DirState)
-//	{
-//		DirState = Dir;
-//		std::string Name = GetAnimationName(CurAnimationName);
-//
-//		MonsterRenderer->ChangeAnimation(Name, true, MonsterRenderer->GetCurAnimationFrame(), MonsterRenderer->GetCurAnimationTime());
-//		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
-//		MonsterRenderer->ChangeAnimation(Name);
-//	}
-//}

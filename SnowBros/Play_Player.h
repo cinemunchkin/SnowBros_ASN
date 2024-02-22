@@ -44,25 +44,33 @@ protected:
 	// 상태 주요 업데이트
 	void StateChange(EPlayState _State);
 	void StateUpdate(float _DeltaTime);
-	void Col_Strobe(float _DeltaTime);
+	
 
 	// 상태 함수들
 	//void CameraFreeMove(float _DeltaTime);
 	//void FreeMove(float _DeltaTime);
 	void Idle(float _DeltaTime);
-	void Jump(float _DeltaTime);
 	void Run(float _DeltaTime);
-	void DownJump(float _DeltaTime);
-	void Strobe(float _StrobeTime);
+	void FastRun(float _DeltaTime);
 	
+	void Jump(float _DeltaTime);
+	void DownJump(float _DeltaTime);
+	void Attack(float _DeltaTime);
+
+	void Strobe(float _StrobeTime);
 	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	// 상태 시작 함수들
 	void IdleStart();
 	void RunStart();
+	void FastRunStart();
+	
 	void JumpStart();
 	void DownJumpStart();
 	void AttackStart();
+
+	void StrobeStart();
+	void FlyStart();
 
 
 	EPlayState State = EPlayState::None;

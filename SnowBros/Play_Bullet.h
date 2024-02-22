@@ -14,16 +14,25 @@ public:
 	APlay_Bullet(APlay_Bullet&& _Other) noexcept = delete;
 	APlay_Bullet& operator=(const APlay_Bullet& _Other) = delete;
 	APlay_Bullet& operator=(APlay_Bullet&& _Other) noexcept = delete;
-
 	
 	
-	void Bullet();
-	void Bullet_Destroy();
+	
 
-	FVector AddDirBullet(float _Dir);
-	FVector GetDirBullet();
+	//공격파티클 방향설정
+	FVector AddBulletDir(FVector _Dir)
+	{
+		Dir += _Dir;
+	}
+	void SetBulletDir(const FVector _Dir)
+	{
+		Dir = _Dir;
+	}
+	FVector GetBulletDir()
+	{
+		return Dir;
+	}
 
-	FVector Dir = FVector::Zero;
+
 
 protected:
 	void BeginPlay() override;
@@ -42,12 +51,18 @@ protected:
 	void StateChange(EBulletState _State);
 
 
-	void BulletFired();
+	//공격파티클 일반
+	void BulletNormal();
+	//공격파티클 충돌시
 	void BulletCol();
+	//공격 파티클 소멸
+	void BulletDestroy();
 
 private:
 	UCollision* BodyCollision = nullptr;
 	UImageRenderer* BulletRenderer = nullptr;
+
+	FVector Dir = FVector::Zero;
 
 
 };
