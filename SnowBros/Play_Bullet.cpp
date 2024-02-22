@@ -27,7 +27,7 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer->SetImage("SnowBros_Bullet_R.png");
 		BulletRenderer->SetTransform({ {0,1}, {64, 64} });
 		
-		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.1f, true);
+		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.01f, true);
 
 		StateChange(EBulletState::AttackNormal);
 	
@@ -74,11 +74,16 @@ void APlay_Bullet::Tick(float _DeltaTime)
 
 		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
 
-		//AddActorLocation(BulletDirNormal * _DeltaTime* PlayerPos);
+
+		
+		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
+		
 		// 아 오키 방향을 정해줘야하는구만 ㅇㅋㅇㅋ
 		
-		AddActor
+		//AddActor
 	}
+	
+	BulletRenderer -> Destroy(0.1f);
 
 }
 

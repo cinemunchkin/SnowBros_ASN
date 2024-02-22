@@ -47,8 +47,8 @@ void APlay_Player::BeginPlay()
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
-		Renderer->CreateAnimation("Attack_Right", "SnowBros_Melt.png", 0, 6, 0.1f, true);
-		Renderer->CreateAnimation("Attack_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
+		Renderer->CreateAnimation("Attack_Right", "SnowBros_Melt.png", 0, 1, 0.01f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Melt.png", 0, 1, 0.01f, true);
 		
 
 		StateChange(EPlayState::Idle);
