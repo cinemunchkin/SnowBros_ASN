@@ -31,16 +31,13 @@ void ULevel_Play::BeginPlay()
 		 Player->SetActorLocation({ 200, 300 });
 		 Player->SetName("Player");
 		
-	
 
-		// if (true == UEngineInput::IsPress(VK_SPACE))
-		 
-			 APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
-			 Bullet->SetName("Bullet");
-			 Bullet->SetActorLocation(Player->GetActorLocation());
-			// return;
-		 
-
+		 ////키를 누르면 -> 그때 스폰이 되어야 하는디 흠 
+		 //APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
+		 //Bullet->SetName("Bullet");
+	 	// Bullet->SetActorLocation(Player->GetActorLocation());
+		
+		
 	 }
 
 	 {
@@ -52,6 +49,7 @@ void ULevel_Play::BeginPlay()
 
 
 }
+
 
 void ULevel_Play::Tick(float _DeltaTime)
 {

@@ -1,5 +1,6 @@
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
+#include <EngineCore/Level.h>
 
 #include <string_view>
 
@@ -43,13 +44,16 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	
 	//Bullet 일단 플레이어 근처에서 얼쩡얼쩡
-	// 이제 z키 누르면 spawn되도록
+	// 이제 키 누르면 spawn되도록
 
 	{
 		FVector PlayerPos = Player->GetActorLocation();
 		FVector BulletPos = GetActorLocation();
 
-		FVector BulletDir = PlayerPos - BulletPos;
+
+		//FVector BulletDir = PlayerPos - BulletPos;
+		// 총알이 몸 바깥으로 가도록 어떻게하지
+		FVector BulletDir = FVector::Right;
 
 		//BulletDir = FVector::Zero;
 
@@ -59,6 +63,8 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	}
 
 }
+
+
 
 
 
@@ -120,8 +126,21 @@ void APlay_Bullet::BulletFired()
 {
 	
 	
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	
 	BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 	
+	if (true == UEngineInput::IsPress(VK_SPACE))
+	{
+
+		////키를 누르면 -> 그때 스폰이 되어야 하는디 흠 
+		//APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
+		//Bullet->SetName("Bullet");
+		//Bullet->SetActorLocation(Player->GetActorLocation());
+	}
+
+
+
 }
 
 void APlay_Bullet::BulletCol()
