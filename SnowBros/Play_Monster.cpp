@@ -1,4 +1,5 @@
 #include "Play_Monster.h"
+#include "Play_Bullet.h"
 
 APlay_Monster::APlay_Monster()
 {
@@ -14,7 +15,7 @@ void APlay_Monster::BeginPlay()
 	
 
 	{
-		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
+		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
 		MonsterRenderer->SetImage("Monster_01.png");
@@ -45,6 +46,13 @@ void APlay_Monster::Tick(float _DeltaTime)
 		// BodyCollision = nullptr;
 	}
 
+
+	//if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, Result))
+	//{
+	//	// 이런식으로 상대를 사용할수 있다.
+	//	BodyCollision->SetActive(true, 0.1f);
+	//	// BodyCollision = nullptr;
+	//}
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();

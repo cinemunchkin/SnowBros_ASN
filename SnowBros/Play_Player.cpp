@@ -3,6 +3,8 @@
 #include "SnowBros_Helper.h"
 #include "Play_Player.h"
 #include "Play_Physics_Core.h"
+#include "Play_Bullet.h"
+#include <conio.h>
 
 APlay_Player::APlay_Player()
 {
@@ -96,16 +98,18 @@ void APlay_Player::Tick(float _DeltaTime)
 	}
 
 
-	APlay_Player::Strobe(_DeltaTime);
+	//APlay_Player::Strobe(_DeltaTime);
 
 
 	//std::vector<UCollision*> Result;
-	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
+	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
 	//{
-
-	//	
-	//	UCollision* CollisionPlay = Result[0];
-	//
+	//	// 이런식으로 상대를 사용할수 있다.
+	//	BodyCollision->SetActive(true, 0.5f);
+	//	// BodyCollision = nullptr;
+	//}
+	//UCollision* CollisionPlay = Result[0];
+	
 
 	//	if (_DeltaTime < 0.5f)
 	//	{
@@ -237,7 +241,10 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::DownJump:
 			DownJumpStart();
 			break;
-	
+		case EPlayState::Attack:
+			AttackStart();
+			break;
+			
 		default:
 			break;
 		}
@@ -275,7 +282,13 @@ void APlay_Player::DownJumpStart()
 }
 
 
+void APlay_Player::AttackStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("Attack"));
+	//APlay_Bullet::Bulletfire();
+	DirCheck();
 
+}
 
 
 void APlay_Player::StateUpdate(float _DeltaTime)
@@ -593,6 +606,8 @@ APlay_Player* APlay_Player::GetMainPlayer()
 
 //////////////////
 
+//////////////////
+
 //
 //void APlay_Player::CameraFreeMove(float _DeltaTime)
 //{
@@ -658,4 +673,5 @@ APlay_Player* APlay_Player::GetMainPlayer()
 //	}
 //}
 //
+
 

@@ -1,8 +1,9 @@
 #include "Level_Play.h"
-#include "Play_Player.h"
 #include "Play_Map.h"
 #include <EngineCore\EngineCore.h>
 #include "Play_Monster.h"
+#include "Play_Player.h"
+#include "Play_Bullet.h"
 
 ULevel_Play::ULevel_Play()
 {
@@ -29,6 +30,13 @@ void ULevel_Play::BeginPlay()
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
 		 Player->SetActorLocation({ 100, 300 });
 		 Player->SetName("Player");
+		
+
+		 APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
+		 Bullet->SetName("Bullet");
+		 Bullet->SetActorLocation(Player->GetActorLocation());
+
+
 	 }
 
 	 {
@@ -38,8 +46,6 @@ void ULevel_Play::BeginPlay()
 	 }
 
 
-
-			// 몬스터등장, 플레이어 등장 구현
 
 }
 

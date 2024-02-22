@@ -1,5 +1,6 @@
 #pragma once
 #include <EngineCore\Actor.h>
+#include <EngineBase/Transform.h>
 #include "Play_Physics_Core.h"
 #include "SnowBros_Helper.h"
 #include "Play_Monster.h"
@@ -53,6 +54,7 @@ protected:
 	void Run(float _DeltaTime);
 	void DownJump(float _DeltaTime);
 	void Strobe(float _StrobeTime);
+	
 	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	// 상태 시작 함수들
@@ -60,6 +62,7 @@ protected:
 	void RunStart();
 	void JumpStart();
 	void DownJumpStart();
+	void AttackStart();
 
 
 	EPlayState State = EPlayState::None;
@@ -112,6 +115,9 @@ private:
 	void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
 	void StrobeUpdate(float _DeltaTime);
+	
+	void Fire_Bullet();
+	
 	//void GroundUp();
 
 

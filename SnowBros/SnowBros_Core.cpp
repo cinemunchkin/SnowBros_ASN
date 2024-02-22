@@ -48,24 +48,37 @@ void USnowBros_Core::BeginPlay()
 	}
 	
 
+	//플레이어 애니메이션
+	///점프
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Jump_R.png", 8, 1);
 
+	///Idle
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Idle_R.png", 1, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Idle_L.png", 1, 1);
 
-
+	///달리기
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_R.png", 4, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Run_L.png", 4, 1);
 
+	///멜팅
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Melt.png", 7, 1);
 
 	
-
+	//몬스터 애니메이션
+	///점프
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
 
-	//UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Test_char.png", 4, 1);
-	//UEngineResourcesManager::GetInst().LoadFolder(NewDir.AppendPath("PlayLevel"));
 
+
+	//기타 애니메이션
+	///공격 파티클
+	////기본
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Bullet_R.png", 2, 1);
+
+	
+	// 
+	// 
+	// 
 	// 리로스를 여기서 로드할수도 있다.
 
 	// 우리가 제공하는건 Level

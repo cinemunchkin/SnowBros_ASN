@@ -8,7 +8,8 @@ enum class SnowBrosRenderOrder
 {
 	Map,
 	Monster,
-	Player
+	Player,
+	Bullet
 };
 
 
@@ -18,7 +19,8 @@ enum class SnowBrosCollisionOrder
 	PlayerAttack,
 	SnowBall,
 	Monster,
-	Player
+	Player,
+	Bullet
 };
 
 
@@ -39,9 +41,16 @@ enum class EPlayState
 	Jump,
 	DownJump,
 	Strobe,
+	Attack,
 	Fly
 };
 
+enum class EBulletState
+{	None,
+	NormalAttack,
+	ColAttack
+
+};
 
 
 // Ό³Έν :

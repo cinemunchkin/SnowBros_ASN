@@ -34,6 +34,9 @@
     <ClInclude Include="Play_Physics_Core.h">
       <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
+    <ClInclude Include="Play_Bullet.h">
+      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level_Title.cpp">
@@ -67,6 +70,9 @@
       <Filter>SnowBros_Core</Filter>
     </ClCompile>
     <ClCompile Include="Play_Physics_Core.cpp">
+      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+    </ClCompile>
+    <ClCompile Include="Play_Bullet.cpp">
       <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
   </ItemGroup>
