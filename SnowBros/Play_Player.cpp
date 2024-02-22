@@ -19,10 +19,6 @@ APlay_Player::~APlay_Player()
 //// 이동관련! 가속도 빼고, 점프 ㄱㄱ
 
 
-
-
-
-
 void APlay_Player::BeginPlay()
 {
 	AActor::BeginPlay();
@@ -285,11 +281,19 @@ void APlay_Player::DownJumpStart()
 void APlay_Player::AttackStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Attack"));
-	//APlay_Bullet::Bulletfire();
+	Fire_Bullet();
 	DirCheck();
 
 }
 
+void APlay_Player::Fire_Bullet()
+{
+
+
+// APlay_Bullet::BulletFired실행만 만들기 
+
+
+}
 
 void APlay_Player::StateUpdate(float _DeltaTime)
 {

@@ -65,14 +65,16 @@ void APlay_Monster::Tick(float _DeltaTime)
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
-	FVector MonsterDir = PlayerPos - MonsterPos;
-	// MonsterDir.Y = 0.0f;
-	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+	//몬스터 쫓아다니는 함수
+	//FVector MonsterDir = PlayerPos - MonsterPos;
+	//// MonsterDir.Y = 0.0f;
+	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
+	//AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
+	///----
+
 
 	// 플레이어를 알아야 한다.
-	// 
 }
 
 
@@ -80,7 +82,7 @@ void APlay_Monster::DirCheck() //다시 설정 필요
 {
 	EActorDir Dir = DirState;
 
-	if (UEngineInput::IsPress(VK_LEFT))
+/*	if (UEngineInput::IsPress(VK_LEFT))
 	{
 		Dir = EActorDir::Left;
 	}
@@ -89,7 +91,7 @@ void APlay_Monster::DirCheck() //다시 설정 필요
 		Dir = EActorDir::Right;
 	}
 
-	
+	*/
 
 	if (Dir != DirState)
 	{

@@ -42,7 +42,7 @@ protected:
 	void StateChange(EBulletState _State);
 
 
-	void BulletFire();
+	void BulletFired();
 	void BulletCol();
 
 private:

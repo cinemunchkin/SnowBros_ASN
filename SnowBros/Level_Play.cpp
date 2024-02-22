@@ -28,14 +28,18 @@ void ULevel_Play::BeginPlay()
  
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
-		 Player->SetActorLocation({ 100, 300 });
+		 Player->SetActorLocation({ 200, 300 });
 		 Player->SetName("Player");
 		
+	
 
-		 APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
-		 Bullet->SetName("Bullet");
-		 Bullet->SetActorLocation(Player->GetActorLocation());
-
+		// if (true == UEngineInput::IsPress(VK_SPACE))
+		 
+			 APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
+			 Bullet->SetName("Bullet");
+			 Bullet->SetActorLocation(Player->GetActorLocation());
+			// return;
+		 
 
 	 }
 
@@ -57,8 +61,6 @@ void ULevel_Play::Tick(float _DeltaTime)
 	{
 		GEngine->ChangeLevel("End");
 	
-		
-
 	}
 
 	

@@ -39,7 +39,25 @@ void APlay_Bullet::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
- 
+
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	
+	//Bullet 일단 플레이어 근처에서 얼쩡얼쩡
+	// 이제 z키 누르면 spawn되도록
+
+	{
+		FVector PlayerPos = Player->GetActorLocation();
+		FVector BulletPos = GetActorLocation();
+
+		FVector BulletDir = PlayerPos - BulletPos;
+
+		//BulletDir = FVector::Zero;
+
+		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
+
+		AddActorLocation(BulletDirNormal * _DeltaTime* PlayerPos);
+	}
+
 }
 
 
@@ -79,7 +97,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 		switch (_State)
 		{
 		case EBulletState::NormalAttack:
-			BulletFire();
+			BulletFired();
 			break;
 			
 
@@ -98,7 +116,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 }
 
 
-void APlay_Bullet::BulletFire()
+void APlay_Bullet::BulletFired()
 {
 	
 	
