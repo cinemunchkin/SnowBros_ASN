@@ -25,9 +25,9 @@ void APlay_Bullet::BeginPlay()
 		//일단 만들어지는 지부터 보자!
 		BulletRenderer = CreateImageRenderer(SnowBrosRenderOrder::Bullet);
 		BulletRenderer->SetImage("SnowBros_Bullet_R.png");
-		BulletRenderer->SetTransform({ {0,1}, {64, 64} });
+		BulletRenderer->SetTransform({ {16,-24}, {32*1.2f, 68*1.2f} });
 		
-		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.01f, true);
+		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 
 		StateChange(EBulletState::AttackNormal);
 	
@@ -56,19 +56,6 @@ void APlay_Bullet::Tick(float _DeltaTime)
 		FVector BulletDir = FVector::Right;
 
 
-		if (true == UEngineInput::IsPress(VK_LEFT))
-		{
-			BulletDir = FVector::Left;
-		}
-		if (true == UEngineInput::IsPress(VK_RIGHT))
-		{
-			BulletDir = FVector::Right;
-		}
-		else
-		{
-			BulletDir = FVector::Right;
-		}
-
 
 		//BulletDir = FVector::Zero;
 
@@ -77,6 +64,7 @@ void APlay_Bullet::Tick(float _DeltaTime)
 
 		
 		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
+
 		
 		// 아 오키 방향을 정해줘야하는구만 ㅇㅋㅇㅋ
 		
@@ -126,7 +114,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 		switch (_State)
 		{
 		case EBulletState::AttackNormal:
-			BulletNormal();
+			BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 			break;
 			
 

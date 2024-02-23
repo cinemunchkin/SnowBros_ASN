@@ -47,12 +47,13 @@ void APlay_Monster::Tick(float _DeltaTime)
 	}
 
 
-	//if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, Result))
-	//{
-	//	// 이런식으로 상대를 사용할수 있다.
-	//	BodyCollision->SetActive(true, 0.1f);
-	//	// BodyCollision = nullptr;
-	//}
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, Result))
+	{
+		// 이런식으로 상대를 사용할수 있다.
+		BodyCollision->SetActive(true, 0.1f);
+		this->Destroy(1.0f);
+		// BodyCollision = nullptr;
+	}
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();

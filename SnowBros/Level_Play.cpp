@@ -31,21 +31,14 @@ void ULevel_Play::BeginPlay()
 		 Player->SetActorLocation({ 200, 300 });
 		 Player->SetName("Player");
 		
-
-		 ////키를 누르면 -> 그때 스폰이 되어야 하는디 흠 
-		 //APlay_Bullet* Bullet = SpawnActor<APlay_Bullet>();
-		 //Bullet->SetName("Bullet");
-	 	// Bullet->SetActorLocation(Player->GetActorLocation());
-		
-		
+		 	
 	 }
 
 	 {
 		 APlay_Monster* Monster = SpawnActor<APlay_Monster>();
 		 Monster->SetName("Monster");
-		 Monster->SetActorLocation({ 100, 150 });
+		 Monster->SetActorLocation({ 200, 300 });
 	 }
-
 
 
 }

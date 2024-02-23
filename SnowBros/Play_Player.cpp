@@ -34,8 +34,9 @@ void APlay_Player::BeginPlay()
 		Renderer->SetImage("SnowBros_Run_L.png");
 		Renderer->SetImage("SnowBros_Jump_R.png");
 		Renderer->SetImage("SnowBros_Melt.png");
+		Renderer->SetImage("SnowBros_Attack_R.png");
 
-		Renderer->SetTransform({ {0,0}, {64, 128} });
+		Renderer->SetTransform({ {0,0}, {64*1.1f, 128*1.1f} });
 		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
 		Renderer->CreateAnimation("Idle_Left", "SnowBros_Idle_L.png", 0, 0, 1.0f, true);
 		
@@ -47,8 +48,8 @@ void APlay_Player::BeginPlay()
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
-		Renderer->CreateAnimation("Attack_Right", "SnowBros_Melt.png", 0, 1, 0.01f, true);
-		Renderer->CreateAnimation("Attack_Left", "SnowBros_Melt.png", 0, 1, 0.01f, true);
+		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.01f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_R.png", 0, 3, 0.01f, true);
 		
 
 		StateChange(EPlayState::Idle);
@@ -101,14 +102,15 @@ void APlay_Player::Tick(float _DeltaTime)
 	//APlay_Player::Strobe(_DeltaTime);
 
 
-	//std::vector<UCollision*> Result;
-	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
+	std::vector<UCollision*> Result;
+	//UCollision* CollisionPlay = Result[0];
+	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
 	//{
 	//	// 이런식으로 상대를 사용할수 있다.
 	//	BodyCollision->SetActive(true, 0.5f);
+	//	
 	//	// BodyCollision = nullptr;
 	//}
-	//UCollision* CollisionPlay = Result[0];
 	
 
 	//	if (_DeltaTime < 0.5f)
