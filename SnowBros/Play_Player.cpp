@@ -48,8 +48,8 @@ void APlay_Player::BeginPlay()
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
-		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.01f, true);
-		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_R.png", 0, 3, 0.01f, true);
+		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.05f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_R.png", 0, 3, 0.05f, true);
 		
 
 		StateChange(EPlayState::Idle);
@@ -359,7 +359,9 @@ void APlay_Player::AttackStart()
 	Renderer->ChangeAnimation(GetAnimationName("Attack"));
 	//Fire_Bullet();
 	DirCheck();
-
+	Fire_Bullet();
+	
+	
 	/*
 	if (Player->DirState == EActorDir::Right)
 		{
@@ -478,14 +480,22 @@ void APlay_Player::FastRun(float _DeltaTime)
 
 void APlay_Player::Attack(float _DeltaTime)
 {
-	DirCheck();
-	Fire_Bullet();
-	if (Renderer->IsCurAnimationEnd())
+	//DirCheck();
+	//Fire_Bullet();
+
+	//if (Renderer->IsCurAnimationEnd())
+	//{
+	//	StateChange(EPlayState::Idle);
+	//	return; 
+	//}
+
+	
+	//if (true == UEngineInput::IsUp('X'))
+	if(Renderer->IsCurAnimationEnd())
 	{
 		StateChange(EPlayState::Idle);
 		return; 
 	}
-
 	MoveUpdate(_DeltaTime);
 
 }

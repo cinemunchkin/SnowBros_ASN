@@ -4,6 +4,7 @@
 
 class APlay_Bullet :public UCollision , public AActor
 {
+	
 public:
 	// constrcuter destructer
 	APlay_Bullet();

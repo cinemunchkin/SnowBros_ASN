@@ -8,6 +8,7 @@
 
 class APlay_Player : public AActor
 {
+	
 
 private:
 	static APlay_Player* MainPlayer;
