@@ -4,7 +4,7 @@ UTickObject::UTickObject()
 {
 }
 
-UTickObject::~UTickObject()
+UTickObject::~UTickObject() 
 {
 }
 

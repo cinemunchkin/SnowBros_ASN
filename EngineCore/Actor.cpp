@@ -1,11 +1,11 @@
 #include "Actor.h"
 #include "ImageRenderer.h"
 
-AActor::AActor()
+AActor::AActor() 
 {
 }
 
-AActor::~AActor()
+AActor::~AActor() 
 {
 	for (UImageRenderer* ImageRenderer : Renderers)
 	{
@@ -63,6 +63,22 @@ UCollision* AActor::CreateCollision(int _Order /*= 0*/)
 	return Component;
 }
 
+void AActor::SetActive(bool _Active, float _ActiveTime /*= 0.0f*/)
+{
+	UTickObject::SetActive(_Active, _ActiveTime);
+
+	// 자신이 관리하고 있는 랜더러들도 다 죽여야 한다.
+	for (UImageRenderer* Renderer : Renderers)
+	{
+		Renderer->SetActive(_Active, _ActiveTime);
+	}
+
+	for (UCollision* Collision : Collisions)
+	{
+		Collision->SetActive(_Active, _ActiveTime);
+	}
+}
+
 void AActor::Destroy(float _DestroyTime /*= 0.0f*/)
 {
 	// 액터는 자신을 죽이면서
@@ -73,9 +89,69 @@ void AActor::Destroy(float _DestroyTime /*= 0.0f*/)
 	{
 		Renderer->Destroy(_DestroyTime);
 	}
+
+	for (UCollision* Collision : Collisions)
+	{
+		Collision->Destroy(_DestroyTime);
+	}
+
 }
 
+void AActor::CheckReleaseChild()
+{
 
+	{
+		std::list<UImageRenderer*>::iterator StartIter = Renderers.begin();
+		std::list<UImageRenderer*>::iterator EndIter = Renderers.end();
+
+		for (; StartIter != EndIter;)
+		{
+			UImageRenderer* Renderer = StartIter.operator*();
+
+			if (nullptr == Renderer)
+			{
+				MsgBoxAssert("Collision가 nullptr인 경우가 존재했습니다");
+				return;
+			}
+
+			if (false == Renderer->IsDestroy())
+			{
+				++StartIter;
+				continue;
+			}
+
+			delete Renderer;
+			Renderer = nullptr;
+			StartIter = Renderers.erase(StartIter);
+		}
+	}
+
+	{
+		std::list<UCollision*>::iterator StartIter = Collisions.begin();
+		std::list<UCollision*>::iterator EndIter = Collisions.end();
+
+		for (; StartIter != EndIter;)
+		{
+			UCollision* Collision = StartIter.operator*();
+
+			if (nullptr == Collision)
+			{
+				MsgBoxAssert("Collision가 nullptr인 경우가 존재했습니다");
+				return;
+			}
+
+			if (false == Collision->IsDestroy())
+			{
+				++StartIter;
+				continue;
+			}
+
+			delete Collision;
+			Collision = nullptr;
+			StartIter = Collisions.erase(StartIter);
+		}
+	}
+}
 
 void AActor::DestroyUpdate(float _DeltaTime)
 {
@@ -85,6 +161,11 @@ void AActor::DestroyUpdate(float _DeltaTime)
 	for (UImageRenderer* Renderer : Renderers)
 	{
 		Renderer->DestroyUpdate(_DeltaTime);
+	}
+
+	for (UCollision* Collision : Collisions)
+	{
+		Collision->DestroyUpdate(_DeltaTime);
 	}
 }
 
@@ -96,5 +177,26 @@ void AActor::ActiveUpdate(float _DeltaTime)
 	for (UImageRenderer* Renderer : Renderers)
 	{
 		Renderer->ActiveUpdate(_DeltaTime);
+	}
+
+	for (UCollision* Collision : Collisions)
+	{
+		Collision->ActiveUpdate(_DeltaTime);
+	}
+}
+
+void AActor::AllRenderersActiveOff()
+{
+	for (UImageRenderer* Renderer : Renderers)
+	{
+		Renderer->ActiveOff();
+	}
+}
+
+void AActor::AllRenderersActiveOn()
+{
+	for (UImageRenderer* Renderer : Renderers)
+	{
+		Renderer->ActiveOn();
 	}
 }

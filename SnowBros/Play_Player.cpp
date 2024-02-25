@@ -1,10 +1,9 @@
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
 
-#include "SnowBros_Helper.h"
+//#include "SnowBros_Helper.h"
 #include "Play_Bullet.h"
 #include "Play_Player.h"
-#include "Play_Physics_Core.h"
 #include <conio.h>
 
 APlay_Player::APlay_Player()
@@ -361,17 +360,6 @@ void APlay_Player::AttackStart()
 	DirCheck();
 	Fire_Bullet();
 	
-	
-	/*
-	if (Player->DirState == EActorDir::Right)
-		{
-			this->SetBulletDir(FVector::Right);
-		}
-		else
-		{
-			return;
-		}
-	*/
 
 }
 

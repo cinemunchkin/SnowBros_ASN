@@ -1,5 +1,7 @@
 #pragma once
 #include <EngineCore\Actor.h>
+#include <EngineBase/Transform.h>
+
 #include "SnowBros_Helper.h"
 #include "Play_Player.h"
 
@@ -21,7 +23,7 @@ public:
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
-
+	void Physics(float _DeltaTime);
 
 	void DirCheck();
 
@@ -32,7 +34,7 @@ protected:
 
 
 	// 상태 주요 업데이트
-	void StateChange(EPlayState _State);
+	void StateChange(EMonsterState _State);
 	void StateUpdate(float _DeltaTime);
 
 
@@ -40,9 +42,12 @@ protected:
 
 	// 상태 시작 함수들
 	void IdleStart();
+	void JumpStart();
+	void DownJumpStart();
+	void SnowballStart();
 	
 
-	EPlayState State = EPlayState::None;
+	EMonsterState State = EMonsterState::None;
 	EActorDir DirState = EActorDir::Right;
 	std::string CurAnimationName = "None";
 

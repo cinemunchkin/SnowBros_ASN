@@ -37,12 +37,20 @@ int UAnimationInfo::Update(float _DeltaTime)
 	{
 		CurTime = Times[CurFrame];
 		++CurFrame;
+
+		if (1 == Indexs.size())
+		{
+			IsEnd = true;
+		}
 	}
 
 	//  6                 6
 	if (Indexs.size() <= CurFrame)
 	{
-		IsEnd = true;
+		if (1 < Indexs.size())
+		{
+			IsEnd = true;
+		}
 		if (true == Loop)
 		{
 			// //            0  1  2  3  4  5 
@@ -66,56 +74,14 @@ int UAnimationInfo::Update(float _DeltaTime)
 
 void UImageRenderer::Render(float _DeltaTime)
 {
-	if (nullptr == Image)
+	if (false == Text.empty())
 	{
-		MsgBoxAssert("이미지가 존재하지 않는 랜더러 입니다");
+		TextRender(_DeltaTime);
+	}
+	else {
+		ImageRender(_DeltaTime);
 	}
 
-	if (nullptr != CurAnimation)
-	{
-		Image = CurAnimation->Image;
-		InfoIndex = CurAnimation->Update(_DeltaTime);
-	}
-
-	// 위에서부터 읽어야 합니다.
-	FTransform RendererTrans = GetTransform();
-
-	// 액터인데 지금 의미가 없습니다.
-	FTransform ActorTrans = GetOwner()->GetTransform();
-
-	// 컴포넌트의 위치는 부모에게서 상대적이기 때문에.
-	// 부모의 위치를 더해줘야 한다.
-	RendererTrans.AddPosition(ActorTrans.GetPosition());
-
-	if (true == CameraEffect)
-	{
-		AActor* Actor = GetOwner();
-		ULevel* World = Actor->GetWorld();
-		FVector CameraPos = World->GetCameraPos();
-		RendererTrans.AddPosition(-CameraPos);
-	}
-
-	// TransColor 원리 특정 색상과 1비트도 차이가 나지 않는 색상은 출력을 삭제한다.
-	// TransCopy 에서만 
-	// Png일 경우에 
-
-	EWIndowImageType ImageType = Image->GetImageType();
-
-
-
-	switch (ImageType)
-	{
-	case EWIndowImageType::IMG_BMP:
-		GEngine->MainWindow.GetBackBufferImage()->TransCopy(Image, RendererTrans, InfoIndex, TransColor);
-		// bmp일때는 일반적으로 Transcopy로 투명처리를 한다.
-		break;
-	case EWIndowImageType::IMG_PNG:
-		GEngine->MainWindow.GetBackBufferImage()->AlphaCopy(Image, RendererTrans, InfoIndex, TransColor);
-		break;
-	default:
-		MsgBoxAssert("투명처리가 불가능한 이미지 입니다.");
-		break;
-	}
 }
 
 void UImageRenderer::BeginPlay()
@@ -221,8 +187,8 @@ void UImageRenderer::ChangeAnimation(std::string_view _AnimationName, bool _IsFo
 	UAnimationInfo& Info = AnimationInfos[UpperAniName];
 	CurAnimation = &Info;
 	CurAnimation->CurFrame = _StartIndex;
-	CurAnimation->CurTime = _Time;
-	if (0.0f >= _Time)
+	CurAnimation->CurTime = CurAnimation->Times[_StartIndex];
+	if (0.0f < _Time)
 	{
 		CurAnimation->CurTime = _Time;
 	}
@@ -232,4 +198,78 @@ void UImageRenderer::ChangeAnimation(std::string_view _AnimationName, bool _IsFo
 void UImageRenderer::AnimationReset()
 {
 	CurAnimation = nullptr;
+}
+
+FTransform UImageRenderer::GetRenderTransForm()
+{
+	FTransform RendererTrans = GetActorBaseTransform();
+
+	if (true == CameraEffect)
+	{
+		AActor* Actor = GetOwner();
+		ULevel* World = Actor->GetWorld();
+		FVector CameraPos = World->GetCameraPos();
+		CameraPos *= CameraRatio;
+		RendererTrans.AddPosition(-CameraPos);
+	}
+
+	return RendererTrans;
+}
+
+void UImageRenderer::TextRender(float _DeltaTime)
+{
+	FTransform RendererTrans = GetRenderTransForm();
+
+	switch (TextEffect)
+	{
+	case 1:
+		GEngine->MainWindow.GetBackBufferImage()->TextCopy(Text, Font, Size, RendererTrans, TextColor, TextColor2);
+		break;
+	case 2:
+		GEngine->MainWindow.GetBackBufferImage()->TextCopyBold(Text, Font, Size, RendererTrans, TextColor);
+		break;
+	default:
+		GEngine->MainWindow.GetBackBufferImage()->TextCopy(Text, Font, Size, RendererTrans, TextColor);
+		break;
+	}
+}
+
+void UImageRenderer::ImageRender(float _DeltaTime)
+{
+
+	if (nullptr == Image)
+	{
+		MsgBoxAssert("이미지가 존재하지 않는 랜더러 입니다");
+	}
+
+	if (nullptr != CurAnimation)
+	{
+		Image = CurAnimation->Image;
+		InfoIndex = CurAnimation->Update(_DeltaTime);
+	}
+
+	FTransform RendererTrans = GetRenderTransForm();
+
+	EWIndowImageType ImageType = Image->GetImageType();
+
+	switch (ImageType)
+	{
+	case EWIndowImageType::IMG_BMP:
+		GEngine->MainWindow.GetBackBufferImage()->TransCopy(Image, RendererTrans, InfoIndex, TransColor);
+		// bmp일때는 일반적으로 Transcopy로 투명처리를 한다.
+		break;
+	case EWIndowImageType::IMG_PNG:
+		if (0.0f == Angle)
+		{
+			GEngine->MainWindow.GetBackBufferImage()->AlphaCopy(Image, RendererTrans, InfoIndex, TransColor);
+		}
+		else 
+		{
+			GEngine->MainWindow.GetBackBufferImage()->PlgCopy(Image, RendererTrans, InfoIndex, Angle * UEngineMath::DToR);
+		}
+		break;
+	default:
+		MsgBoxAssert("투명처리가 불가능한 이미지 입니다.");
+		break;
+	}
 }

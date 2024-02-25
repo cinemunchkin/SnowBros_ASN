@@ -175,10 +175,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Play_Physics_Core.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Play_Player.h">
       <SubType>
       </SubType>
@@ -222,10 +218,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Play_Monster.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Play_Physics_Core.cpp">
       <SubType>
       </SubType>
     </ClCompile>

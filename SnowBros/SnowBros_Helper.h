@@ -48,6 +48,18 @@ enum class EPlayState
 	Fly
 };
 
+enum class EMonsterState
+{
+	None,
+	Idle,
+	Jump,
+	DownJump,
+	SnowBall
+
+};
+
+
+
 enum class EBulletState
 {	None,
 	AttackNormal,

@@ -1,9 +1,10 @@
 #include "EngineCore.h"
 #include <Windows.h>
 #include "Level.h"
+#include <EnginePlatform\EngineSound.h>
 #include "EnginePlatform\EngineInput.h"
 
-
+bool UEngineCore::IsDebugValue = false;
 UEngineCore* GEngine = nullptr;
 
 UEngineCore::UEngineCore() 
@@ -62,6 +63,7 @@ void UEngineCore::CoreTick()
 		DeltaTime = 1.0f / 60.0f;
 	}
 
+	UEngineSound::Update();
 	UEngineInput::KeyCheckTick(DeltaTime);
 
 
@@ -82,6 +84,9 @@ void UEngineCore::CoreTick()
 		NextLevel->LevelStart(CurLevel);
 		CurLevel = NextLevel;
 		NextLevel = nullptr;
+		MainTimer.TimeCheckStart();
+		DeltaTime = MainTimer.TimeCheck();
+		CurFrameTime = 0.0f;
 	}
 
 
@@ -90,7 +95,7 @@ void UEngineCore::CoreTick()
 		MsgBoxAssert("엔진을 시작할 레벨이 지정되지 않았습니다 치명적인 오류입니다");
 	}
 
-
+	GEngine->Tick(DeltaTime);
 	// 레벨이 먼저 틱을 돌리고
 	CurLevel->Tick(DeltaTime);
 	// 액터와 부가적인 오브젝트들의 틱도 돌리고 => 행동하고
@@ -145,6 +150,11 @@ void UEngineCore::EngineStart(HINSTANCE _hInstance)
 	CoreInit(_hInstance); 
 	BeginPlay();
 	UEngineWindow::WindowMessageLoop(EngineTick, EngineEnd);
+}
+
+void Exit()
+{
+
 }
 
 void UEngineCore::CoreInit(HINSTANCE _HINSTANCE)

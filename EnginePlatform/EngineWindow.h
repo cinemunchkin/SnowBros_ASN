@@ -18,7 +18,7 @@ public:
 	UEngineWindow& operator=(const UEngineWindow& _Other) = delete;
 	UEngineWindow& operator=(UEngineWindow&& _Other) noexcept = delete;
 
-	void Open(std::string_view _Title = "스노우 브라더스 잘할꺼양 그죵?");
+	void Open(std::string_view _Title = "Title");
 
 	static void Init(HINSTANCE _hInst);
 	static unsigned __int64 WindowMessageLoop(void(*_Update)(), void(*_End)());
@@ -44,7 +44,19 @@ public:
 		return Scale;
 	}
 
+	void SetClearColor(Color8Bit _Color)
+	{
+		_Color.A = 0;
+		ClearColor = _Color;
+	}
+
+	
 	FVector GetMousePosition();
+
+	void Off()
+	{
+		WindowLive = false;
+	}
 
 protected:
 
@@ -52,6 +64,8 @@ private:
 	static bool WindowLive;
 	static HINSTANCE hInstance;
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+	Color8Bit ClearColor = Color8Bit::WhiteA;
 
 	HWND hWnd = nullptr;
 	// HDC hDC = nullptr;

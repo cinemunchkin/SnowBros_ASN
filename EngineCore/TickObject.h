@@ -26,7 +26,7 @@ public:
 		IsActiveValue = false;
 	}
 
-	void SetActive(bool _Active, float _ActiveTime = 0.0f)
+	virtual void SetActive(bool _Active, float _ActiveTime = 0.0f)
 	{
 		ActiveTime = _ActiveTime;
 
@@ -54,7 +54,7 @@ public:
 	{
 		IsDestroyUpdate = true;
 		DestroyTime = _DestroyTime;
-		if (0.0f >= _DestroyTime)
+		if (0.0f>= _DestroyTime)
 		{
 			this->IsDestroyValue = true;
 		}

@@ -26,7 +26,10 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h">
-      <Filter>Collision</Filter>
+      <Filter>Object\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineDebug.h">
+      <Filter>Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -55,7 +58,10 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Collision.cpp">
-      <Filter>Collision</Filter>
+      <Filter>Object\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineDebug.cpp">
+      <Filter>Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,8 +83,11 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{45c67245-afdb-466c-86ac-3ecb73df4bbc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collision">
-      <UniqueIdentifier>{c617d947-ffc9-4ce8-ab20-97f701e43686}</UniqueIdentifier>
+    <Filter Include="Object\Component\Collision">
+      <UniqueIdentifier>{3dd3f830-096c-4368-b101-2477a1fe5115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{1daca306-475a-4a7b-a108-30681a09be54}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

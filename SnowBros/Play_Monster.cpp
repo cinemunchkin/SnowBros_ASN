@@ -1,6 +1,6 @@
 #include "Play_Monster.h"
 #include "Play_Bullet.h"
-
+#include <EngineCore/SceneComponent.h>
 APlay_Monster::APlay_Monster()
 {
 }
@@ -15,13 +15,25 @@ void APlay_Monster::BeginPlay()
 	
 
 	{
-		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
+
+		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
 		MonsterRenderer->SetImage("Monster_01.png");
-		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0,5, 0.05f, true);
-		StateChange(EPlayState::Idle);
 	}
+	
+	{
+		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0, 5, 0.1f, true);
+		StateChange(EMonsterState::Idle);
+	}
+
+
+	{
+		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Monster);
+		BodyCollision->SetColType(ECollisionType::Rect);
+		BodyCollision->SetScale({ 100, 100 });
+	}
+
 
 
 	
@@ -31,29 +43,23 @@ void APlay_Monster::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
-
-	{
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Monster);
-		BodyCollision->SetScale({ 100, 100 });
-		BodyCollision->SetColType(ECollisionType::Rect);
-	}
-
 	std::vector<UCollision*> Result;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, Result))
-	{
-		// 이런식으로 상대를 사용할수 있다.
-		BodyCollision->SetActive(true, 0.5f);
-		// BodyCollision = nullptr;
+	{// 만약에 플레이어와 collisioncheck를 했을때, true면
+
+		//BodyCollision->SetActive(true, 0.1f);
+		//APlay_Player* Player = GetActorLocation();
+
+		StateChange(EMonsterState::SnowBall);
+
+		
 	}
 
 
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, Result))
-	{
-		// 이런식으로 상대를 사용할수 있다.
-		BodyCollision->SetActive(true, 0.1f);
-		this->Destroy(1.0f);
-		// BodyCollision = nullptr;
-	}
+
+
+
+
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
@@ -77,6 +83,11 @@ void APlay_Monster::Tick(float _DeltaTime)
 
 	// 플레이어를 알아야 한다.
 }
+
+
+
+
+
 
 
 void APlay_Monster::DirCheck() //다시 설정 필요
@@ -131,17 +142,25 @@ std::string APlay_Monster::GetAnimationName(std::string _Name)
 
 
 
-void APlay_Monster::StateChange(EPlayState _State)
+void APlay_Monster::StateChange(EMonsterState _State)
 {
 
 	if (State != _State)
 	{
 		switch (_State)
 		{
-		case EPlayState::Idle:
+		case EMonsterState::Idle:
 			IdleStart();
 			break;
-
+		case EMonsterState::Jump:
+			JumpStart();
+			break;
+		case EMonsterState::DownJump:
+			DownJumpStart();
+			break;
+		case EMonsterState::SnowBall:
+			SnowballStart();
+			break;
 		default:
 			break;
 		}
@@ -158,6 +177,27 @@ void APlay_Monster::IdleStart()
 }
 
 
+void APlay_Monster::JumpStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Jump"));
+	DirCheck();
+}
+
+
+void APlay_Monster::DownJumpStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("DownJump"));
+	DirCheck();
+}
+
+
+void APlay_Monster::SnowballStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+	DirCheck();
+}
+
+
 
 void APlay_Monster::Idle(float _DeltaTime)
 {
@@ -167,3 +207,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 
 
 
+void APlay_Monster::Physics(float _DeltaTime)
+{
+
+}

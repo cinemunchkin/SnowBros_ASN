@@ -115,5 +115,5 @@ UWindowImage* UEngineResourcesManager::LoadFolder(std::string_view _Path, std::s
 	// 그래서 Png를 출력하는것도 아니고 부분 반투명
 	Images[UpperName] = NewImage;
 
-	return nullptr;
+	return NewImage;
 }

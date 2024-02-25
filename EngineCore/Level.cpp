@@ -1,6 +1,8 @@
 #include "Level.h"
 #include "Actor.h"
 #include <EngineBase\EngineDebug.h>
+#include "EngineDebug.h"
+#include "EngineCore.h"
 
 ULevel::ULevel()
 {
@@ -35,6 +37,8 @@ void ULevel::LevelTick(float _DeltaTime)
 			// Ranged for는 중간에 리스트의 원소의 개수가 변경되면 굉장히 불안정해지고
 			// 치명적인 오류가 발생할 가능성이 높아진다.
 			// 절대로 파괴하지 
+			Actor->ActiveUpdate(_DeltaTime);
+			Actor->DestroyUpdate(_DeltaTime);
 			if (false == Actor->IsActive())
 			{
 				continue;
@@ -64,6 +68,26 @@ void ULevel::LevelRender(float _DeltaTime)
 		}
 	}
 
+	if (true == GEngine->IsDebug())
+	{
+		for (std::pair<const int, std::list<UCollision*>>& OrderListPair : Collisions)
+		{
+			std::list<UCollision*>& RendererList = OrderListPair.second;
+			for (UCollision* Collision : RendererList)
+			{
+				// Ranged for는 중간에 리스트의 원소의 개수가 변경되면 굉장히 불안정해지고
+				// 치명적인 오류가 발생할 가능성이 높아진다.
+				// 절대로 파괴하지 
+				if (false == Collision->IsActive())
+				{
+					continue;
+				}
+
+				Collision->DebugRender(CameraPos);
+			}
+		}
+		UEngineDebug::PrintDebugText(GEngine->MainWindow.GetBackBufferImage());
+	}
 }
 
 void ULevel::LevelRelease(float _DeltaTime)
@@ -80,26 +104,53 @@ void ULevel::LevelRelease(float _DeltaTime)
 	// new를 한 놈이 한다.
 
 
-	for (std::pair<const int, std::list<UImageRenderer*>>& OrderListPair : Renderers)
 	{
-		std::list<UImageRenderer*>& RendererList = OrderListPair.second;
-
-		std::list<UImageRenderer*>::iterator StartIter = RendererList.begin();
-		std::list<UImageRenderer*>::iterator EndIter = RendererList.end();
-
-		// 삭제는 절대로 Ranged for로 하면 안되다.
-		// for (UImageRenderer* Renderer : RendererList)
-		for (; StartIter != EndIter; )
+		for (std::pair<const int, std::list<UCollision*>>& OrderListPair : Collisions)
 		{
-			UImageRenderer* Renderer = StartIter.operator*();
+			std::list<UCollision*>& List = OrderListPair.second;
 
-			if (false == Renderer->IsDestroy())
+			std::list<UCollision*>::iterator StartIter = List.begin();
+			std::list<UCollision*>::iterator EndIter = List.end();
+
+			// 삭제는 절대로 Ranged for로 하면 안되다.
+			// for (UImageRenderer* Renderer : RendererList)
+			for (; StartIter != EndIter; )
 			{
-				++StartIter;
-				continue;
-			}
+				UCollision* Collision = StartIter.operator*();
 
-			StartIter = RendererList.erase(StartIter);
+				if (false == Collision->IsDestroy())
+				{
+					++StartIter;
+					continue;
+				}
+
+				StartIter = List.erase(StartIter);
+			}
+		}
+	}
+
+	{
+		for (std::pair<const int, std::list<UImageRenderer*>>& OrderListPair : Renderers)
+		{
+			std::list<UImageRenderer*>& List = OrderListPair.second;
+
+			std::list<UImageRenderer*>::iterator StartIter = List.begin();
+			std::list<UImageRenderer*>::iterator EndIter = List.end();
+
+			// 삭제는 절대로 Ranged for로 하면 안되다.
+			// for (UImageRenderer* Renderer : RendererList)
+			for (; StartIter != EndIter; )
+			{
+				UImageRenderer* Renderer = StartIter.operator*();
+
+				if (false == Renderer->IsDestroy())
+				{
+					++StartIter;
+					continue;
+				}
+
+				StartIter = List.erase(StartIter);
+			}
 		}
 	}
 
@@ -124,6 +175,7 @@ void ULevel::LevelRelease(float _DeltaTime)
 
 			if (false == Actor->IsDestroy())
 			{
+				Actor->CheckReleaseChild();
 				++StartIter;
 				continue;
 			}
