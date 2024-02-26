@@ -29,7 +29,7 @@ void APlay_Bullet::BeginPlay()
 		
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 
-		//StateChange(EBulletState::AttackNormal);
+		StateChange(EBulletState::BulletNormal);
 	
 	}
 
@@ -59,25 +59,48 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	}
 
 	
-	//Bullet 일단 플레이어 근처에서 얼쩡얼쩡
-	// 이제 키 누르면 spawn되도록
-
 	{
 		FVector PlayerPos = Player->GetActorLocation();
-		FVector BulletPos = GetActorLocation();
+		FVector BulletPos = GetActorLocation(); // 플레이어, 공격 포지션 받아서 
 
+		/*
+		플레이어 방향이 -> Right이면 / Left면 
+		*/
+		
+		APlay_Bullet* Bullet = nullptr;
 		FVector BulletDir = FVector::Right;
 
+		
+
+		APlay_Player* Player = APlay_Player::GetMainPlayer();
+		if (true == FVector::Right)
+		{
+
+		}
+
+	
+
+
+
 		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-
-
-		
 		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
-		// 아 오키 방향을 정해줘야하는구만 ㅇㅋㅇㅋ
+
+
+
+
+		//Bullet->DirState.X-> SetBulletDir(Player->DirState.X)
+
+		//fvector                float
+		//Bullet->SetBulletDir(Player->DirState);
+		//fvector 에서 x랑 y랑 따로 꺼내면 됨!!!
+		//
+
 		
-	BulletRenderer -> Destroy(0.1f);
+		
+		
 	}
 	
+	BulletRenderer->Destroy(0.1f);
 
 }
 
@@ -119,11 +142,11 @@ void APlay_Bullet::StateChange(EBulletState _State)
 	{
 		switch (_State)
 		{
-		case EBulletState::AttackNormal:
+		case EBulletState::BulletNormal:
 			BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 			break;
 			
-		case EBulletState::AttackCol:
+		case EBulletState::BulletCol:
 			//BulletCol();
 			break;
 					

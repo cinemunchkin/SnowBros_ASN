@@ -75,6 +75,7 @@ protected:
 
 	EPlayState State = EPlayState::None;
 	EActorDir DirState = EActorDir::Right;
+	
 	std::string CurAnimationName = "None";
 
 private:
@@ -100,6 +101,7 @@ private:
 	//가속도 필요 없음  + 점프 띠용 자연스럽게 구현 -> 중력만 잘 조절
 
 	FVector MoveVector = FVector::Zero;
+	
 	FVector MoveAcc = FVector::Right * 500.0f;
 	float MoveMaxSpeed = 500.0f;
 	void AddMoveVector(const FVector& _DirDelta);

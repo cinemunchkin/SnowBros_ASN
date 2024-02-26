@@ -2,6 +2,7 @@
 #include <EngineCore/Collision.h>
 #include <EngineCore\Actor.h>
 #include "SnowBros_Helper.h"
+#include <EngineBase/Transform.h>
 
 class APlay_Bullet :public UCollision , public AActor
 {
@@ -21,15 +22,15 @@ public:
 	
 
 	//공격파티클 방향설정
-	FVector AddBulletDir(FVector _Dir)
+	/*FVector AddBulletDir(FVector _Dir)
 	{
 		BulletDir += _Dir;
-	}
-	void SetBulletDir(const FVector _Dir)
+	}*/
+	void SetBulletDir(EActorDir _Dir)
 	{
 		BulletDir = _Dir;
 	}
-	FVector GetBulletDir()
+	EActorDir GetBulletDir()
 	{
 		return BulletDir;
 	}
@@ -69,7 +70,7 @@ private:
 	UCollision* BodyCollision = nullptr;
 	UImageRenderer* BulletRenderer = nullptr;
 
-	FVector BulletDir = FVector::Zero;
+	EActorDir BulletDir = EActorDir::None;
 
 
 };

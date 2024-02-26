@@ -92,7 +92,8 @@ void APlay_Player::Tick(float _DeltaTime)
 
 	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		BodyCollision->SetScale({ 32, 64 });
+		BodyCollision->SetPosition(Renderer->GetPosition());
+		BodyCollision->SetScale({ 32, 72 });
 		BodyCollision->SetColType(ECollisionType::Rect);
 
 	}
@@ -302,6 +303,7 @@ void APlay_Player::IdleStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Idle"));
 	DirCheck();
+	
 }
 
 void APlay_Player::RunStart()
@@ -459,17 +461,10 @@ void APlay_Player::FastRun(float _DeltaTime)
 
 void APlay_Player::Attack(float _DeltaTime)
 {
-	//DirCheck();
-	//Fire_Bullet();
-
-	//if (Renderer->IsCurAnimationEnd())
-	//{
-	//	StateChange(EPlayState::Idle);
-	//	return; 
-	//}
-
+	DirCheck();
 	
-	//if (true == UEngineInput::IsUp('X'))
+	
+	
 	if(Renderer->IsCurAnimationEnd())
 	{
 		StateChange(EPlayState::Idle);
@@ -482,23 +477,12 @@ void APlay_Player::Attack(float _DeltaTime)
 void APlay_Player::Fire_Bullet()
 {
 	//APlay_Player* Player = nullptr;
+	
 	APlay_Bullet* Bullet = GetWorld()->SpawnActor<APlay_Bullet>();
 	Bullet->SetName("Bullet");
 	Bullet->SetActorLocation(this->GetActorLocation());
-
-
-
-	//fvector                float
-	//Bullet->SetBulletDir(Player->DirState);
-	// 아 이거 이렇게 바꾸면 좋은데.. 바꾸는 법을 모르겟다
-
+	
 	return;
-
-
-
-	// APlay_Bullet::BulletFired실행 만들기 
-
-
 }
 
 
@@ -507,58 +491,22 @@ void APlay_Player::Fire_Bullet()
 void APlay_Player::Jump(float _DeltaTime)
 {	
 	DirCheck();
-	//FVector JumpPos;
-	//if (true == UEngineInput::IsUp('Z'))
-	//{
+	
+	
 
-	//	JumpVector = FVector::Zero;
-	//	
-	//	MoveUpdate(_DeltaTime);
-	//	//return;
-
-	//}
-	//if (true == UEngineInput::IsFree('Z')
-	//	&& UEngineInput::IsFree(VK_RIGHT)
-	//	&& UEngineInput::IsFree(VK_LEFT))
-	//{
-	//	JumpVector = FVector::Zero;
-	//	StateChange(EPlayState::Idle);
-	//	return;
-	//}
-
-
-	if (/*true == UEngineInput::IsPress(VK_LEFT) ||*/ true == UEngineInput::IsPress(VK_RIGHT))
+	if ( true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		MoveVector += FVector::Right * _DeltaTime;
-		
-		/*StateChange(EPlayState::Idle);
-		
-		return;*/
+		JumpVector += FVector::Right * _DeltaTime;
+		return;
 	}
 
-	if (true == UEngineInput::IsPress(VK_LEFT) /*|| true == UEngineInput::IsPress(VK_RIGHT)*/)
+	if (true == UEngineInput::IsPress(VK_LEFT) )
 	{
-		MoveVector += FVector::Left * _DeltaTime;
-
-		/*StateChange(EPlayState::Idle);
-
-		return;*/
+		JumpVector += FVector::Left * _DeltaTime;
+		return;
 	}
 
-	//if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown('Z'))
-	//{
 
-	//	JumpPos = JumpPower;
-	//	CalGravityVector(_DeltaTime);
-	//	// 수정 필요
-	//	AddActorLocation(JumpPos);
-	//	if (UEngineInput::IsUp('Z'))
-	//	{
-	//		JumpPos = FVector::Zero;
-	//		StateChange(EPlayState::Idle);
-	//	}
-
-	//}
 	MoveUpdate(_DeltaTime);
 
 
@@ -570,13 +518,7 @@ void APlay_Player::Jump(float _DeltaTime)
 		StateChange(EPlayState::Idle);
 		return;
 	}
-
-	
-
-
-	
-	//JumpPos = FVector::Zero;
-	//MoveUpdate(_DeltaTime);
+		
 
 }
 
@@ -589,14 +531,7 @@ void APlay_Player::DownJump(float _DeltaTime)
 	DirCheck();
 
 	//Jump 상태에서, 스페이스바나 방향키 모두 안눌려있을때 -> Idle로 돌아가기
-	if (true == UEngineInput::IsFree('X')
-		&& UEngineInput::IsFree(VK_RIGHT)
-		&& UEngineInput::IsFree(VK_LEFT))
-	{
-		StateChange(EPlayState::Idle);
-		return;
-	}
-
+	
 
 }
 

@@ -26,6 +26,7 @@ enum class SnowBrosCollisionOrder
 
 enum class EActorDir
 {
+	None,
 	Left,
 	Right,
 	Jump
@@ -69,8 +70,8 @@ enum class EMonsterState
 
 enum class EBulletState
 {	None,
-	AttackNormal,
-	AttackCol
+	BulletNormal,
+	BulletCol
 
 };
 
