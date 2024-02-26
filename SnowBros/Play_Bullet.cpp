@@ -29,7 +29,7 @@ void APlay_Bullet::BeginPlay()
 		
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 
-		StateChange(EBulletState::AttackNormal);
+		//StateChange(EBulletState::AttackNormal);
 	
 	}
 
@@ -81,7 +81,7 @@ void APlay_Bullet::Tick(float _DeltaTime)
 
 void APlay_Bullet::DirCheck()
 {
-	EActorDir Dir = DirState;
+	EBulletDir Dir = BulletDirState;
 	//if (플레이어의 방향이 Left면)
 	//{
 	//	Dir = EActorDir::Left;
@@ -93,9 +93,9 @@ void APlay_Bullet::DirCheck()
 
 	
 
-	if (Dir != DirState)
+	if (Dir != BulletDirState)
 	{
-		DirState = Dir;
+		BulletDirState = Dir;
 		std::string Name = GetAnimationName(CurAnimationName);
 
 		//Renderer->ChangeAnimation(Name, true, Renderer->GetCurAnimationFrame(), Renderer->GetCurAnimationTime());
@@ -117,9 +117,8 @@ void APlay_Bullet::StateChange(EBulletState _State)
 			BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 			break;
 			
-
 		case EBulletState::AttackCol:
-			BulletCol();
+			//BulletCol();
 			break;
 					
 		default:
@@ -169,14 +168,16 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
 	std::string DirName = "";
 
-	switch (DirState)
+	switch (BulletDirState)
 	{
-	case EActorDir::Left:
+	case EBulletDir::Left:
 		DirName = "_Left";
 		break;
-	case EActorDir::Right:
+
+	case EBulletDir::Right:
 		DirName = "_Right";
 		break;
+		
 	default:
 		break;
 	}

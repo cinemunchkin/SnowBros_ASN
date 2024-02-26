@@ -1,6 +1,7 @@
 #pragma once
 #include <EngineCore/Collision.h>
 #include <EngineCore\Actor.h>
+#include "SnowBros_Helper.h"
 
 class APlay_Bullet :public UCollision , public AActor
 {
@@ -22,15 +23,15 @@ public:
 	//공격파티클 방향설정
 	FVector AddBulletDir(FVector _Dir)
 	{
-		Dir += _Dir;
+		BulletDir += _Dir;
 	}
 	void SetBulletDir(const FVector _Dir)
 	{
-		Dir = _Dir;
+		BulletDir = _Dir;
 	}
 	FVector GetBulletDir()
 	{
-		return Dir;
+		return BulletDir;
 	}
 
 
@@ -45,11 +46,16 @@ protected:
 
 
 
-	EActorDir DirState = EActorDir::Right;
+	EBulletDir BulletDirState = EBulletDir::Right;
+
 	std::string CurAnimationName = "None";
 
 	EBulletState State = EBulletState::None;
 	void StateChange(EBulletState _State);
+
+	////이게 왜 문제가 잡힐까 이해가 안되네 
+	//ㅁㅊㅁㅊㅁㅊㅁㅊㅁㅊㅁ헤더를 추가 안했네 enumclass 아오 멍청이
+
 
 
 	//공격파티클 일반
@@ -63,7 +69,7 @@ private:
 	UCollision* BodyCollision = nullptr;
 	UImageRenderer* BulletRenderer = nullptr;
 
-	FVector Dir = FVector::Zero;
+	FVector BulletDir = FVector::Zero;
 
 
 };
