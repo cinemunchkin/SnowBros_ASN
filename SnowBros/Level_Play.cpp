@@ -1,5 +1,6 @@
 #include "Level_Play.h"
 #include "Play_Map.h"
+#include "Ending_Map.h"
 #include <EngineCore\EngineCore.h>
 #include "Play_Monster.h"
 #include "Play_Player.h"
@@ -28,7 +29,7 @@ void ULevel_Play::BeginPlay()
  
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
-		 Player->SetActorLocation({ 200, 300 });
+		 Player->SetActorLocation({ 300, 300 });
 		 Player->SetName("Player");
 		
 		 	
@@ -39,6 +40,7 @@ void ULevel_Play::BeginPlay()
 		 Monster->SetName("Monster");
 		 Monster->SetActorLocation({ 200, 300 });
 	 }
+
 
 
 }
@@ -53,9 +55,7 @@ void ULevel_Play::Tick(float _DeltaTime)
 		GEngine->ChangeLevel("End");
 	
 	}
-
-	
-
+		
 }
 
 void ULevel_Play::LevelStart(ULevel* _Level)

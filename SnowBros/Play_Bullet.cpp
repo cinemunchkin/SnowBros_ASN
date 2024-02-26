@@ -85,7 +85,7 @@ void APlay_Bullet::Tick(float _DeltaTime)
 			FVector BulletDir = FVector::Left;
 
 			FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
+			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos );
 
 		}
 

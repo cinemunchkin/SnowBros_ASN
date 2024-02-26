@@ -18,9 +18,7 @@ void ULevel_End::BeginPlay()
 	AEnding_Map* EMap = SpawnActor<AEnding_Map>();
 	EMap->SetMapImage("Title_Ending_01.png");
 	EMap->SetMapImage("Title_Start_01.png");
-	
-	//AEnding_Map* EndingMap = SpawnActor<AEnding_Map>();
-	//EndingMap->SetMapImage("Title_Ending_01.png");
+
 
 	
 }

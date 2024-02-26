@@ -92,7 +92,7 @@ void USnowBros_Core::BeginPlay()
 	CreateLevel<ULevel_End>("End");
 
 
-	ChangeLevel("Play");
+	ChangeLevel("Title");
 }
 
 void USnowBros_Core::Tick(float _DeltaTime)
