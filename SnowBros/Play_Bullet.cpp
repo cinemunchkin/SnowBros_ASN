@@ -33,6 +33,13 @@ void APlay_Bullet::BeginPlay()
 	
 	}
 
+	{
+		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Bullet);
+		BodyCollision->SetPosition(BulletRenderer->GetPosition()); // 오!! 됐다!! Bullet Position = Bullet Collision 
+		BodyCollision->SetScale({ 25, 25 });
+		BodyCollision->SetColType(ECollisionType::CirCle);
+	}
+
 
 }
 
@@ -42,6 +49,15 @@ void APlay_Bullet::Tick(float _DeltaTime)
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
+
+	std::vector<UCollision*> Result;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, Result))
+	{
+		// 이런식으로 상대를 사용할수 있다.
+		BodyCollision->SetActive(true, 1.0f);
+		// BodyCollision = nullptr;
+	}
+
 	
 	//Bullet 일단 플레이어 근처에서 얼쩡얼쩡
 	// 이제 키 누르면 spawn되도록
@@ -50,28 +66,18 @@ void APlay_Bullet::Tick(float _DeltaTime)
 		FVector PlayerPos = Player->GetActorLocation();
 		FVector BulletPos = GetActorLocation();
 
-
-		//FVector BulletDir = PlayerPos - BulletPos;
-		// 총알이 몸 바깥으로 가도록 어떻게하지
 		FVector BulletDir = FVector::Right;
-
-
-
-		//BulletDir = FVector::Zero;
 
 		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
 
 
 		
 		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
-
-		
 		// 아 오키 방향을 정해줘야하는구만 ㅇㅋㅇㅋ
 		
-		//AddActor
+	BulletRenderer -> Destroy(0.1f);
 	}
 	
-	BulletRenderer -> Destroy(0.1f);
 
 }
 
