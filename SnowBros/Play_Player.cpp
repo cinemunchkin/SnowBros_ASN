@@ -402,7 +402,7 @@ void APlay_Player::Run(float _DeltaTime)
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
 	if (true == UEngineInput::IsFree(VK_LEFT) 
 		&& true == UEngineInput::IsFree(VK_RIGHT)
-		&& true == UEngineInput::IsFree('Z'))
+		)
 	{
 		StateChange(EPlayState::Idle);
 		//MoveUpdate(_DeltaTime);
@@ -410,24 +410,31 @@ void APlay_Player::Run(float _DeltaTime)
 	}
 
 	//뛰는 동안에 점프키 누르면 점프
+	//방향키 누르는 방향으로 전진 - 가속도 필요없음
 	if (true == UEngineInput::IsDown('Z'))
 	{
 		StateChange(EPlayState::Jump);
 		return;		
 	}
 
-	//방향키 누르는 방향으로 전진 - 가속도 필요없음
 	if (true==UEngineInput::IsPress(VK_LEFT))
 	{
+
 		AddMoveVector(FVector::Left * _DeltaTime);
 		//return;
 	}
 
+
 	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		AddMoveVector(FVector::Right*_DeltaTime);	
+		
 	}
 	
+	
+
+
+
 	MoveUpdate(_DeltaTime);
 
 	FVector CheckPos = GetActorLocation();
@@ -494,13 +501,13 @@ void APlay_Player::Jump(float _DeltaTime)
 	
 	
 
-	if ( true == UEngineInput::IsPress(VK_RIGHT))
+	if ( true == UEngineInput::IsDown(VK_RIGHT))
 	{
 		JumpVector += FVector::Right * _DeltaTime;
 		return;
 	}
 
-	if (true == UEngineInput::IsPress(VK_LEFT) )
+	if (true == UEngineInput::IsDown(VK_LEFT) )
 	{
 		JumpVector += FVector::Left * _DeltaTime;
 		return;

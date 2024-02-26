@@ -18,7 +18,7 @@ void APlay_Monster::BeginPlay()
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
-		MonsterRenderer->SetTransform({ {0,0}, {64, 64} });
+		MonsterRenderer->SetTransform({ {0,0}, {48, 48} });
 		MonsterRenderer->SetImage("Monster_01.png");
 	}
 	
@@ -49,10 +49,10 @@ void APlay_Monster::Tick(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, Result))
 	{// 만약에 플레이어와 collisioncheck를 했을때, true면
 
-		//BodyCollision->SetActive(true, 0.1f);
-		//APlay_Player* Player = GetActorLocation();
+		/*BodyCollision->SetActive(true, 0.1f);
+		APlay_Player* Player = GetActorLocation();
 
-		//StateChange(EMonsterState::SnowBall);
+		*/StateChange(EMonsterState::SnowBall);
 		Destroy();
 
 		
@@ -70,12 +70,12 @@ void APlay_Monster::Tick(float _DeltaTime)
 	FVector MonsterPos = GetActorLocation();
 
 	//몬스터 쫓아다니는 함수
-	//FVector MonsterDir = PlayerPos - MonsterPos;
-	//// MonsterDir.Y = 0.0f;
-	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+	FVector MonsterDir = PlayerPos - MonsterPos;
+	 MonsterDir.Y = 0.0f;
+	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	//AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
-	///----
+	AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
+	//----
 
 
 	// 플레이어를 알아야 한다.

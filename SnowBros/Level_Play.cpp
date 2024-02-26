@@ -38,7 +38,7 @@ void ULevel_Play::BeginPlay()
 	 {
 		 APlay_Monster* Monster = SpawnActor<APlay_Monster>();
 		 Monster->SetName("Monster");
-		 Monster->SetActorLocation({ 200, 300 });
+		 Monster->SetActorLocation({ 100, 300 });
 	 }
 
 
