@@ -78,6 +78,7 @@ void USnowBros_Core::BeginPlay()
 	///공격 파티클
 	////기본
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Bullet_R.png", 2, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Bullet_L.png", 2, 1);
 
 	
 	// 

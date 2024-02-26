@@ -47,7 +47,7 @@ protected:
 
 
 
-	EBulletDir BulletDirState = EBulletDir::Right;
+	EBulletDir BulletDirState = EBulletDir::Left;
 
 	std::string CurAnimationName = "None";
 

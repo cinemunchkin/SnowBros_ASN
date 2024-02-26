@@ -25,9 +25,11 @@ void APlay_Bullet::BeginPlay()
 		//일단 만들어지는 지부터 보자!
 		BulletRenderer = CreateImageRenderer(SnowBrosRenderOrder::Bullet);
 		BulletRenderer->SetImage("SnowBros_Bullet_R.png");
+		BulletRenderer->SetImage("SnowBros_Bullet_L.png");
 		BulletRenderer->SetTransform({ {16,-24}, {32*1.2f, 68*1.2f} });
 		
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
+		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
 
 		StateChange(EBulletState::BulletNormal);
 	
@@ -68,22 +70,29 @@ void APlay_Bullet::Tick(float _DeltaTime)
 		*/
 		
 		APlay_Bullet* Bullet = nullptr;
-		FVector BulletDir = FVector::Right;
-
 		
-
-		APlay_Player* Player = APlay_Player::GetMainPlayer();
-		if (true == FVector::Right)
+		if (true == UEngineInput::IsPress(VK_RIGHT))
 		{
+			FVector BulletDir = FVector::Right;
+
+			FVector BulletDirNormal = BulletDir.Normalize2DReturn();
+			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
+
+
+		}
+		else
+		{
+			FVector BulletDir = FVector::Left;
+
+			FVector BulletDirNormal = BulletDir.Normalize2DReturn();
+			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
 
 		}
 
 	
 
+		
 
-
-		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
 
 
 
