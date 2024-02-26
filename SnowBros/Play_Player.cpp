@@ -92,7 +92,7 @@ void APlay_Player::Tick(float _DeltaTime)
 
 	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		BodyCollision->SetScale({ 100, 100 });
+		BodyCollision->SetScale({ 32, 64 });
 		BodyCollision->SetColType(ECollisionType::Rect);
 
 	}
@@ -102,26 +102,19 @@ void APlay_Player::Tick(float _DeltaTime)
 
 
 	std::vector<UCollision*> Result;
-	//UCollision* CollisionPlay = Result[0];
-	//if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
-	//{
-	//	// 이런식으로 상대를 사용할수 있다.
-	//	BodyCollision->SetActive(true, 0.5f);
-	//	
-	//	// BodyCollision = nullptr;
-	//}
+	if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
+	{
+		UCollision* Collision = Result[0];	
+		BodyCollision->SetActive(true, 0.5f);
+		
+		Strobe(_DeltaTime);
+
 	
 
-	//	if (_DeltaTime < 0.5f)
-	//	{
-	//		APlay_Player::Strobe(_DeltaTime);
-	//	}
-	//	else
-	//	{
-	//		StateChange(EPlayState::Idle);
-	//	}
+		// BodyCollision = nullptr;
+	}
+	
 
-	//}
 
 
 
@@ -190,7 +183,7 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 		Renderer->ChangeAnimation(GetAnimationName("Idle"));
 
 
-		/*StateChange(EPlayState::Idle);*/
+		StateChange(EPlayState::Idle);
 	
 				
 	}
@@ -371,6 +364,9 @@ void APlay_Player::AttackStart()
 
 void APlay_Player::Idle(float _DeltaTime)
 {
+	//MoveVector = FVector::Zero;
+	MoveUpdate(_DeltaTime);
+
 	//Idle상태에서
 	///방향키를 누르면 왼/오 이동
 	if (true == UEngineInput::IsPress(VK_LEFT) ||
@@ -390,12 +386,7 @@ void APlay_Player::Idle(float _DeltaTime)
 	{
 		StateChange(EPlayState::Attack);
 		return;
-
-
 	}
-
-	MoveUpdate(_DeltaTime);
-
 }
 
 
@@ -516,30 +507,29 @@ void APlay_Player::Fire_Bullet()
 void APlay_Player::Jump(float _DeltaTime)
 {	
 	DirCheck();
-	FVector JumpPos;
+	//FVector JumpPos;
+	//if (true == UEngineInput::IsUp('Z'))
+	//{
 
-	if (true == UEngineInput::IsUp('Z'))
-	{
+	//	JumpVector = FVector::Zero;
+	//	
+	//	MoveUpdate(_DeltaTime);
+	//	//return;
 
-		JumpVector = FVector::Zero;
-		
-		MoveUpdate(_DeltaTime);
-		//return;
-
-	}
-	if (true == UEngineInput::IsFree('Z')
-		&& UEngineInput::IsFree(VK_RIGHT)
-		&& UEngineInput::IsFree(VK_LEFT))
-	{
-		JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
-	}
+	//}
+	//if (true == UEngineInput::IsFree('Z')
+	//	&& UEngineInput::IsFree(VK_RIGHT)
+	//	&& UEngineInput::IsFree(VK_LEFT))
+	//{
+	//	JumpVector = FVector::Zero;
+	//	StateChange(EPlayState::Idle);
+	//	return;
+	//}
 
 
 	if (/*true == UEngineInput::IsPress(VK_LEFT) ||*/ true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		JumpPos += FVector::Left * _DeltaTime;
+		MoveVector += FVector::Right * _DeltaTime;
 		
 		/*StateChange(EPlayState::Idle);
 		
@@ -548,38 +538,38 @@ void APlay_Player::Jump(float _DeltaTime)
 
 	if (true == UEngineInput::IsPress(VK_LEFT) /*|| true == UEngineInput::IsPress(VK_RIGHT)*/)
 	{
-		JumpPos += FVector::Right * _DeltaTime;
+		MoveVector += FVector::Left * _DeltaTime;
 
 		/*StateChange(EPlayState::Idle);
 
 		return;*/
 	}
 
-	if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown('Z'))
+	//if (true == UEngineInput::IsPress(VK_LEFT) && true == UEngineInput::IsDown('Z'))
+	//{
+
+	//	JumpPos = JumpPower;
+	//	CalGravityVector(_DeltaTime);
+	//	// 수정 필요
+	//	AddActorLocation(JumpPos);
+	//	if (UEngineInput::IsUp('Z'))
+	//	{
+	//		JumpPos = FVector::Zero;
+	//		StateChange(EPlayState::Idle);
+	//	}
+
+	//}
+	MoveUpdate(_DeltaTime);
+
+
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
 	{
-
-		JumpPos = JumpPower;
-		CalGravityVector(_DeltaTime);
-		// 수정 필요
-		AddActorLocation(JumpPos);
-		if (UEngineInput::IsUp('Z'))
-		{
-			JumpPos = FVector::Zero;
-			StateChange(EPlayState::Idle);
-		}
-
+		JumpVector = FVector::Zero;
+		//	JumpVector = FVector::Zero;
+		StateChange(EPlayState::Idle);
+		return;
 	}
-		MoveUpdate(_DeltaTime);
-
-
-		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-		if (Color == Color8Bit(0, 255, 255, 0))
-		{
-			JumpPos = FVector::Zero;
-			//	JumpVector = FVector::Zero;
-			StateChange(EPlayState::Idle);
-			return;
-		}
 
 	
 

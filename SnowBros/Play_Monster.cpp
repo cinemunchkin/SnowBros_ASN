@@ -24,6 +24,8 @@ void APlay_Monster::BeginPlay()
 	
 	{
 		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01.png", 0, 5, 0.1f, true);
+
 		StateChange(EMonsterState::Idle);
 	}
 
@@ -31,7 +33,7 @@ void APlay_Monster::BeginPlay()
 	{
 		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Monster);
 		BodyCollision->SetColType(ECollisionType::Rect);
-		BodyCollision->SetScale({ 100, 100 });
+		BodyCollision->SetScale({ 80, 80 });
 	}
 
 
@@ -50,16 +52,11 @@ void APlay_Monster::Tick(float _DeltaTime)
 		//BodyCollision->SetActive(true, 0.1f);
 		//APlay_Player* Player = GetActorLocation();
 
-		StateChange(EMonsterState::SnowBall);
+		//StateChange(EMonsterState::SnowBall);
+		Destroy();
 
 		
 	}
-
-
-
-
-
-
 
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
@@ -208,6 +205,6 @@ void APlay_Monster::Idle(float _DeltaTime)
 
 
 void APlay_Monster::Physics(float _DeltaTime)
-{
+{// 중력이랑 이동함수
 
 }
