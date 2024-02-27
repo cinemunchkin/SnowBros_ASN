@@ -27,6 +27,7 @@ public:
 		BulletDir += _Dir;
 	}*/
 	void SetBulletDir(EActorDir _Dir)
+		//(Player->DirState);
 	{
 		BulletDir = _Dir;
 	}

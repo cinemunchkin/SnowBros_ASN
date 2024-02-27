@@ -27,6 +27,9 @@ public:
 	APlay_Player& operator=(const APlay_Player& _Other) = delete;
 	APlay_Player& operator=(APlay_Player&& _Other) noexcept = delete;
 
+	EPlayState State = EPlayState::None;
+	EActorDir DirState = EActorDir::Right;
+
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
@@ -73,8 +76,7 @@ protected:
 	void FlyStart();
 
 
-	EPlayState State = EPlayState::None;
-	EActorDir DirState = EActorDir::Right;
+
 	
 	std::string CurAnimationName = "None";
 

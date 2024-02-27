@@ -64,34 +64,16 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	{
 		FVector PlayerPos = Player->GetActorLocation();
 		FVector BulletPos = GetActorLocation(); // 플레이어, 공격 포지션 받아서 
-
-		/*
-		플레이어 방향이 -> Right이면 / Left면 
-		*/
 		
 		APlay_Bullet* Bullet = nullptr;
+		Bullet->SetBulletDir(Player->DirState);
 		
-		if (true == UEngineInput::IsPress(VK_RIGHT))
-		{
-			FVector BulletDir = FVector::Right;
 
-			FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
+		FVector BulletDir = FVector::Right;
 
 
-		}
-		else
-		{
-			FVector BulletDir = FVector::Left;
-
-			FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-			AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos );
-
-		}
-
-	
-
-		
+		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
+		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
 
 
 
