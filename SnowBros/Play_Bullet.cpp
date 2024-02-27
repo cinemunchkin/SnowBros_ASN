@@ -50,79 +50,11 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 
 
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-
-	std::vector<UCollision*> Result;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, Result))
-	{
-		// 이런식으로 상대를 사용할수 있다.
-		BodyCollision->SetActive(true, 1.0f);
-		// BodyCollision = nullptr;
-	}
-
-	
-	{
-		FVector PlayerPos = Player->GetActorLocation();
-		FVector BulletPos = GetActorLocation(); // 플레이어, 공격 포지션 받아서 
-		
-		APlay_Bullet* Bullet = nullptr;
-		Bullet->SetBulletDir(Player->DirState);
-		
-
-		FVector BulletDir = FVector::Right;
-
-
-		FVector BulletDirNormal = BulletDir.Normalize2DReturn();
-		AddActorLocation(BulletDirNormal * _DeltaTime * PlayerPos);
-
-
-
-
-
-		//Bullet->DirState.X-> SetBulletDir(Player->DirState.X)
-
-		//fvector                float
-		//Bullet->SetBulletDir(Player->DirState);
-		//fvector 에서 x랑 y랑 따로 꺼내면 됨!!!
-		//
-
-		
-		
-		
-	}
-	
-	BulletRenderer->Destroy(0.1f);
-
+	AddActorLocation(Dir * _DeltaTime * 100.0f);
 }
 
 
 
-
-
-void APlay_Bullet::DirCheck()
-{
-	EBulletDir Dir = BulletDirState;
-	//if (플레이어의 방향이 Left면)
-	//{
-	//	Dir = EActorDir::Left;
-	//}
-	//if (플레이어의 방향이 Right면)
-	//{
-	//	Dir = EActorDir::Right;
-	//}
-
-	
-
-	if (Dir != BulletDirState)
-	{
-		BulletDirState = Dir;
-		std::string Name = GetAnimationName(CurAnimationName);
-
-		//Renderer->ChangeAnimation(Name, true, Renderer->GetCurAnimationFrame(), Renderer->GetCurAnimationTime());
-		////특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
-		//Renderer->ChangeAnimation(Name);
-	}
-}
 
 
 void APlay_Bullet::StateChange(EBulletState _State)

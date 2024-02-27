@@ -482,13 +482,29 @@ void APlay_Player::Attack(float _DeltaTime)
 }
 
 void APlay_Player::Fire_Bullet()
-{
-	//APlay_Player* Player = nullptr;
-	
+{// bullet방향을 tick에서 해버리면, 플레이어가 방향 전환 할 때마다 ㅜㅜ 
+// 공격파티클 방향도 같이 전환되어벌임 ㅠㅠ
+
+	DirCheck();
 	APlay_Bullet* Bullet = GetWorld()->SpawnActor<APlay_Bullet>();
 	Bullet->SetName("Bullet");
 	Bullet->SetActorLocation(this->GetActorLocation());
-	
+	switch (DirState)
+	{
+	case EActorDir::None:
+		break;
+	case EActorDir::Left:
+		Bullet->Dir = FVector::Left;
+		break;
+	case EActorDir::Right:
+		Bullet->Dir = FVector::Right;
+		break;
+	case EActorDir::Jump:
+		break;
+	default:
+		break;
+	}
+	 // 여기선 할일 끝냄 .  bullet -> spawnactor 해줬고, 액터 위치도 플레이어랑 맞췄고
 	return;
 }
 

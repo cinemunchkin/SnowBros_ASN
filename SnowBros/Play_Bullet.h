@@ -36,6 +36,7 @@ public:
 		return BulletDir;
 	}
 
+	FVector Dir = FVector::Left;
 
 
 protected:
@@ -70,8 +71,8 @@ protected:
 private:
 	UCollision* BodyCollision = nullptr;
 	UImageRenderer* BulletRenderer = nullptr;
-
 	EActorDir BulletDir = EActorDir::None;
+
 
 
 };
