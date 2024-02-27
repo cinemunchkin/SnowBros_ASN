@@ -43,7 +43,7 @@ protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
 
-	void DirCheck();
+	
 
 	std::string GetAnimationName(std::string _Name);
 

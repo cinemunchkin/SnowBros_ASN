@@ -34,6 +34,7 @@ void APlay_Player::BeginPlay()
 		Renderer->SetImage("SnowBros_Jump_R.png");
 		Renderer->SetImage("SnowBros_Melt.png");
 		Renderer->SetImage("SnowBros_Attack_R.png");
+		Renderer->SetImage("SnowBros_Attack_L.png");
 
 		Renderer->SetTransform({ {0,0}, {64*1.1f, 128*1.1f} });
 		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
@@ -48,7 +49,7 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
 		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.05f, true);
-		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_R.png", 0, 3, 0.05f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.05f, true);
 		
 
 		StateChange(EPlayState::Idle);
@@ -485,6 +486,8 @@ void APlay_Player::Fire_Bullet()
 {// bullet방향을 tick에서 해버리면, 플레이어가 방향 전환 할 때마다 ㅜㅜ 
 // 공격파티클 방향도 같이 전환되어벌임 ㅠㅠ
 
+
+
 	DirCheck();
 	APlay_Bullet* Bullet = GetWorld()->SpawnActor<APlay_Bullet>();
 	Bullet->SetName("Bullet");
@@ -504,7 +507,7 @@ void APlay_Player::Fire_Bullet()
 	default:
 		break;
 	}
-	 // 여기선 할일 끝냄 .  bullet -> spawnactor 해줬고, 액터 위치도 플레이어랑 맞췄고
+	
 	return;
 }
 

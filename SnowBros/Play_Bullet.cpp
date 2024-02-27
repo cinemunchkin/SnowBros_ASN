@@ -124,6 +124,7 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 	{
 	case EBulletDir::Left:
 		DirName = "_Left";
+		
 		break;
 
 	case EBulletDir::Right:

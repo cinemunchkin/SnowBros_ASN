@@ -62,6 +62,7 @@ void USnowBros_Core::BeginPlay()
 
 	///°ø°Ý
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Attack_R.png", 4, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Attack_L.png", 4, 1);
 
 
 	///¸áÆÃ
