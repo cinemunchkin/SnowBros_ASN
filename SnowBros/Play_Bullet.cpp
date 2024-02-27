@@ -31,7 +31,7 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
 
-		StateChange(EBulletState::BulletNormal);
+		StateChange(EBulletState::Bullet);
 	
 	}
 
@@ -65,7 +65,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 	{
 		switch (_State)
 		{
-		case EBulletState::BulletNormal:
+		case EBulletState::Bullet:
 			BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 			break;
 			

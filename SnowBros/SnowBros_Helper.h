@@ -70,7 +70,7 @@ enum class EMonsterState
 
 enum class EBulletState
 {	None,
-	BulletNormal,
+	Bullet,
 	BulletCol
 
 };
