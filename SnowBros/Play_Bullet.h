@@ -62,7 +62,7 @@ protected:
 
 
 	//공격파티클 일반
-	void BulletNormal();
+	void Bullet();
 	//공격파티클 충돌시
 	void BulletCol();
 	//공격 파티클 소멸

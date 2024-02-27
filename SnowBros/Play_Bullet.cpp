@@ -85,7 +85,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 
 
 
-void APlay_Bullet::BulletNormal()
+void APlay_Bullet::Bullet()
 {
 
 }
@@ -120,8 +120,13 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
 	std::string DirName = "";
 
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+
 	switch (BulletDirState)
 	{
+		//if(true == Player->EActorDir::Left)
+		//{ 이안에 case문을 넣으면 되지 않을까?
+		// }
 	case EBulletDir::Left:
 		DirName = "_Left";
 		
