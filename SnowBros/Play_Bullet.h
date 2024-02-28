@@ -27,7 +27,7 @@ public:
 		BulletDir += _Dir;
 	}*/
 	void SetBulletDir(EActorDir _Dir)
-		//(Player->DirState);
+		
 	{
 		BulletDir = _Dir;
 	}
@@ -38,6 +38,7 @@ public:
 
 	FVector Dir = FVector::Left;
 
+	void SetAnimation(std::string _Name);
 	void BulletColState(EBulletState _State);
 
 
@@ -47,16 +48,17 @@ protected:
 
 	
 
+	void StateChange(EBulletState _State);
 	std::string GetAnimationName(std::string _Name);
+	std::string GetAnimationFullName(std::string _Name);
 
 
 
-	EBulletDir BulletDirState = EBulletDir::Left;
+	EActorDir BulletDirState = EActorDir::Left;
 
 	std::string CurAnimationName = "None";
 
 	EBulletState State = EBulletState::None;
-	void StateChange(EBulletState _State);
 
 	////이게 왜 문제가 잡힐까 이해가 안되네 
 	//ㅁㅊㅁㅊㅁㅊㅁㅊㅁㅊㅁ헤더를 추가 안했네 enumclass 아오 멍청이
@@ -73,7 +75,7 @@ protected:
 private:
 	UCollision* BodyCollision = nullptr;
 	UImageRenderer* BulletRenderer = nullptr;
-	EActorDir BulletDir = EActorDir::None;
+	EActorDir BulletDir = EActorDir::Right;
 
 
 

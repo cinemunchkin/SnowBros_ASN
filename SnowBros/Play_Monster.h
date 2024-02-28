@@ -19,6 +19,8 @@ public:
 	APlay_Monster& operator=(const APlay_Monster& _Other) = delete;
 	APlay_Monster& operator=(APlay_Monster&& _Other) noexcept = delete;
 
+	FVector MonsterDir = FVector::Left;
+
 	
 protected:
 	void BeginPlay() override;
@@ -55,7 +57,7 @@ protected:
 	void MoveCheck(float _DeltaTime);
 
 	EMonsterState State = EMonsterState::None;
-	EActorDir DirState = EActorDir::Right;
+	EMonsterDir MonsterDirState = EMonsterDir::Right;
 	std::string CurAnimationName = "None";
 
 

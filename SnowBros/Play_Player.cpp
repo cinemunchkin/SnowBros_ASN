@@ -25,8 +25,6 @@ void APlay_Player::BeginPlay()
 	MainPlayer = this;  // 아오 이걸 주석처리해놔서 계속 플레이어 없음이 떴네 ..
 	
 
-
-
 	{
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		Renderer->SetImage("SnowBros_Run_R.png");
@@ -92,8 +90,6 @@ void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 	
-	
-
 	{
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
 		BodyCollision->SetPosition(Renderer->GetPosition());
@@ -102,31 +98,13 @@ void APlay_Player::Tick(float _DeltaTime)
 
 	}
 
-
-	//APlay_Player::Strobe(_DeltaTime);
-
-
-	std::vector<UCollision*> Result;
-	if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Monster, Result))
-	{
-		UCollision* Collision = Result[0];	
-		BodyCollision->SetActive(true, 0.5f);
-		Strobe(_DeltaTime);
-
-	}
-	
-
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
-
 	if (nullptr == Player)
 	{
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
 
 	FVector PlayerPos = Player->GetActorLocation();
-	
-
-
 	StateUpdate(_DeltaTime);
 }
 
@@ -184,7 +162,7 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::FastRun: // 포션먹고 빨리달리기
 			FastRunStart();
 			break;
-
+	
 		case EPlayState::Fly: // Stage이동할 때 날기
 			FlyStart();
 			break;
@@ -231,7 +209,6 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 	case EPlayState::Strobe: // 충돌시 깜빡깜빡
 		Strobe(_DeltaTime);
 		break;
-
 	case EPlayState::Fly: // Stage이동할 때 날기
 		Fly(_DeltaTime);
 		break;
@@ -303,7 +280,7 @@ void APlay_Player::StrobeStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Strobe"));
 	DirCheck();
-	Strobe(0.1f);
+	this->Strobe(0.1f);
 }
 
 
@@ -316,22 +293,17 @@ void APlay_Player::FlyStart()
 void APlay_Player::AttackStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Attack"));
-	//Fire_Bullet();
 	DirCheck();
 	Fire_Bullet();
 	
-
 }
-
-
-
-
 
 
 
 void APlay_Player::Idle(float _DeltaTime)
 {
 	//MoveVector = FVector::Zero;
+	//PlayerColPhysics(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -397,9 +369,6 @@ void APlay_Player::Run(float _DeltaTime)
 	}
 	
 	
-
-
-
 	MoveUpdate(_DeltaTime);
 
 	FVector CheckPos = GetActorLocation();
@@ -426,6 +395,7 @@ void APlay_Player::Run(float _DeltaTime)
 	//MoveUpdate(_DeltaTime);
 }
 
+
 void APlay_Player::FastRun(float _DeltaTime)
 {
 }
@@ -434,9 +404,9 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	StrobeUpdate(_StrobeTime);
+	float Strobetime = _StrobeTime;
 
 	//IsStrobeUpdate = false;
-	float Strobetime = _StrobeTime;
 	//if -> 0초보다 크면, 점점 줄어들고 그동안 깜빡
 	//if (0.0f <= _StrobeTime)
 	//{
@@ -484,16 +454,12 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 
 	}
 
-
-
 }
 
 void APlay_Player::Attack(float _DeltaTime)
 {
 	DirCheck();
-	
-	
-	
+
 	if(Renderer->IsCurAnimationEnd())
 	{
 		StateChange(EPlayState::Idle);
@@ -508,23 +474,27 @@ void APlay_Player::Fire_Bullet()
 // 공격파티클 방향도 같이 전환되어벌임 ㅠㅠ
 
 
-
 	DirCheck();
 	APlay_Bullet* Bullet = GetWorld()->SpawnActor<APlay_Bullet>();
 	Bullet->SetName("Bullet");
 	Bullet->SetActorLocation(this->GetActorLocation());
+
+
 	switch (DirState)
 	{
 	case EActorDir::None:
 		break;
 	case EActorDir::Left:
 		Bullet->Dir = FVector::Left;
+		//Bullet의 애니메이션을 정해주는 함수 필요
+		Bullet->SetAnimation("Bullet_Left");
+		//G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
 		break;
 	case EActorDir::Right:
-		Bullet->Dir = FVector::Right;
+		Bullet->Dir = FVector::Right;	
+		Bullet->SetAnimation("Bullet_Right");
 		break;
-	case EActorDir::Jump:
-		break;
+	
 	default:
 		break;
 	}
@@ -590,6 +560,8 @@ void APlay_Player::Fly(float _DeltaTime)
 }
 
 
+
+
 void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {
 
@@ -616,7 +588,6 @@ void APlay_Player::CalMoveVector(float _DeltaTime)
 	}
 	CheckPos.Y -= 32.0f;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0

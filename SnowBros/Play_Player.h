@@ -78,7 +78,7 @@ protected:
 	void FlyStart();
 
 
-
+	//void PlayerColPhysics(float _DeltaTime);
 	
 	std::string CurAnimationName = "None";
 

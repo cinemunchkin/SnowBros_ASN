@@ -32,12 +32,15 @@ enum class EActorDir
 	Jump
 };
 
-enum class EBulletDir
+enum class EMonsterDir
 {
+	None,
 	Left,
 	Right
-	
 };
+
+
+
 
 enum class EPlayState
 {

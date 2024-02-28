@@ -78,12 +78,12 @@ void APlay_Monster::Tick(float _DeltaTime)
 
 void APlay_Monster::DirCheck() //다시 설정 필요
 {
-	EActorDir Dir = DirState;
+	EMonsterDir Dir = MonsterDirState;
 
 
-	if (Dir != DirState)
+	if (Dir != MonsterDirState)
 	{
-		DirState = Dir;
+		MonsterDirState = Dir;
 		std::string Name = GetAnimationName(CurAnimationName);
 
 		MonsterRenderer->ChangeAnimation(Name, true, MonsterRenderer->GetCurAnimationFrame(), MonsterRenderer->GetCurAnimationTime());
@@ -101,12 +101,12 @@ std::string APlay_Monster::GetAnimationName(std::string _Name)
 {
 	std::string DirName = "";
 
-	switch (DirState)
+	switch (MonsterDirState)
 	{
-	case EActorDir::Left:
+	case EMonsterDir::Left:
 		DirName = "_Left";
 		break;
-	case EActorDir::Right:
+	case EMonsterDir::Right:
 		DirName = "_Right";
 		break;
 	default:
@@ -222,6 +222,23 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
+	switch (MonsterDirState)
+	{
+	case EMonsterDir::None:
+		break;
+	case EMonsterDir::Left:
+		this->MonsterDir = FVector::Left;
+		break;
+	case EMonsterDir::Right:
+		this->MonsterDir = FVector::Right;
+		break;
+
+	}
+
+
+
+
+
 	//몬스터 쫓아다니는 함수
 	FVector MonsterDir = PlayerPos - MonsterPos;
 
@@ -231,13 +248,13 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 
 	
 
-	if (this->DirState == EActorDir::Right)
+	if (this->MonsterDirState == EMonsterDir::Right)
 	{
 		MonsterRenderer->ChangeAnimation("Idle_Right");
 		AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
 		return;
 	}
-	if (this->DirState == EActorDir::Left)
+	if (this->MonsterDirState == EMonsterDir::Left)
 	{
 		MonsterRenderer->ChangeAnimation("Idle_Left");
 		AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
@@ -336,12 +353,12 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 {
 
 	FVector CheckPos = GetActorLocation();
-	switch (DirState)
+	switch (MonsterDirState)
 	{
-	case EActorDir::Left:
+	case EMonsterDir::Left:
 		CheckPos.X -= 30;
 		break;
-	case EActorDir::Right:
+	case EMonsterDir::Right:
 		CheckPos.X += 30;
 		break;
 	default:

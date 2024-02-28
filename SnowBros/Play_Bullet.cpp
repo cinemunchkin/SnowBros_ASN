@@ -112,20 +112,29 @@ void APlay_Bullet::StateChange(EBulletState _State)
 }
 
 
+void APlay_Bullet::SetAnimation(std::string _Name)
+{
+	std::string FullName = GetAnimationFullName(_Name);
+	BulletRenderer->ChangeAnimation(FullName);
+}
+
+std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
+{
+	return _Name;
+
+}
+
 
 void APlay_Bullet::Bullet()
 {
-
+	
 }
 void APlay_Bullet::BulletCol()
 {
 
 }
 
-void APlay_Bullet::BulletDestroy()
-{
 
-}
 //{
 //	if (/*충돌하면0 > GetPos().Y*/)
 //	{
@@ -143,7 +152,6 @@ void APlay_Bullet::BulletDestroy()
 
 
 
-
 std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
 	std::string DirName = "";
@@ -155,12 +163,12 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 		//if(true == Player->EActorDir::Left)
 		//{ 이안에 case문을 넣으면 되지 않을까?
 		// }
-	case EBulletDir::Left:
+	case EActorDir::Left:
 		DirName = "_Left";
 		
 		break;
 
-	case EBulletDir::Right:
+	case EActorDir::Right:
 		DirName = "_Right";
 		break;
 		
