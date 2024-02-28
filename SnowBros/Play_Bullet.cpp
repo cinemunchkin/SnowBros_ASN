@@ -3,6 +3,7 @@
 #include <EngineCore/Level.h>
 
 #include <string_view>
+#include <vector>
 
 #include "SnowBros_Helper.h"
 #include "Play_Bullet.h"
@@ -47,7 +48,7 @@ void APlay_Bullet::BeginPlay()
 		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Bullet);
 		BodyCollision->SetPosition(BulletRenderer->GetPosition()); // 오!! 됐다!! Bullet Position = Bullet Collision 
 		BodyCollision->SetScale({ 25, 25 });
-		BodyCollision->SetColType(ECollisionType::CirCle);
+		BodyCollision->SetColType(ECollisionType::Rect);
 	}
 
 
@@ -57,59 +58,64 @@ void APlay_Bullet::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
-
-	AddActorLocation(Dir * _DeltaTime * 100.0f);
+	//이것도 곡선으로 나가는거.. 해야함.. 포물선
+	AddActorLocation(Dir * _DeltaTime * 150.0f);
 }
 
 
 
-void APlay_Bullet::BulletColState(EBulletState _State)
+std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
+	std::string DirName = "";
 
-	if (State != _State)
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+
+	switch (BulletDirState)
 	{
-		switch (_State)
-		{
-	
-		case EBulletState::BulletCol:
-			BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
-			break;
+	case EActorDir::Left:
+		DirName = "_Left";
 
-		default:
-			break;
-		}
+		break;
+
+	case EActorDir::Right:
+		DirName = "_Right";
+		break;
+
+	default:
+		break;
 	}
 
-	State = _State;
+	CurAnimationName = _Name;
 
+	return _Name + DirName;
 
 }
 
+
+
 void APlay_Bullet::StateChange(EBulletState _State)
-
-{
-
+{//애니메이션
 	if (State != _State)
 	{
 		switch (_State)
 		{
 		case EBulletState::Bullet:
-			BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
+			BulletStart();
 			break;
-			
+
 		case EBulletState::BulletCol:
-			BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
+			BulletColStart();
 			break;
-					
+
 		default:
 			break;
 		}
 	}
 
 	State = _State;
-
-
 }
+
+
 
 
 void APlay_Bullet::SetAnimation(std::string _Name)
@@ -125,15 +131,42 @@ std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
 }
 
 
-void APlay_Bullet::Bullet()
+void APlay_Bullet::Bullet(float _DeltaTime)
+{
+	std::vector<UCollision*> BulletResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
+	{
+
+		StateChange(EBulletState::BulletCol);
+		return;
+	}
+
+}
+void APlay_Bullet::BulletCol(float _DeltaTime)
 {
 	
+		std::vector<UCollision*> BulletResult;
+
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, BulletResult))
+	{
+		this->SetAnimation("BulletCol_Left");
+		return;
+	}
+
 }
-void APlay_Bullet::BulletCol()
+
+
+void APlay_Bullet::BulletStart()
 {
+	BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
 
 }
 
+
+void APlay_Bullet::BulletColStart()
+{
+	BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
+}
 
 //{
 //	if (/*충돌하면0 > GetPos().Y*/)
@@ -149,37 +182,5 @@ void APlay_Bullet::BulletCol()
 //	}
 //AddMoveVector;
 //}
-
-
-
-std::string APlay_Bullet::GetAnimationName(std::string _Name)
-{
-	std::string DirName = "";
-
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-
-	switch (BulletDirState)
-	{
-		//if(true == Player->EActorDir::Left)
-		//{ 이안에 case문을 넣으면 되지 않을까?
-		// }
-	case EActorDir::Left:
-		DirName = "_Left";
-		
-		break;
-
-	case EActorDir::Right:
-		DirName = "_Right";
-		break;
-		
-	default:
-		break;
-	}
-
-	CurAnimationName = _Name;
-
-	return _Name + DirName;
-
-}
 
 

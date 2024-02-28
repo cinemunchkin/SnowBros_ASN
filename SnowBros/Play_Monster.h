@@ -25,14 +25,17 @@ public:
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
-	void Physics(float _DeltaTime);
+	void MonsterColPhysics(float _DeltaTime);
+	void MonsterGravity(float _DeltaTime);
+
 
 	void DirCheck();
 
 
 
 	std::string GetAnimationName(std::string _Name);
-
+	std::string GetAnimationFullName(std::string _Name);
+	void SetAnimation(std::string _Name);
 
 
 	// 상태 주요 업데이트

@@ -3,7 +3,7 @@
 #include <EngineBase/Transform.h>
 #include "SnowBros_Helper.h"
 #include "Play_Monster.h"
-
+#include "Play_Bullet.h"
 
 class APlay_Player : public AActor
 {
@@ -85,6 +85,7 @@ protected:
 
 private:
 	UCollision* BodyCollision = nullptr;
+	UCollision* BulletCollision = nullptr;
 
 	UImageRenderer* Renderer = nullptr;
 	float AnimationTime = 0.0f;

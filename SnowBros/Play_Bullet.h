@@ -21,13 +21,7 @@ public:
 	
 	
 
-	//공격파티클 방향설정
-	/*FVector AddBulletDir(FVector _Dir)
-	{
-		BulletDir += _Dir;
-	}*/
 	void SetBulletDir(EActorDir _Dir)
-		
 	{
 		BulletDir = _Dir;
 	}
@@ -39,7 +33,7 @@ public:
 	FVector Dir = FVector::Left;
 
 	void SetAnimation(std::string _Name);
-	void BulletColState(EBulletState _State);
+	
 
 
 protected:
@@ -66,11 +60,14 @@ protected:
 
 
 	//공격파티클 일반
-	void Bullet();
+	void Bullet(float _DeltaTime);
 	//공격파티클 충돌시
-	void BulletCol();
+	void BulletCol(float _DeltaTime);
 	//공격 파티클 소멸
-	void BulletDestroy();
+	
+
+	void BulletStart();
+	void BulletColStart();
 
 private:
 	UCollision* BodyCollision = nullptr;

@@ -71,6 +71,23 @@ void APlay_Player::BeginPlay()
 
 
 
+void APlay_Player::Tick(float _DeltaTime)
+{
+	AActor::Tick(_DeltaTime);
+	
+
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	if (nullptr == Player)
+	{
+		MsgBoxAssert("플레이어가 존재하지 않습니다.");
+	}
+
+	FVector PlayerPos = Player->GetActorLocation();
+	StateUpdate(_DeltaTime);
+}
+
+
+
 void APlay_Player::DirCheck()
 {
 	EActorDir Dir = DirState;
@@ -97,21 +114,6 @@ void APlay_Player::DirCheck()
 	}
 }
 
-
-void APlay_Player::Tick(float _DeltaTime)
-{
-	AActor::Tick(_DeltaTime);
-	
-
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-	if (nullptr == Player)
-	{
-		MsgBoxAssert("플레이어가 존재하지 않습니다.");
-	}
-
-	FVector PlayerPos = Player->GetActorLocation();
-	StateUpdate(_DeltaTime);
-}
 
 
 
@@ -308,6 +310,7 @@ void APlay_Player::AttackStart()
 void APlay_Player::Idle(float _DeltaTime)
 {
 	//MoveVector = FVector::Zero;
+	DirCheck();
 	PlayerColPhysics(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
@@ -472,6 +475,7 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 void APlay_Player::Attack(float _DeltaTime)
 {
 	DirCheck();
+	
 
 	if(Renderer->IsCurAnimationEnd())
 	{
@@ -497,12 +501,16 @@ void APlay_Player::Fire_Bullet()
 	{
 	case EActorDir::None:
 		break;
+	
 	case EActorDir::Left:
-		Bullet->Dir = FVector::Left;
-		//Bullet의 애니메이션을 정해주는 함수 필요
-		Bullet->SetAnimation("Bullet_Left");
-		//G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
-		break;
+	Bullet->Dir = FVector::Left;
+	//Bullet의 애니메이션을 정해주는 함수 필요
+	Bullet->SetAnimation("Bullet_Left");
+	//G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
+	// 충돌하면 -> 파티클 모양 바뀌는걸.. 여기서 해야할 것 같은데.. 왜 안될까..
+	
+	break;
+	
 	case EActorDir::Right:
 		Bullet->Dir = FVector::Right;	
 		Bullet->SetAnimation("Bullet_Right");
@@ -511,6 +519,7 @@ void APlay_Player::Fire_Bullet()
 	default:
 		break;
 	}
+	
 	
 	return;
 }
@@ -521,6 +530,7 @@ void APlay_Player::Fire_Bullet()
 void APlay_Player::Jump(float _DeltaTime)
 {	
 	DirCheck();
+	PlayerColPhysics(_DeltaTime);
 	
 	
 
@@ -559,6 +569,7 @@ void APlay_Player::DownJump(float _DeltaTime)
 	// Down키 + Jump키  = 아래단으로 내려가기 => 그 순간에만 바닥 충돌 컬러 바꾸면 되나!?
 
 	DirCheck();
+	PlayerColPhysics(_DeltaTime);
 
 	//Jump 상태에서, 스페이스바나 방향키 모두 안눌려있을때 -> Idle로 돌아가기
 	
@@ -573,11 +584,14 @@ void APlay_Player::Fly(float _DeltaTime)
 }
 
 
+
+//플레이어 충돌시 
 void APlay_Player::PlayerColPhysics(float _DeltaTime)
-{//플레이어 충돌
+{	
 	std::vector<UCollision*> PlayerResult;
-	// 설마 설마.. 헤더에 벡터 추가 안해서 ㄱ여태 안됏던 것 같다.. 잠시 멍청했지만 이제 극복햇다
+	// 설마 설마.. 헤더에 벡터 추가 안해서 ㄱ여태 안됏던 것 같다.??. 잠시 멍청했지만 이제 극복햇다
 	//해내버렸다.. 
+	
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, PlayerResult))
 	{
 		Strobe(_DeltaTime);
