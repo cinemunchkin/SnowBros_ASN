@@ -105,17 +105,18 @@ private:
 	//가속도 필요 없음  + 점프 띠용 자연스럽게 구현 -> 중력만 잘 조절
 
 	FVector MoveVector = FVector::Zero;
-	
 	FVector MoveAcc = FVector::Right * 500.0f;
 	float MoveMaxSpeed = 500.0f;
 	void AddMoveVector(const FVector& _DirDelta);
+
+	FVector JumpPower = FVector::Up * 650.0f;
+	FVector JumpVector = FVector::Zero;
+	
 
 	FVector GravityAcc = FVector::Down * 2500.0f;
 	FVector GravityVector = FVector::Zero;
 
 
-	FVector JumpPower = FVector::Up * 650.0f;
-	FVector JumpVector = FVector::Zero;
 
 	// 내가 나갈 모든 방향의 합
 	FVector LastMoveVector = FVector::Zero;

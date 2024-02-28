@@ -54,6 +54,9 @@ void APlay_Player::BeginPlay()
 
 		StateChange(EPlayState::Idle);
 	}
+
+
+
 }
 
 
@@ -88,7 +91,7 @@ void APlay_Player::DirCheck()
 void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-	// Ãæµ¹ ¼ø°£ = 0.0 À¸·Î ÃÊ±âÈ­ ÇØÁà¾ßÇÏ´Â±¸³ª
+	
 	
 
 	{
@@ -108,17 +111,10 @@ void APlay_Player::Tick(float _DeltaTime)
 	{
 		UCollision* Collision = Result[0];	
 		BodyCollision->SetActive(true, 0.5f);
-		
 		Strobe(_DeltaTime);
 
-	
-
-		// BodyCollision = nullptr;
 	}
 	
-
-
-
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 
@@ -137,62 +133,6 @@ void APlay_Player::Tick(float _DeltaTime)
 
 
 
-void APlay_Player::Strobe(float _StrobeTime)
-{
-	StrobeUpdate(_StrobeTime);
-
-	//IsStrobeUpdate = false;
-	float Strobetime = _StrobeTime;
-	//if -> 0ÃÊº¸´Ù Å©¸é, Á¡Á¡ ÁÙ¾îµé°í ±×µ¿¾È ±ôºý
-	//if (0.0f <= _StrobeTime)
-	//{
-	//	for (_StrobeTime; _StrobeTime == 0.0f; _StrobeTime--)
-	//	{
-	//		StrobeUpdate(_StrobeTime);
-	//		//±ôºý°Å¸®´Â°ÅÁö 
-	//	}
-	//}
-	//else
-	//{
-	//	APlay_Player::StateChange(EPlayState::Idle);
-	//}
-}
-
-
-void APlay_Player::StrobeUpdate(float _DeltaTime)
-{
-
-	AlphaTime += _DeltaTime;
-
-	if (0.1f <= AlphaTime)
-	{
-		Dir = !Dir;
-		AlphaTime = 0.0f;
-	}
-
-	if (true == Dir)
-	{
-		Renderer->SetAlpha(AlphaTime);
-	}
-
-	else
-	{
-		Renderer->SetAlpha(0.5f - AlphaTime);
-	}
-
-	if(AlphaTime > 5.0f)
-	{
-		Renderer->ChangeAnimation(GetAnimationName("Idle"));
-
-
-		StateChange(EPlayState::Idle);
-	
-				
-	}
-
-
-
-}
 
 std::string APlay_Player::GetAnimationName(std::string _Name)
 {
@@ -216,25 +156,6 @@ std::string APlay_Player::GetAnimationName(std::string _Name)
 
 }
 
-void APlay_Player::PlayerColState(EPlayState _State)
-{
-	if (State != _State)
-	{
-		switch (_State)
-		{
-		case EPlayState::Strobe: // °ø°Ý¹ÞÀ¸¸é ±ôºý±ôºý
-			StrobeStart();
-			break;
-
-		default:
-			break;
-		}
-	}
-
-
-	State = _State;
-
-}
 
 
 void APlay_Player::StateChange(EPlayState _State)
@@ -310,6 +231,10 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 	case EPlayState::Strobe: // Ãæµ¹½Ã ±ôºý±ôºý
 		Strobe(_DeltaTime);
 		break;
+
+	case EPlayState::Fly: // StageÀÌµ¿ÇÒ ¶§ ³¯±â
+		Fly(_DeltaTime);
+		break;
 	default:
 		break;
 	}
@@ -317,6 +242,27 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 
 }
 
+
+void APlay_Player::PlayerColState(EPlayState _State)
+{
+
+	if (State != _State)
+	{
+		switch (_State)
+		{
+		case EPlayState::Strobe: // °ø°Ý¹ÞÀ¸¸é ±ôºý±ôºý
+			StrobeStart();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+
+	State = _State;
+
+}
 
 void APlay_Player::IdleStart()
 {
@@ -357,7 +303,7 @@ void APlay_Player::StrobeStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Strobe"));
 	DirCheck();
-
+	Strobe(0.1f);
 }
 
 
@@ -484,6 +430,63 @@ void APlay_Player::FastRun(float _DeltaTime)
 {
 }
 
+
+void APlay_Player::Strobe(float _StrobeTime)
+{
+	StrobeUpdate(_StrobeTime);
+
+	//IsStrobeUpdate = false;
+	float Strobetime = _StrobeTime;
+	//if -> 0ÃÊº¸´Ù Å©¸é, Á¡Á¡ ÁÙ¾îµé°í ±×µ¿¾È ±ôºý
+	//if (0.0f <= _StrobeTime)
+	//{
+	//	for (_StrobeTime; _StrobeTime == 0.0f; _StrobeTime--)
+	//	{
+	//		StrobeUpdate(_StrobeTime);
+	//		//±ôºý°Å¸®´Â°ÅÁö 
+	//	}
+	//}
+	//else
+	//{
+	//	APlay_Player::StateChange(EPlayState::Idle);
+	//}
+}
+
+
+void APlay_Player::StrobeUpdate(float _DeltaTime)
+{
+
+	AlphaTime += _DeltaTime;
+
+	if (0.1f <= AlphaTime)
+	{
+		Dir = !Dir;
+		AlphaTime = 0.0f;
+	}
+
+	if (true == Dir)
+	{
+		Renderer->SetAlpha(AlphaTime);
+	}
+
+	else
+	{
+		Renderer->SetAlpha(0.5f - AlphaTime);
+	}
+
+	if (AlphaTime > 5.0f)
+	{
+		Renderer->ChangeAnimation(GetAnimationName("Idle"));
+
+
+		StateChange(EPlayState::Idle);
+
+
+	}
+
+
+
+}
 
 void APlay_Player::Attack(float _DeltaTime)
 {
@@ -626,10 +629,7 @@ void APlay_Player::CalMoveVector(float _DeltaTime)
 
 }
 
-void APlay_Player::CalJumpVector(float _DeltaTime)
-{
 
-}
 
 void APlay_Player::CalGravityVector(float _DeltaTime)
 {

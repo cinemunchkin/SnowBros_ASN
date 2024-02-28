@@ -62,7 +62,9 @@ enum class EMonsterState
 	Idle,
 	Jump,
 	DownJump,
-	SnowBall
+	SnowBall,
+	Rolling
+
 
 };
 

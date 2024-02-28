@@ -35,13 +35,6 @@ void APlay_Monster::BeginPlay()
 	}
 
 
-	{
-		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Monster);
-		BodyCollision->SetColType(ECollisionType::Rect);
-		BodyCollision->SetScale({ 80, 80 });
-	}
-
-
 
 	
 }
@@ -49,44 +42,35 @@ void APlay_Monster::BeginPlay()
 void APlay_Monster::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-
-	std::vector<UCollision*> Result;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, Result))
-	{// 만약에 플레이어와 collisioncheck를 했을때, true면
-
-		/*BodyCollision->SetActive(true, 0.1f);
-		APlay_Player* Player = GetActorLocation();
-
-		*/StateChange(EMonsterState::SnowBall);
-		Destroy();
-
-		
-	}
-
+	DirCheck();
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
-
 	if (nullptr == Player)
 	{
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
+	
+	{
+		std::vector<UCollision*> Result;
 
-	FVector PlayerPos = Player->GetActorLocation();
-	FVector MonsterPos = GetActorLocation();
+		{
+			BodyCollision = CreateCollision(SnowBrosCollisionOrder::Monster);
+			BodyCollision->SetPosition(MonsterRenderer->GetPosition());
+			BodyCollision->SetColType(ECollisionType::Rect);
+			BodyCollision->SetScale({ 80, 80 });
+		}
 
-	//몬스터 쫓아다니는 함수
-	FVector MonsterDir = PlayerPos - MonsterPos;
-	 MonsterDir.Y = 0.0f;
-	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-
-	AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
-	//----
+		if (true == BodyCollision->CollisionCheck(SnowBrosRenderOrder::Player, Result))
+		{
+			UCollision* Collision = Result[0];
+			BodyCollision->SetActive(true, 0.5f);
+		}
 
 
-	// 플레이어를 알아야 한다.
+	}
+
+	MoveCheck(_DeltaTime);
 }
-
-
 
 
 
@@ -96,16 +80,6 @@ void APlay_Monster::DirCheck() //다시 설정 필요
 {
 	EActorDir Dir = DirState;
 
-/*	if (UEngineInput::IsPress(VK_LEFT))
-	{
-		Dir = EActorDir::Left;
-	}
-	if (UEngineInput::IsPress(VK_RIGHT))
-	{
-		Dir = EActorDir::Right;
-	}
-
-	*/
 
 	if (Dir != DirState)
 	{
@@ -116,6 +90,9 @@ void APlay_Monster::DirCheck() //다시 설정 필요
 		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
 		MonsterRenderer->ChangeAnimation(Name);
 	}
+
+	
+
 }
 
 
@@ -145,7 +122,7 @@ std::string APlay_Monster::GetAnimationName(std::string _Name)
 
 
 void APlay_Monster::StateChange(EMonsterState _State)
-{
+{//애니메이션
 
 	if (State != _State)
 	{
@@ -163,6 +140,9 @@ void APlay_Monster::StateChange(EMonsterState _State)
 		case EMonsterState::SnowBall:
 			SnowballStart();
 			break;
+		case EMonsterState::Rolling:
+			RollingStart();
+			break;
 		default:
 			break;
 		}
@@ -171,11 +151,38 @@ void APlay_Monster::StateChange(EMonsterState _State)
 	State = _State;
 }
 
+void APlay_Monster::StateUpdate(float _DeltaTime)
+{
+	switch (State)
+	{
+	case EMonsterState::Idle:
+		Idle(_DeltaTime);
+		break;
+
+	case EMonsterState::Jump:
+		Jump(_DeltaTime);
+		break;
+	case EMonsterState::DownJump:
+		DownJump(_DeltaTime);
+		break;
+	case EMonsterState::SnowBall:
+		Snowball(_DeltaTime);
+		break;
+	case EMonsterState::Rolling:
+		Rolling(_DeltaTime);
+		break;
+	}
+
+}
+
+
+
 
 void APlay_Monster::IdleStart()
 {
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Idle"));
 	DirCheck();
+	
 }
 
 
@@ -199,18 +206,81 @@ void APlay_Monster::SnowballStart()
 	DirCheck();
 }
 
+void APlay_Monster::RollingStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+	DirCheck();
+}
+
+
+void APlay_Monster::MoveCheck(float _DeltaTime)
+{
+	DirCheck();
+
+
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	FVector PlayerPos = Player->GetActorLocation();
+	FVector MonsterPos = GetActorLocation();
+
+	//몬스터 쫓아다니는 함수
+	FVector MonsterDir = PlayerPos - MonsterPos;
+
+	MonsterDir.Y = 0.0f;
+	Physics(_DeltaTime);
+	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+
+	
+
+	if (this->DirState == EActorDir::Right)
+	{
+		MonsterRenderer->ChangeAnimation("Idle_Right");
+		AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
+		return;
+	}
+	if (this->DirState == EActorDir::Left)
+	{
+		MonsterRenderer->ChangeAnimation("Idle_Left");
+		AddActorLocation(MonsterDirNormal * _DeltaTime * 150.0f);
+		return;
+	}
+
+
+}
 
 
 void APlay_Monster::Idle(float _DeltaTime)
 {
+	DirCheck();
+	
 
+
+}
+
+void APlay_Monster::Jump(float _DeltaTime)
+{
+
+}
+
+void APlay_Monster::DownJump(float _DeltaTime)
+{
+
+}
+
+void APlay_Monster::Snowball(float _DeltaTime)
+{
+
+}
+
+void APlay_Monster::Rolling(float _DeltaTime)
+{
 
 }
 
 
 
 void APlay_Monster::Physics(float _DeltaTime)
-{// 중력이랑 이동함수
+{// 중력이랑 충돌
+	DirCheck();
 	
 	
 	std::vector<UCollision*> ColResult;
@@ -226,7 +296,7 @@ void APlay_Monster::Physics(float _DeltaTime)
 		FVector PlayerPos = Player->GetActorLocation(); // 플레이어의 현재 포지션
 		FVector MonPos = GetActorLocation(); // 몬스터의 현재 위치
 		//바꾸기
-		if (PlayerPos.X - 10 < MonPos.X  && PlayerPos.X+10 > MonPos.X ) // 
+		if (PlayerPos.X = MonPos.X ) // 
 			// 플레이어.x의 -10보다 크거나 
 		{
 			Player->PlayerColState(EPlayState::Strobe);
@@ -245,7 +315,7 @@ void APlay_Monster::Physics(float _DeltaTime)
 		FVector BulletPos = Bullet->GetActorLocation(); // 플레이어의 현재 포지션
 		FVector MonPos = GetActorLocation(); // 몬스터의 현재 위치
 		
-		if (BulletPos.X - 5 < MonPos.X && BulletPos.X + 5 > MonPos.X)
+		if (BulletPos.X = MonPos.X)
 		{
 			StateChange(EMonsterState::SnowBall);
 			Bullet->BulletColState(EBulletState::BulletCol);
@@ -253,43 +323,58 @@ void APlay_Monster::Physics(float _DeltaTime)
 
 		}
 
-		//BodyCollision->Destroy();-> 총알하고 충돌했을 때 이거 가져가자
-		//StateChange(EMonsterState::SnowBall); -> 총알하고 충돌했을 때 이거 가져가자
 	}
 
-	/*
+	MonsterMoveVector(_DeltaTime);
+	MonsterLastMoveVector(_DeltaTime);
+	MonsterGravityVector(_DeltaTime);
 	
-	if (true == BodyCollision->CollisionCheck(MarioCollisionOrder::Player, Result))
-	{
-		// 이런식으로 상대를 사용할수 있다.
-		UCollision* Collision = Result[0];
-		AActor* Ptr = Collision->GetOwner();
-		Mario* Player = dynamic_cast<Mario*>(Ptr);
-		FVector CurPlayerLocation = Player->GetActorLocation();
 
-		FVector CurLocation = GetActorLocation();
-		if (CurPlayerLocation.Y < CurLocation.Y - 32) {
-			Player->SetState(MarioState::Interactive);
-			BodyCollision->Destroy();
-			SetMonsterState(MonsterState::Dead);
-			return;
-		}
-		else {
-			Player->Hit();
-			return;
-		}
+}
+
+void APlay_Monster::MonsterMoveVector(float _DeltaTime)
+{
+
+	FVector CheckPos = GetActorLocation();
+	switch (DirState)
+	{
+	case EActorDir::Left:
+		CheckPos.X -= 30;
+		break;
+	case EActorDir::Right:
+		CheckPos.X += 30;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 10.0f;
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+
+	if (Color == Color8Bit(0, 255, 255, 0))
+	{
+		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 	}
 
-	std::vector<UCollision*> MonsterResult;
-	if (true == BodyCollision->CollisionCheck(MarioCollisionOrder::Monster, MonsterResult))
+
+}
+
+
+void APlay_Monster::MonsterGravityVector(float _DeltaTime)
+{
+	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. \
+
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), 
+		GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
 	{
-		for (UCollision* Collision : MonsterResult) {
-			this->ReverseDir();
-		}
+		GravityVector = FVector::Zero;// 땅에 닿으면 0으로 초기화 
 	}
-	*/
+}
 
-
-
-
+void APlay_Monster::MonsterLastMoveVector(float _DeltaTime)
+{
+	TotalLastMoveVector = FVector::Zero;
+	TotalLastMoveVector = TotalLastMoveVector + MoveVector;
+	TotalLastMoveVector = TotalLastMoveVector + GravityVector;
+	TotalLastMoveVector = TotalLastMoveVector + JumpVector;
 }

@@ -39,13 +39,20 @@ protected:
 
 
 	void Idle(float _DeltaTime);
+	void Jump(float _DeltaTime);
+	void DownJump(float _DeltaTime);
+	void Snowball(float _DeltaTime);
+	void Rolling(float _DeltaTime);
+
 
 	// 상태 시작 함수들
 	void IdleStart();
 	void JumpStart();
 	void DownJumpStart();
 	void SnowballStart();
-	
+	void RollingStart();
+
+	void MoveCheck(float _DeltaTime);
 
 	EMonsterState State = EMonsterState::None;
 	EActorDir DirState = EActorDir::Right;
@@ -54,12 +61,22 @@ protected:
 
 
 private:
+
+
+	FVector JumpVector = FVector::Zero;
+	FVector MoveVector = FVector::Zero;
+	FVector GravityVector = FVector::Zero;
+
+	FVector GravityAcc = FVector::Down * 2500.0f;
+
 	UCollision* BodyCollision= nullptr;
-
-
-
 	UImageRenderer* MonsterRenderer = nullptr;
+	FVector TotalLastMoveVector = FVector::Zero;
+	
 
-	void MoveUpdate(float _DeltaTime);
+	void MonsterMoveVector(float _DeltaTime);
+	void MonsterLastMoveVector(float _DeltaTime);
+	void MonsterGravityVector(float _DeltaTime);
+
 };
 
