@@ -18,7 +18,7 @@ public:
 	UEngineWindow& operator=(const UEngineWindow& _Other) = delete;
 	UEngineWindow& operator=(UEngineWindow&& _Other) noexcept = delete;
 
-	void Open(std::string_view _Title = "Title");
+	void Open(std::string_view _Title = "스노우브라더스 잘 할거양 그죵");
 
 	static void Init(HINSTANCE _hInst);
 	static unsigned __int64 WindowMessageLoop(void(*_Update)(), void(*_End)());

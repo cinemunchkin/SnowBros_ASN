@@ -47,8 +47,8 @@ void APlay_Player::BeginPlay()
 		
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
-		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.05f, true);
-		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.05f, true);
+		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.02f, true);
+		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.02f, true);
 		
 
 		StateChange(EPlayState::Idle);
@@ -409,8 +409,8 @@ void APlay_Player::FastRun(float _DeltaTime)
 
 void APlay_Player::Strobe(float _StrobeTime)
 {
-	StrobeUpdate(_StrobeTime);
 	float Strobetime = _StrobeTime;
+	StrobeUpdate(_StrobeTime);
 
 	//IsStrobeUpdate = false;
 	//if -> 0초보다 크면, 점점 줄어들고 그동안 깜빡
@@ -426,6 +426,16 @@ void APlay_Player::Strobe(float _StrobeTime)
 	//{
 	//	APlay_Player::StateChange(EPlayState::Idle);
 	//}
+
+	/*if (_StrobeTime < 5.0f)
+	{
+		Renderer->ChangeAnimation(GetAnimationName("Idle"));
+		StateChange(EPlayState::Idle);
+
+	}*/
+
+
+
 }
 
 
@@ -439,24 +449,19 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 		Dir = !Dir;
 		AlphaTime = 0.0f;
 	}
-
 	if (true == Dir)
 	{
 		Renderer->SetAlpha(AlphaTime);
 	}
-
 	else
 	{
 		Renderer->SetAlpha(0.5f - AlphaTime);
 	}
-
 	if (AlphaTime > 5.0f)
 	{
 		Renderer->ChangeAnimation(GetAnimationName("Idle"));
-
-
 		StateChange(EPlayState::Idle);
-
+		
 
 	}
 
@@ -571,10 +576,18 @@ void APlay_Player::Fly(float _DeltaTime)
 void APlay_Player::PlayerColPhysics(float _DeltaTime)
 {//플레이어 충돌
 	std::vector<UCollision*> PlayerResult;
+	// 설마 설마.. 헤더에 벡터 추가 안해서 ㄱ여태 안됏던 것 같다.. 잠시 멍청했지만 이제 극복햇다
+	//해내버렸다.. 
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, PlayerResult))
 	{
 		Strobe(_DeltaTime);
+		return;
 	}
+	
+	Renderer->SetAlpha(1.0f);
+	// 몬스터에서 벗어나면 알파값 다시 255(=1.0f)로 돌아오도록
+	// 3초 쯤 뒤에 돌아오는로 수정
+	// 
 
 }
 

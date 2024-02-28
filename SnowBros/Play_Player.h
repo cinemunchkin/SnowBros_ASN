@@ -77,6 +77,7 @@ protected:
 	void StrobeStart();
 	void FlyStart();
 
+	bool IsStrobeUpdate = false;
 
 	//void PlayerColPhysics(float _DeltaTime);
 	
