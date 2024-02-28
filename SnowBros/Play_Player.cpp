@@ -5,6 +5,7 @@
 #include "Play_Bullet.h"
 #include "Play_Player.h"
 #include <conio.h>
+#include <vector>
 
 APlay_Player::APlay_Player()
 {
@@ -54,7 +55,18 @@ void APlay_Player::BeginPlay()
 	}
 
 
+	{
+		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		BodyCollision->SetPosition(Renderer->GetPosition());
+		BodyCollision->SetScale({ 32, 72 });
+		BodyCollision->SetColType(ECollisionType::Rect);
 
+	}
+
+	/*
+	
+	
+	*/
 }
 
 
@@ -90,13 +102,6 @@ void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 	
-	{
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		BodyCollision->SetPosition(Renderer->GetPosition());
-		BodyCollision->SetScale({ 32, 72 });
-		BodyCollision->SetColType(ECollisionType::Rect);
-
-	}
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	if (nullptr == Player)
@@ -303,7 +308,7 @@ void APlay_Player::AttackStart()
 void APlay_Player::Idle(float _DeltaTime)
 {
 	//MoveVector = FVector::Zero;
-	//PlayerColPhysics(_DeltaTime);
+	PlayerColPhysics(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -333,6 +338,7 @@ void APlay_Player::Idle(float _DeltaTime)
 void APlay_Player::Run(float _DeltaTime)
 {
 	DirCheck();
+	PlayerColPhysics(_DeltaTime);
 	
 
 	
@@ -456,6 +462,8 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 
 }
 
+
+
 void APlay_Player::Attack(float _DeltaTime)
 {
 	DirCheck();
@@ -560,7 +568,15 @@ void APlay_Player::Fly(float _DeltaTime)
 }
 
 
+void APlay_Player::PlayerColPhysics(float _DeltaTime)
+{//플레이어 충돌
+	std::vector<UCollision*> PlayerResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, PlayerResult))
+	{
+		Strobe(_DeltaTime);
+	}
 
+}
 
 void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {

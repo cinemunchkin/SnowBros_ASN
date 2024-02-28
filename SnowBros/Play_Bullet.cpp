@@ -114,8 +114,8 @@ void APlay_Bullet::StateChange(EBulletState _State)
 
 void APlay_Bullet::SetAnimation(std::string _Name)
 {
-	std::string FullName = GetAnimationFullName(_Name);
-	BulletRenderer->ChangeAnimation(FullName);
+	std::string FullAniName = GetAnimationFullName(_Name);
+	BulletRenderer->ChangeAnimation(FullAniName);
 }
 
 std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
