@@ -1,5 +1,6 @@
 #include "Play_Monster.h"
 #include "Play_Bullet.h"
+#include "Play_Player.h"
 #include <EngineCore/SceneComponent.h>
 APlay_Monster::APlay_Monster()
 {
@@ -19,12 +20,16 @@ void APlay_Monster::BeginPlay()
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,0}, {48, 48} });
-		MonsterRenderer->SetImage("Monster_01.png");
+		MonsterRenderer->SetImage("Monster_01_R.png");
+		MonsterRenderer->SetImage("Monster_01_L.png");
 	}
 	
 	{
-		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01.png", 0, 5, 0.1f, true);
-		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
+
+		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 12, 23, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 12, 23, 0.1f, true);
 
 		StateChange(EMonsterState::Idle);
 	}
@@ -206,5 +211,85 @@ void APlay_Monster::Idle(float _DeltaTime)
 
 void APlay_Monster::Physics(float _DeltaTime)
 {// 중력이랑 이동함수
+	
+	
+	std::vector<UCollision*> ColResult;
+
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, ColResult))
+		//this(몬스터)가  player 와 충돌했을때
+		// 몬스터랑 플레이어랑 부딪혔을때
+	{
+		UCollision* Collision = ColResult[0];
+		AActor* ColPtr = Collision->GetOwner();
+
+		APlay_Player* Player = dynamic_cast<APlay_Player*>(ColPtr);
+		FVector PlayerPos = Player->GetActorLocation(); // 플레이어의 현재 포지션
+		FVector MonPos = GetActorLocation(); // 몬스터의 현재 위치
+		//바꾸기
+		if (PlayerPos.X - 10 < MonPos.X  && PlayerPos.X+10 > MonPos.X ) // 
+			// 플레이어.x의 -10보다 크거나 
+		{
+			Player->PlayerColState(EPlayState::Strobe);
+
+			return;
+		}
+		
+	}
+	if(true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, ColResult))
+	{
+
+		UCollision* Collision = ColResult[0];
+		AActor* ColPtr = Collision->GetOwner();
+
+		APlay_Bullet* Bullet = dynamic_cast<APlay_Bullet*>(ColPtr);
+		FVector BulletPos = Bullet->GetActorLocation(); // 플레이어의 현재 포지션
+		FVector MonPos = GetActorLocation(); // 몬스터의 현재 위치
+		
+		if (BulletPos.X - 5 < MonPos.X && BulletPos.X + 5 > MonPos.X)
+		{
+			StateChange(EMonsterState::SnowBall);
+			Bullet->BulletColState(EBulletState::BulletCol);
+
+
+		}
+
+		//BodyCollision->Destroy();-> 총알하고 충돌했을 때 이거 가져가자
+		//StateChange(EMonsterState::SnowBall); -> 총알하고 충돌했을 때 이거 가져가자
+	}
+
+	/*
+	
+	if (true == BodyCollision->CollisionCheck(MarioCollisionOrder::Player, Result))
+	{
+		// 이런식으로 상대를 사용할수 있다.
+		UCollision* Collision = Result[0];
+		AActor* Ptr = Collision->GetOwner();
+		Mario* Player = dynamic_cast<Mario*>(Ptr);
+		FVector CurPlayerLocation = Player->GetActorLocation();
+
+		FVector CurLocation = GetActorLocation();
+		if (CurPlayerLocation.Y < CurLocation.Y - 32) {
+			Player->SetState(MarioState::Interactive);
+			BodyCollision->Destroy();
+			SetMonsterState(MonsterState::Dead);
+			return;
+		}
+		else {
+			Player->Hit();
+			return;
+		}
+	}
+
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(MarioCollisionOrder::Monster, MonsterResult))
+	{
+		for (UCollision* Collision : MonsterResult) {
+			this->ReverseDir();
+		}
+	}
+	*/
+
+
+
 
 }

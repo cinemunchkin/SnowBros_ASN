@@ -70,8 +70,9 @@ void USnowBros_Core::BeginPlay()
 
 	
 	//몬스터 애니메이션
-	///점프
-	UEngineResourcesManager::GetInst().CuttingImage("Monster_01.png", 6, 4);
+	///기본
+	UEngineResourcesManager::GetInst().CuttingImage("Monster_01_R.png", 6, 4);
+	UEngineResourcesManager::GetInst().CuttingImage("Monster_01_L.png", 6, 4);
 
 
 
@@ -80,6 +81,8 @@ void USnowBros_Core::BeginPlay()
 	////기본
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Bullet_R.png", 2, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Bullet_L.png", 2, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_BulletCol_R.png", 7, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_BulletCol_L.png", 7, 1);
 
 	
 	// 

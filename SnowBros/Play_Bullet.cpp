@@ -26,10 +26,18 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer = CreateImageRenderer(SnowBrosRenderOrder::Bullet);
 		BulletRenderer->SetImage("SnowBros_Bullet_R.png");
 		BulletRenderer->SetImage("SnowBros_Bullet_L.png");
+		BulletRenderer->SetImage("SnowBros_BulletCol_R.png");
+		BulletRenderer->SetImage("SnowBros_BulletCol_L.png");
+
 		BulletRenderer->SetTransform({ {16,-24}, {32*1.2f, 68*1.2f} });
 		
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
+
+		BulletRenderer->CreateAnimation("BulletCol_Right", "SnowBros_BulletCol_R.png", 0, 6, 0.01f, true);
+		BulletRenderer->CreateAnimation("BulletCol_Left", "SnowBros_BulletCol_L.png", 0, 6, 0.01f, true);
+
+
 
 		StateChange(EBulletState::Bullet);
 	
@@ -55,7 +63,27 @@ void APlay_Bullet::Tick(float _DeltaTime)
 
 
 
+void APlay_Bullet::BulletColState(EBulletState _State)
+{
 
+	if (State != _State)
+	{
+		switch (_State)
+		{
+	
+		case EBulletState::BulletCol:
+			BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	State = _State;
+
+
+}
 
 void APlay_Bullet::StateChange(EBulletState _State)
 
@@ -70,7 +98,7 @@ void APlay_Bullet::StateChange(EBulletState _State)
 			break;
 			
 		case EBulletState::BulletCol:
-			//BulletCol();
+			BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
 			break;
 					
 		default:

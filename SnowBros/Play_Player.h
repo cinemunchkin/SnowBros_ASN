@@ -29,6 +29,8 @@ public:
 
 	EPlayState State = EPlayState::None;
 	EActorDir DirState = EActorDir::Right;
+	
+	void PlayerColState(EPlayState _State);
 
 protected:
 	void BeginPlay() override;

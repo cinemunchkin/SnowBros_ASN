@@ -38,6 +38,8 @@ public:
 
 	FVector Dir = FVector::Left;
 
+	void BulletColState(EBulletState _State);
+
 
 protected:
 	void BeginPlay() override;

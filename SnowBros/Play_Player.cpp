@@ -216,11 +216,30 @@ std::string APlay_Player::GetAnimationName(std::string _Name)
 
 }
 
+void APlay_Player::PlayerColState(EPlayState _State)
+{
+	if (State != _State)
+	{
+		switch (_State)
+		{
+		case EPlayState::Strobe: // °ø°Ý¹ÞÀ¸¸é ±ôºý±ôºý
+			StrobeStart();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+
+	State = _State;
+
+}
 
 
 void APlay_Player::StateChange(EPlayState _State)
 { // ¾Ö´Ï¸ÞÀÌ¼Ç¿ë
-	
+
 	if (State != _State)
 	{
 		switch (_State)
@@ -240,17 +259,15 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::Attack: // °ø°Ý
 			AttackStart();
 			break;
-		case EPlayState::Strobe: // °ø°Ý¹ÞÀ¸¸é ±ôºý±ôºý
-			StrobeStart();
-			break;
+		
 		case EPlayState::FastRun: // Æ÷¼Ç¸Ô°í »¡¸®´Þ¸®±â
 			FastRunStart();
 			break;
-		
+
 		case EPlayState::Fly: // StageÀÌµ¿ÇÒ ¶§ ³¯±â
 			FlyStart();
 			break;
-				
+
 		default:
 			break;
 		}
@@ -258,8 +275,9 @@ void APlay_Player::StateChange(EPlayState _State)
 
 	State = _State;
 
-
 }
+
+
 
 void APlay_Player::StateUpdate(float _DeltaTime)
 { // ÇÔ¼ö¿ë
