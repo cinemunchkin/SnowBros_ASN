@@ -69,6 +69,7 @@ enum class EPlayState
 	FastRun,
 	Fly,
 
+	PlayerRolling
 	
 };
 
@@ -80,6 +81,7 @@ enum class EMonsterState
 	DownJump,
 	Snowball,
 	Rolling,
+
 };
 
 

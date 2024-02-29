@@ -169,26 +169,26 @@ void APlay_SnowBall::SnowballMove(float _DeltaTime)
 // 플레이어가 눈덩이를 밀어내려면..?
 // 일단 움직이게 해보자
 {
-	std::vector<UCollision*> PlayerResult;
-	if (true == SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
-	{
-		APlay_Player* Player = APlay_Player::GetMainPlayer();
-		FVector PlayerPos = Player->GetActorLocation();
-		FVector SnowballPos = GetActorLocation();
+	//std::vector<UCollision*> PlayerResult;
+	//if (true == SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
+	//{
+	//	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	//	FVector PlayerPos = Player->GetActorLocation();
+	//	FVector SnowballPos = GetActorLocation();
 
-		if (PlayerPos.Y = SnowballPos.Y) // 둘이 같은 선상에 있고, 
-		{
-			if (PlayerPos.X + 15 > SnowballPos.X) // 플레이어가 더 오른쪽에 있으면, 
-			{
-				AddMoveVector(FVector::Left * _DeltaTime);
-			}
-		}
-		else
-		{
-			AddMoveVector(FVector::Right * _DeltaTime);
-		}
+	//	if (PlayerPos.Y = SnowballPos.Y) // 둘이 같은 선상에 있고, 
+	//	{
+	//		if (PlayerPos.X + 15 > SnowballPos.X) // 플레이어가 더 오른쪽에 있으면, 
+	//		
+	//			AddMoveVector(FVector::Left * _DeltaTime);
+	//		}
+	//	}
+	//	else
+	//	{
+	//		AddMoveVector(FVector::Right * _DeltaTime);
+	//	}
 
-	}
+	//}
 
 }
 

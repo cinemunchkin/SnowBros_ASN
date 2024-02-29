@@ -68,6 +68,11 @@ void USnowBros_Core::BeginPlay()
 	///멜팅
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Melt.png", 7, 1);
 
+
+	//밀기
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_PlayerRolling_L.png", 4, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_PlayerRolling_R.png", 4, 1);
+	
 	
 	//몬스터 애니메이션
 	///기본

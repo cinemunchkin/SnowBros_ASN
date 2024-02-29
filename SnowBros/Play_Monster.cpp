@@ -58,9 +58,10 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
+		SnowBallRenderer->SetTransform({ { 0,-14 }, { 84,66 } });
 
-
-		SnowBallRenderer->SetTransform({ { 0,-11 }, { 82,64 } });
+		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.5f, true);
+		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.5f, true);
 
 		//SnowBallRenderer->CreateAnimation("Snowball_1", "Snowball_01_R.png", 0, 0, 0.5f, true);
 		//SnowBallRenderer->CreateAnimation("Snowball_2", "Snowball_01_R.png", 1, 1, 0.5f, true);
@@ -70,12 +71,14 @@ void APlay_Monster::BeginPlay()
 		//SnowBallRenderer->CreateAnimation("Snowball_6", "Snowball_01_R.png", 5, 5, 0.5f, true);//헐 이것도 추가해야함
 
 		// SnowBallRenderer->CreateAnimation("Rolling", "Rolling_01_R.png", 0, 3, 0.1f, true);
-		SnowBallRenderer->ActiveOff();
+		
+		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
 
 		StateChange(EMonsterState::Idle);
 
 }
+
 
 void APlay_Monster::Tick(float _DeltaTime)
 {
@@ -90,7 +93,6 @@ void APlay_Monster::Tick(float _DeltaTime)
 	}
 	
 	MonsterColPhysics(_DeltaTime);
-	
 	StateUpdate(_DeltaTime);
 }
 
@@ -127,9 +129,6 @@ void APlay_Monster::DirCheck()
 		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
 		MonsterRenderer->ChangeAnimation(Name);
 	}
-
-	
-
 }
 
 
@@ -338,7 +337,9 @@ void APlay_Monster::DownJump(float _DeltaTime)
 void APlay_Monster::SnowballStart()
 {
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-	SnowBallRenderer->SetActive(true);
+	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
+									   // 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
+									   //	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
 	DirCheck();
 }
@@ -358,7 +359,7 @@ void APlay_Monster::StackSnowball(float _DeltaTime)
 }
 
 void APlay_Monster::SnowballStackCheck(float _DeltaTime)
-{
+{ // 이것도 없어도 되겟굼
 //	MonsterColPhysics(_DeltaTime);
 //	
 //	if (true == IsMonsterStack)

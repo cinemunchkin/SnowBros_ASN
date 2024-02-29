@@ -30,10 +30,18 @@ void APlay_Player::BeginPlay()
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		Renderer->SetImage("SnowBros_Run_R.png");
 		Renderer->SetImage("SnowBros_Run_L.png");
+
 		Renderer->SetImage("SnowBros_Jump_R.png");
 		Renderer->SetImage("SnowBros_Melt.png");
+
 		Renderer->SetImage("SnowBros_Attack_R.png");
 		Renderer->SetImage("SnowBros_Attack_L.png");
+
+		Renderer->SetImage("SnowBros_PlayerRolling_R.png");
+		Renderer->SetImage("SnowBros_PlayerRolling_L.png");
+
+
+
 
 		Renderer->SetTransform({ {0,0}, {64*1.1f, 128*1.1f} });
 		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
@@ -49,7 +57,11 @@ void APlay_Player::BeginPlay()
 
 		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.02f, true);
 		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.02f, true);
-		
+
+		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 3, 0.02f, true);
+		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 3, 0.02f, true);
+
+
 
 		StateChange(EPlayState::Idle);
 	}
@@ -172,6 +184,10 @@ void APlay_Player::StateChange(EPlayState _State)
 	
 		case EPlayState::Fly: // Stage이동할 때 날기
 			FlyStart();
+			break;
+
+		case EPlayState::PlayerRolling: // 포션먹고 빨리달리기
+			PlayerRollingStart();
 			break;
 
 		default:
@@ -305,6 +321,37 @@ void APlay_Player::AttackStart()
 	
 }
 
+void APlay_Player::PlayerRollingStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("PlayerRolling"));
+	DirCheck();
+}
+
+void APlay_Player::PlayerRolling(float _DeltaTime)
+{
+
+	DirCheck();
+	PlayerColPhysics(_DeltaTime);
+	MoveUpdate(_DeltaTime);
+
+	if (true == UEngineInput::IsPress(VK_LEFT) ||
+		true == UEngineInput::IsPress(VK_RIGHT))
+	{
+		StateChange(EPlayState::PlayerRolling);
+		return;
+	}
+
+	if (true == UEngineInput::IsFree(VK_LEFT)
+		&& true == UEngineInput::IsFree(VK_RIGHT)
+		)
+	{
+		StateChange(EPlayState::Idle);
+		//MoveUpdate(_DeltaTime);
+		return;
+	}
+
+
+}
 
 
 void APlay_Player::Idle(float _DeltaTime)
@@ -612,13 +659,15 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 		}
 
 		
-		if (EMonsterState::Snowball != Monster->GetState())
+		if (EMonsterState::Snowball != Monster->GetState()) // 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
 			Strobe(_DeltaTime);
 		}
 		else if(EMonsterState::Snowball == Monster->GetState())
 		{
 			Monster->StateChange(EMonsterState::Rolling);
+			this->StateChange(EPlayState::PlayerRolling);
+
 		}
 
 
