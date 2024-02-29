@@ -56,7 +56,7 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	//Bullet collisioncheck -> 여기서해보기
 	//이것도 곡선으로 나가는거.. 해야함.. 포물선
 
-	BulletPhysics(_DeltaTime);
+	//BulletPhysics(_DeltaTime);
 	AddActorLocation(Dir * _DeltaTime * 150.0f);
 }
 

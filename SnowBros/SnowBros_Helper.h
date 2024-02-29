@@ -46,6 +46,7 @@ enum class ESnowballState
 	Snow1,
 	Snow2,
 	Snow3,
+	Snow4,
 	SnowBall
 };
 

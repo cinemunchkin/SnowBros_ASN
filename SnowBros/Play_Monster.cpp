@@ -327,7 +327,6 @@ void APlay_Monster::Snowball(float _DeltaTime)
 void APlay_Monster::StackSnowball(float _DeltaTime)
 {
 	APlay_SnowBall* Snowball = GetWorld()->SpawnActor<APlay_SnowBall>();
-	//Snowball->SetName("Snowball"); // 얘는 왜? 
 	Snowball->SetActorLocation(this->GetActorLocation());
 	// 눈덩이 spawn 만들기 - APlay_Snowball 에서 만들고
 
@@ -337,7 +336,8 @@ void APlay_Monster::StackSnowball(float _DeltaTime)
 		break;
 
 	case EMonsterState::Snowball:
-		Snowball->SetAnimation("Snowball");
+		Snowball->SetAnimation("Snowball_01"); // 여기서 해야하나!!!!!!!!!
+		SnowballStackCheck(_DeltaTime);
 		break;
 	
 	default:
@@ -346,14 +346,16 @@ void APlay_Monster::StackSnowball(float _DeltaTime)
 	return;
 
 
-	// 여기서 위치 정하기??
-
-	//여기서 생성도 해야하는건지 보자
-	//SnowBall->SetActorLocation(GetActorLocation->Monster);
-
-	//APlay_SnowBall* SnowBall = 
-	//APlay_SnowBall* SnowBall = SpawnActor<APlay_SnowBall>
 }
+
+void APlay_Monster::SnowballStackCheck(float _DeltaTime)
+{
+	MonsterColPhysics(_DeltaTime);
+	for(SnowStack;SnowStack <6; Snowstack++)
+	
+
+}
+
 
 void APlay_Monster::Rolling(float _DeltaTime)
 {
@@ -374,7 +376,6 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		return;
 	}
 	
-
 	
 }
 

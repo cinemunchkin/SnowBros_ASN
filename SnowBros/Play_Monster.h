@@ -50,7 +50,9 @@ protected:
 	void Rolling(float _DeltaTime);
 
 	void StackSnowball(float _DeltaTime);
-
+	void SnowballStackCheck(float _DeltaTime);
+	
+	int SnowStack = 0;
 
 	// 상태 시작 함수들
 	void IdleStart();

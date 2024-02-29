@@ -32,8 +32,15 @@ protected:
 
 
 
+	void SnowballStateUpdate(float _DeltaTime);
+	void SnowballStack(float _DeltaTime);
+
 
 	void SnowballStart();
+	void Snowball01_Start();
+	void Snowball02_Start();
+	void Snowball03_Start();
+	void Snowball04_Start();
 
 
 
