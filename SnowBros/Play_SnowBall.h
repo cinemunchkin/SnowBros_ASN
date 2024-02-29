@@ -17,7 +17,17 @@ public:
 
 	void SetAnimation(std::string _Name);
 
+
+
+	FVector MoveVector = FVector::Zero;
+	FVector MoveAcc = FVector::Right * 500.0f;
+
+	bool IsSnowballComplete = false; // Snowball이 5가 되면 true로 두자
+
 protected:
+
+
+	void DirCheck();
 
 	void StateChange(ESnowballState _State);
 	std::string GetAnimationName(std::string _Name);
@@ -30,13 +40,18 @@ protected:
 
 	std::string CurAnimationName = "None";
 
+	void AddMoveVector(const FVector& _DirDelta);
 
 
+
+	void SnowballPhysics(float _DeltaTime);
+	void SnowballMove(float _DeltaTime);
 	void SnowballStateUpdate(float _DeltaTime);
 	void SnowballStack(float _DeltaTime);
 
 
-	void SnowballStart();
+
+	void Snowball05_Start();
 	void Snowball01_Start();
 	void Snowball02_Start();
 	void Snowball03_Start();
@@ -47,6 +62,6 @@ protected:
 private:
 
 	UImageRenderer* SnowBallRenderer = nullptr;
-	UCollision* BodyCollision = nullptr;
+	UCollision* SnowCollision = nullptr;
 	EActorDir SnowBallDir = EActorDir::Right;
 };

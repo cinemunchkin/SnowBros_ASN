@@ -486,6 +486,8 @@ void APlay_Player::Attack(float _DeltaTime)
 
 }
 
+
+
 void APlay_Player::Fire_Bullet()
 {// bullet방향을 tick에서 해버리면, 플레이어가 방향 전환 할 때마다 ㅜㅜ 
 // 공격파티클 방향도 같이 전환되어벌임 ㅠㅠ
@@ -514,12 +516,19 @@ void APlay_Player::Fire_Bullet()
 	case EActorDir::Right:
 		Bullet->Dir = FVector::Right;	
 		Bullet->SetAnimation("Bullet_Right");
+		
 		break;
 	
 	default:
 		break;
 	}
 	
+	if (true == Bullet->IsBulletCol)
+	{
+		Bullet->SetAnimation("BulletCol");
+	}
+
+
 	
 	return;
 }
@@ -588,27 +597,44 @@ void APlay_Player::Fly(float _DeltaTime)
 //플레이어 충돌시 
 void APlay_Player::PlayerColPhysics(float _DeltaTime)
 {	
-	std::vector<UCollision*> PlayerResult;
+	std::vector<UCollision*> MonsterResult;
 	// 설마 설마.. 헤더에 벡터 추가 안해서 ㄱ여태 안됏던 것 같다.??. 잠시 멍청했지만 이제 극복햇다
 	//해내버렸다.. 
 	
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, PlayerResult))
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
-		Strobe(_DeltaTime);
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster)
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		
+		if (EMonsterState::Snowball != Monster->GetState())
+		{
+			Strobe(_DeltaTime);
+		}
+		else if(EMonsterState::Snowball == Monster->GetState())
+		{
+			Monster->StateChange(EMonsterState::Rolling);
+		}
+
+
 		return;
 	}
 	
 	Renderer->SetAlpha(1.0f);
 	// 몬스터에서 벗어나면 알파값 다시 255(=1.0f)로 돌아오도록
 	// 3초 쯤 뒤에 돌아오는로 수정
-	// 
+
+	
 
 }
 
 void APlay_Player::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {
-
-
 	MoveVector = _DirDelta * MoveAcc;
 }
 

@@ -8,6 +8,7 @@
 #include "SnowBros_Helper.h"
 #include "Play_Bullet.h"
 #include "Play_Player.h"
+#include "Play_Monster.h"
 
 
 APlay_Bullet::APlay_Bullet()
@@ -35,8 +36,7 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
 
-		BulletRenderer->CreateAnimation("BulletCol_Right", "SnowBros_BulletCol_R.png", 0, 6, 0.1f, true);
-		BulletRenderer->CreateAnimation("BulletCol_Left", "SnowBros_BulletCol_L.png", 0, 6, 0.1f, true);
+		BulletRenderer->CreateAnimation("BulletCol", "SnowBros_BulletCol_R.png", 0, 6, 0.03f, true);
 			
 	}
 
@@ -53,11 +53,11 @@ StateChange(EBulletState::Bullet);
 void APlay_Bullet::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-	//Bullet collisioncheck -> 여기서해보기
 	//이것도 곡선으로 나가는거.. 해야함.. 포물선
 
-	//BulletPhysics(_DeltaTime);
 	AddActorLocation(Dir * _DeltaTime * 150.0f);
+
+	//BulletPhysics(_DeltaTime); //왜 여기다가 놓으면 자꾸.. Col이미지로 렌더되는거임
 }
 
 
@@ -131,14 +131,22 @@ std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
 
 void APlay_Bullet::BulletPhysics(float _DeltaTime)
 {
+	IsBulletCol = true;
 
-	std::vector<UCollision*> BulletResult;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, BulletResult))
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
-		StateChange(EBulletState::BulletCol);
+		BulletRenderer->SetTransform({ {16,-24}, {80 * 0.9f, 64 * 0.9f} });
+		this->SetAnimation("BulletCol");
+		//StateChange(EBulletState::BulletCol);
+		if (BulletRenderer->IsCurAnimationEnd())
+		{
+		//	BulletRenderer->Destroy(_DeltaTime);
+		}
 		return;
 	}
 
+	IsBulletCol = false;
 }
 
 

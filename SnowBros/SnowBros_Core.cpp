@@ -76,6 +76,8 @@ void USnowBros_Core::BeginPlay()
 
 	//스노우볼
 	UEngineResourcesManager::GetInst().CuttingImage("Snowball_01_R.png", 5, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("Rolling_01_R.png", 4, 1);
+	
 	
 
 

@@ -4,9 +4,11 @@
 #include "SnowBros_Helper.h"
 #include <EngineBase/Transform.h>
 
-class APlay_Bullet :public UCollision , public AActor
+class APlay_Monster;
+
+class APlay_Bullet : public AActor
 {
-	
+	friend APlay_Monster;
 public:
 	// constrcuter destructer
 	APlay_Bullet();
@@ -34,7 +36,7 @@ public:
 
 	void SetAnimation(std::string _Name);
 	
-
+	bool IsBulletCol = false;
 
 protected:
 	void BeginPlay() override;

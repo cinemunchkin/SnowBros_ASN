@@ -21,6 +21,18 @@ public:
 
 	FVector MonsterDir = FVector::Left;
 
+	EMonsterState GetState()
+	{
+		return State;
+	}
+
+	bool IsRolling()
+	{
+		return State == EMonsterState::Rolling && SnowStack <= 4;
+	}
+
+	void StateChange(EMonsterState _State);
+
 	
 protected:
 	void BeginPlay() override;
@@ -39,7 +51,6 @@ protected:
 
 
 	// 상태 주요 업데이트
-	void StateChange(EMonsterState _State);
 	void StateUpdate(float _DeltaTime);
 
 
@@ -52,7 +63,7 @@ protected:
 	void StackSnowball(float _DeltaTime);
 	void SnowballStackCheck(float _DeltaTime);
 	
-	int SnowStack = 0;
+	int SnowStack = -1;
 
 	// 상태 시작 함수들
 	void IdleStart();
@@ -82,6 +93,9 @@ private:
 	UImageRenderer* MonsterRenderer = nullptr;
 	FVector TotalLastMoveVector = FVector::Zero;
 	
+	UImageRenderer* SnowBallRenderer = nullptr;
+	//UCollision* SnowCollision = nullptr;
+	EActorDir SnowBallDir = EActorDir::Right;
 
 	void MonsterMoveVector(float _DeltaTime);
 	void MonsterLastMoveVector(float _DeltaTime);

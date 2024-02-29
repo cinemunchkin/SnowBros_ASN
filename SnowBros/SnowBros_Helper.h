@@ -21,7 +21,8 @@ enum class SnowBrosCollisionOrder
 	SnowBall,
 	Monster,
 	Player,
-	Bullet
+	Bullet,
+	Snowball
 };
 
 
@@ -79,13 +80,6 @@ enum class EMonsterState
 	DownJump,
 	Snowball,
 	Rolling,
-
-	
-	Snow1,
-	Snow2,
-	Snow3,
-	SnowBall
-
 };
 
 

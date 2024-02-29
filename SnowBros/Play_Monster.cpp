@@ -1,13 +1,15 @@
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
 #include <EngineCore/SceneComponent.h>
-
+#include <iostream>
 #include "Play_Monster.h"
 #include "Play_Bullet.h"
 #include "Play_Player.h"
 #include "Play_SnowBall.h"
 
 #include <vector>
+#include <string>
+
 
 APlay_Monster::APlay_Monster()
 {
@@ -35,9 +37,13 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
 
+		//눈 속에 갇히고 있을때 1~4 / 5일때는 destroy
 		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 12, 23, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 12, 23, 0.1f, true);
-
+		/*
+		아대박 그러고 보니까 눈 속에 갇히고 있을때+눈덩이에서는, 몬스터 Physics 끄는 기능 만들기
+		그때는 플레이어랑 충돌해도 그닥 갠차늠 strobe 없음
+		*/
 	}
 
 
@@ -46,6 +52,25 @@ void APlay_Monster::BeginPlay()
 		BodyCollision->SetPosition(MonsterRenderer->GetPosition());
 		BodyCollision->SetColType(ECollisionType::Rect);
 		BodyCollision->SetScale({ 80, 80 });
+	}
+
+	{
+		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
+		SnowBallRenderer->SetImage("Snowball_01_R.png");
+		SnowBallRenderer->SetImage("Rolling_01_R.png");
+
+
+		SnowBallRenderer->SetTransform({ { 0,-11 }, { 82,64 } });
+
+		//SnowBallRenderer->CreateAnimation("Snowball_1", "Snowball_01_R.png", 0, 0, 0.5f, true);
+		//SnowBallRenderer->CreateAnimation("Snowball_2", "Snowball_01_R.png", 1, 1, 0.5f, true);
+		//SnowBallRenderer->CreateAnimation("Snowball_3", "Snowball_01_R.png", 2, 2, 0.5f, true);
+		//SnowBallRenderer->CreateAnimation("Snowball_4", "Snowball_01_R.png", 3, 3, 0.5f, true);
+		//SnowBallRenderer->CreateAnimation("Snowball_5", "Snowball_01_R.png", 4, 4, 0.5f, true);
+		//SnowBallRenderer->CreateAnimation("Snowball_6", "Snowball_01_R.png", 5, 5, 0.5f, true);//헐 이것도 추가해야함
+
+		// SnowBallRenderer->CreateAnimation("Rolling", "Rolling_01_R.png", 0, 3, 0.1f, true);
+		SnowBallRenderer->ActiveOff();
 	}
 
 		StateChange(EMonsterState::Idle);
@@ -212,11 +237,6 @@ void APlay_Monster::DownJumpStart()
 }
 
 
-void APlay_Monster::SnowballStart()
-{
-	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-	DirCheck();
-}
 
 void APlay_Monster::RollingStart()
 {
@@ -315,43 +335,42 @@ void APlay_Monster::DownJump(float _DeltaTime)
 
 }
 
+void APlay_Monster::SnowballStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+	SnowBallRenderer->SetActive(true);
+	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+	DirCheck();
+}
+
 void APlay_Monster::Snowball(float _DeltaTime)
 {
 	DirCheck();
 	MoveCheck(_DeltaTime);
 	MonsterColPhysics(_DeltaTime);
 	
-	StackSnowball(_DeltaTime);
+	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+	// StackSnowball(_DeltaTime);
 }
 
 void APlay_Monster::StackSnowball(float _DeltaTime)
 {
-	APlay_SnowBall* Snowball = GetWorld()->SpawnActor<APlay_SnowBall>();
-	Snowball->SetActorLocation(this->GetActorLocation());
-	// 눈덩이 spawn 만들기 - APlay_Snowball 에서 만들고
-
-	switch (State)
-	{
-	case EMonsterState::None:
-		break;
-
-	case EMonsterState::Snowball:
-		Snowball->SetAnimation("Snowball_01"); // 여기서 해야하나!!!!!!!!!
-		SnowballStackCheck(_DeltaTime);
-		break;
-	
-	default:
-	break;
-	}
-	return;
-
-
 }
 
 void APlay_Monster::SnowballStackCheck(float _DeltaTime)
 {
-	MonsterColPhysics(_DeltaTime);
-	for(SnowStack;SnowStack <6; Snowstack++)
+//	MonsterColPhysics(_DeltaTime);
+//	
+//	if (true == IsMonsterStack)
+//	{
+//		for(; SnowStack < 5; SnowStack++)
+//		{// stack 1번씩 쌓이게하고
+//			
+//			int StackNum = SnowStack;
+//			Snowball->SetAnimation("Snowball_"+ StackNum)
+//
+//		}
+//	}
 	
 
 }
@@ -368,15 +387,15 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 {// 몬스터 충돌시 반응
 	//DirCheck();
 
-	std::vector<UCollision*> MonsterResult;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, MonsterResult))
+	std::vector<UCollision*> BulletResult;// 완전 반대로 적어놨네엥..
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
-
+		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
+		Bullet->Destroy();
+		++SnowStack;
 		StateChange(EMonsterState::Snowball);
 		return;
 	}
-	
-	
 }
 
 void APlay_Monster::MonsterGravity(float _DeltaTime)
