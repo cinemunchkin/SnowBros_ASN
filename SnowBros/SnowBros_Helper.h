@@ -9,7 +9,8 @@ enum class SnowBrosRenderOrder
 	Map,
 	Monster,
 	Player,
-	Bullet
+	Bullet,
+	Snowball
 };
 
 
@@ -39,6 +40,14 @@ enum class EMonsterDir
 	Right
 };
 
+enum class ESnowballState
+{
+	None,
+	Snow1,
+	Snow2,
+	Snow3,
+	SnowBall
+};
 
 
 
@@ -56,7 +65,9 @@ enum class EPlayState
 	
 	Strobe,
 	FastRun,
-	Fly
+	Fly,
+
+	
 };
 
 enum class EMonsterState
@@ -66,8 +77,13 @@ enum class EMonsterState
 	Jump,
 	DownJump,
 	Snowball,
-	Rolling
+	Rolling,
 
+	
+	Snow1,
+	Snow2,
+	Snow3,
+	SnowBall
 
 };
 

@@ -74,6 +74,9 @@ void USnowBros_Core::BeginPlay()
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01_R.png", 6, 4);
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_01_L.png", 6, 4);
 
+	//스노우볼
+	UEngineResourcesManager::GetInst().CuttingImage("Snowball_01_R.png", 5, 1);
+	
 
 
 	//기타 애니메이션

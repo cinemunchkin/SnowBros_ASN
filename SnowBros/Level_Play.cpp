@@ -1,11 +1,11 @@
 #include "Level_Play.h"
 #include "Play_Map.h"
 #include "Ending_Map.h"
-#include <EngineCore\EngineCore.h>
 #include "Play_Monster.h"
 #include "Play_Player.h"
 #include "Play_Bullet.h"
 
+#include <EngineCore\EngineCore.h>
 ULevel_Play::ULevel_Play()
 {
 }
@@ -40,13 +40,8 @@ void ULevel_Play::BeginPlay()
 		 Monster->SetName("Monster");
 		 Monster->SetActorLocation({ 100, 300 });
 
-		
-
-
 
 	 }
-
-
 
 }
 

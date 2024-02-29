@@ -66,6 +66,8 @@ protected:
 	//공격 파티클 소멸
 	
 
+	void BulletPhysics(float _DeltaTime);
+
 	void BulletStart();
 	void BulletColStart();
 

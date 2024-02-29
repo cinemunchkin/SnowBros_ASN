@@ -504,9 +504,9 @@ void APlay_Player::Fire_Bullet()
 	
 	case EActorDir::Left:
 	Bullet->Dir = FVector::Left;
-	//Bullet의 애니메이션을 정해주는 함수 필요
 	Bullet->SetAnimation("Bullet_Left");
-	//G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
+	//Bullet의 애니메이션을 정해주는 함수 필요
+	//==>>>G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
 	// 충돌하면 -> 파티클 모양 바뀌는걸.. 여기서 해야할 것 같은데.. 왜 안될까..
 	
 	break;

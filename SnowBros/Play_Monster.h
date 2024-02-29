@@ -49,6 +49,8 @@ protected:
 	void Snowball(float _DeltaTime);
 	void Rolling(float _DeltaTime);
 
+	void StackSnowball(float _DeltaTime);
+
 
 	// 상태 시작 함수들
 	void IdleStart();

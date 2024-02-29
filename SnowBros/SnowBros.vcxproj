@@ -183,6 +183,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Play_SnowBall.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SnowBros_Core.h">
       <SubType>
       </SubType>
@@ -226,6 +230,10 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Play_Player.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Play_SnowBall.cpp">
       <SubType>
       </SubType>
     </ClCompile>

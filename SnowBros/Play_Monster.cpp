@@ -1,7 +1,11 @@
+#include <EnginePlatform/EngineInput.h>
+#include <EngineBase\EngineDebug.h>
+#include <EngineCore/SceneComponent.h>
+
 #include "Play_Monster.h"
 #include "Play_Bullet.h"
 #include "Play_Player.h"
-#include <EngineCore/SceneComponent.h>
+#include "Play_SnowBall.h"
 
 #include <vector>
 
@@ -34,7 +38,6 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 12, 23, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 12, 23, 0.1f, true);
 
-		StateChange(EMonsterState::Idle);
 	}
 
 
@@ -45,6 +48,7 @@ void APlay_Monster::BeginPlay()
 		BodyCollision->SetScale({ 80, 80 });
 	}
 
+		StateChange(EMonsterState::Idle);
 
 }
 
@@ -60,7 +64,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
 	
-	
+	MonsterColPhysics(_DeltaTime);
 	
 	StateUpdate(_DeltaTime);
 }
@@ -316,7 +320,39 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	DirCheck();
 	MoveCheck(_DeltaTime);
 	MonsterColPhysics(_DeltaTime);
+	
+	StackSnowball(_DeltaTime);
+}
 
+void APlay_Monster::StackSnowball(float _DeltaTime)
+{
+	APlay_SnowBall* Snowball = GetWorld()->SpawnActor<APlay_SnowBall>();
+	//Snowball->SetName("Snowball"); // 얘는 왜? 
+	Snowball->SetActorLocation(this->GetActorLocation());
+	// 눈덩이 spawn 만들기 - APlay_Snowball 에서 만들고
+
+	switch (State)
+	{
+	case EMonsterState::None:
+		break;
+
+	case EMonsterState::Snowball:
+		Snowball->SetAnimation("Snowball");
+		break;
+	
+	default:
+	break;
+	}
+	return;
+
+
+	// 여기서 위치 정하기??
+
+	//여기서 생성도 해야하는건지 보자
+	//SnowBall->SetActorLocation(GetActorLocation->Monster);
+
+	//APlay_SnowBall* SnowBall = 
+	//APlay_SnowBall* SnowBall = SpawnActor<APlay_SnowBall>
 }
 
 void APlay_Monster::Rolling(float _DeltaTime)
@@ -329,7 +365,14 @@ void APlay_Monster::Rolling(float _DeltaTime)
 void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 {// 몬스터 충돌시 반응
 	//DirCheck();
-		
+
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, MonsterResult))
+	{
+
+		StateChange(EMonsterState::Snowball);
+		return;
+	}
 	
 
 	

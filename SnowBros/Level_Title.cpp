@@ -17,6 +17,7 @@ void ULevel_Title::BeginPlay()
 	{
 		// 여기서 위치가 안정해졌다고 이녀석위치가 0,0인건 아니죠
 		ATitle_Map* Logo = SpawnActor<ATitle_Map>();
+
 	}
 
 
