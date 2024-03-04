@@ -104,6 +104,7 @@ private:
 	void MonsterMoveVector(float _DeltaTime);
 	void MonsterLastMoveVector(float _DeltaTime);
 	void MonsterGravityVector(float _DeltaTime);
-
+	void MonsterDirVector(float _DeltaTime);
+	void MonsterGroundUp(float _DeltaTime);
 };
 

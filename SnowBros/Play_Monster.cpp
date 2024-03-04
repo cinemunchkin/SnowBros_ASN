@@ -103,6 +103,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 
 	MonsterColPhysics(_DeltaTime);
 	StateUpdate(_DeltaTime);
+	MonsterGroundUp(_DeltaTime);
 }
 
 
@@ -257,13 +258,11 @@ void APlay_Monster::RollingStart()
 void APlay_Monster::MoveCheck(float _DeltaTime)
 {
 	//DirCheck();
+	MonsterDirVector(_DeltaTime);
 	MonsterGravity(_DeltaTime);
 
 
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-	FVector PlayerPos = Player->GetActorLocation();
-	FVector MonsterPos = GetActorLocation();
-
+	
 
 
 	//몬스터 쫓아다니는 함수
@@ -292,14 +291,23 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 void APlay_Monster::Idle(float _DeltaTime)
 {
 	DirCheck();
+
+	//SetAnimation("Idle_Left");
 	MoveCheck(_DeltaTime);
+	SetAnimation("Idle_Right");
+	
 
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	FVector PlayerPos = Player->GetActorLocation();
+	FVector MonsterPos = GetActorLocation();
 
-	//FVector MonsterDir = PlayerPos - MonsterPos;
+	FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	switch (MonsterDirState)
+	AddActorLocation(FVector::Right * MonsterDirNormal*MoveAcc* _DeltaTime);
+
+	/*switch (MonsterDirState)
 	{
 	case EMonsterDir::None:
 		break;
@@ -314,25 +322,22 @@ void APlay_Monster::Idle(float _DeltaTime)
 		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
 		break;
 
-	}
-
-
-
-
-	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-	int StackNum = 5;
-	if (SnowStack < StackNum)
+	}*/
 	{
+		SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
+		int StackNum = 5;
+		if (SnowStack < StackNum)
+		{
+			return;
+		}
+		else
+		{
+			SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+			MonsterColPhysics(_DeltaTime);
+			//ColMoveUpdate(_DeltaTime);
+		}
 		return;
 	}
-	else
-	{
-		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
-		MonsterColPhysics(_DeltaTime);
-		//ColMoveUpdate(_DeltaTime);
-	}
-	return;
-
 	/*MonsterColPhysics(_DeltaTime);
 
 	FVector MonsterPos = this->GetActorLocation();
@@ -503,10 +508,49 @@ void APlay_Monster::MonsterGravity(float _DeltaTime)
 {
 
 	MonsterMoveVector(_DeltaTime);
-	MonsterLastMoveVector(_DeltaTime);
 	MonsterGravityVector(_DeltaTime);
+	MonsterLastMoveVector(_DeltaTime);
+
+	
+
+	
+	AddActorLocation(TotalLastMoveVector * _DeltaTime);
+}
+
+
+void APlay_Monster::MonsterGroundUp(float _DeltaTime)
+{
+	while (true)
+	{
+		FVector Location = GetActorLocation();
+		Location.Y -= 1.0f;
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(Location.iX(), Location.iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			AddActorLocation(FVector::Up);
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+
+
+void APlay_Monster::MonsterDirVector(float _DeltaTime)
+{
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	FVector PlayerPos = Player->GetActorLocation();
+	FVector MonsterPos = GetActorLocation();
+
+	FVector MonsterDir = PlayerPos-MonsterPos; 
+	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();  
+
+	return;
 
 }
+
 
 void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 {
@@ -523,7 +567,7 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 	default:
 		break;
 	}
-	CheckPos.Y -= 10.0f;
+	CheckPos.Y -= 32.0f;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 
 	if (Color == Color8Bit(0, 255, 255, 0))

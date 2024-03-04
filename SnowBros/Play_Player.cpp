@@ -186,7 +186,7 @@ void APlay_Player::StateChange(EPlayState _State)
 			FlyStart();
 			break;
 
-		case EPlayState::PlayerRolling: // Æ÷¼Ç¸Ô°í »¡¸®´Þ¸®±â
+		case EPlayState::PlayerRolling: 
 			PlayerRollingStart();
 			break;
 
