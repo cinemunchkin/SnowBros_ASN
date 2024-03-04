@@ -649,32 +649,38 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 	//해내버렸다.. 
 	
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
-	{
+	{//플레이어가 몬스터랑 충돌했을때, 
+
 		AActor* Owner = MonsterResult[0]->GetOwner();
 		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
 
-		if (nullptr == Monster)
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
 		{
 			MsgBoxAssert("몬스터가 아닙니다");
 		}
 
 		
-		if (EMonsterState::Snowball != Monster->GetState()) // 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
+		if (EMonsterState::Snowball != Monster->GetState()) 
+		// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
 			Strobe(_DeltaTime);
 		}
 		else if(EMonsterState::Snowball == Monster->GetState())
 		{
-			Monster->StateChange(EMonsterState::Rolling);
+			Monster->StateChange(EMonsterState::Rolling); // 몬스터는 rolling 상태
 			this->StateChange(EPlayState::PlayerRolling);
 
 		}
+		/*else
+		{
+
+		}*/
 
 
 		return;
 	}
 	
-	Renderer->SetAlpha(1.0f);
+	
 	// 몬스터에서 벗어나면 알파값 다시 255(=1.0f)로 돌아오도록
 	// 3초 쯤 뒤에 돌아오는로 수정
 

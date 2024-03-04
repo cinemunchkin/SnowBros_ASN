@@ -60,8 +60,17 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
 		SnowBallRenderer->SetTransform({ { 0,-14 }, { 84,66 } });
 
+
+
+		//눈 렌더 //snowballstack
+		SnowBallRenderer->CreateAnimation("SnowStack_Right", "Snowball_01_R.png", 0, 3, 0.5f, true);
+		SnowBallRenderer->CreateAnimation("SnowStack_Left", "Snowball_01_R.png", 0, 3, 0.5f, true);
+
+		//눈 렌더 //snowballrolling
 		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.5f, true);
 		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.5f, true);
+		
+		//SnowBallRenderer->CreateAnimation("RollingFinal_Right",)
 
 		//SnowBallRenderer->CreateAnimation("Snowball_1", "Snowball_01_R.png", 0, 0, 0.5f, true);
 		//SnowBallRenderer->CreateAnimation("Snowball_2", "Snowball_01_R.png", 1, 1, 0.5f, true);
@@ -178,6 +187,7 @@ void APlay_Monster::StateChange(EMonsterState _State)
 			break;
 		case EMonsterState::Rolling:
 			RollingStart();
+
 			break;
 		default:
 			break;
@@ -239,7 +249,7 @@ void APlay_Monster::DownJumpStart()
 
 void APlay_Monster::RollingStart()
 {
-	MonsterRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 	DirCheck();
 }
 
@@ -335,12 +345,14 @@ void APlay_Monster::DownJump(float _DeltaTime)
 }
 
 void APlay_Monster::SnowballStart()
-{
+{// 몬스터 -> snowballstart 하면, snowrender -> on
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
 									   // 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
 									   //	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
-	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+	
+	
+	//SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); -> 이건 없어도됨
 	DirCheck();
 }
 
@@ -350,13 +362,23 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	MoveCheck(_DeltaTime);
 	MonsterColPhysics(_DeltaTime);
 	
-	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
-	// StackSnowball(_DeltaTime);
-}
+	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
+	int StackNum = 5;
+	if (SnowStack < StackNum)
+	{
+		return;
+	}
+	else
+	{
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+	}
+	return;
+	//여기에 걸어줘야하나..!
+	//오오오ㅗ오됐다도샏ㅅ담쇠도됐다 //
+	//애니메이션 인덱스 오버되는거 해결함
+}	
 
-void APlay_Monster::StackSnowball(float _DeltaTime)
-{
-}
+
 
 void APlay_Monster::SnowballStackCheck(float _DeltaTime)
 { // 이것도 없어도 되겟굼
@@ -379,7 +401,7 @@ void APlay_Monster::SnowballStackCheck(float _DeltaTime)
 
 void APlay_Monster::Rolling(float _DeltaTime)
 {
-
+	SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 }
 
 
@@ -395,6 +417,14 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->Destroy();
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
+	//	return;
+
+		/*int StackNum = 5;
+		if (SnowStack >= StackNum)
+		{
+			SnowBallRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+			return;
+		}*/
 		return;
 	}
 }
