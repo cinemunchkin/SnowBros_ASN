@@ -123,6 +123,7 @@ private:
 	FVector GravityAcc = FVector::Down * 2500.0f;
 	FVector GravityVector = FVector::Zero;
 
+	int CollisionNum = 0;
 
 
 	// 내가 나갈 모든 방향의 합

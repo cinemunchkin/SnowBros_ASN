@@ -271,7 +271,7 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 	//FVector MonsterDir = PlayerPos - MonsterPos;
 	//MonsterDir.Y = 0.0f;
 	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-
+	//AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
 	//if (this->MonsterDirState == EMonsterDir::Right) // 여기 작동을 안하는듯함..ㅠㅠbullet보고 수정필요 
 	//{
 	//	MonsterRenderer->ChangeAnimation("Idle_Right");
@@ -293,6 +293,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 {
 	DirCheck();
 	MoveCheck(_DeltaTime);
+
 	
 	//FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
@@ -314,6 +315,23 @@ void APlay_Monster::Idle(float _DeltaTime)
 		break;
 
 	}
+
+
+
+
+	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
+	int StackNum = 5;
+	if (SnowStack < StackNum)
+	{
+		return;
+	}
+	else
+	{
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+		MonsterColPhysics(_DeltaTime);
+		ColMoveUpdate(_DeltaTime);
+	}
+	return;
 
 	/*MonsterColPhysics(_DeltaTime);
 
@@ -359,9 +377,8 @@ void APlay_Monster::SnowballStart()
 void APlay_Monster::Snowball(float _DeltaTime)
 {
 	DirCheck();
-	MoveCheck(_DeltaTime);
-	MonsterColPhysics(_DeltaTime);
-	
+
+
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
 	int StackNum = 5;
 	if (SnowStack < StackNum)
@@ -371,6 +388,8 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	else
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+		MonsterColPhysics(_DeltaTime);
+		ColMoveUpdate(_DeltaTime);
 	}
 	return;
 	//여기에 걸어줘야하나..!
@@ -380,28 +399,71 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 
 
-void APlay_Monster::SnowballStackCheck(float _DeltaTime)
-{ // 이것도 없어도 되겟굼
-//	MonsterColPhysics(_DeltaTime);
-//	
-//	if (true == IsMonsterStack)
-//	{
-//		for(; SnowStack < 5; SnowStack++)
-//		{// stack 1번씩 쌓이게하고
-//			
-//			int StackNum = SnowStack;
-//			Snowball->SetAnimation("Snowball_"+ StackNum)
-//
-//		}
-//	}
-	
-
-}
 
 
 void APlay_Monster::Rolling(float _DeltaTime)
 {
 	SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+	//ColMoveUpdate(_DeltaTime);
+	// Rolling함수 실행하면.. 
+	return;
+
+}
+
+
+
+void APlay_Monster::ColMoveUpdate(float _DeltaTime)
+{
+	APlay_Player* Player= APlay_Player::GetMainPlayer();
+
+	FVector CurPlayerPos = Player->GetActorLocation();
+	
+	FVector CurMonsterPos = GetActorLocation();
+
+
+
+
+	if (CurMonsterPos.iX() < CurPlayerPos.iX())
+	{
+		CurMonsterPos = FVector::Left * _DeltaTime;
+		FVector MonsterDir = -CurPlayerPos /*+ CurMonsterPos*/;
+		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
+		
+	}
+	else
+	{
+		CurMonsterPos = FVector::Right * _DeltaTime;
+		FVector MonsterDir = -CurPlayerPos/* + CurMonsterPos*/;
+		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
+	}
+//
+//
+///	
+//		switch (Player->DirState)
+//		{
+//		case EActorDir::Left:
+//
+//			if (true == IsRolling()&&true == UEngineInput::IsPress(VK_LEFT))
+//			{
+//
+//				SnowBallRenderer->SetPosition(CurMonsterPos.X -15, CurMonsterPos.Y);
+//				
+//				return;
+//			}
+//			break;
+//
+//		case EActorDir::Right:
+//			if (true == IsRolling() && true == UEngineInput::IsPress(VK_RIGHT))
+//			{
+//				
+//			}
+//			break;
+//
+//		}
+//	return;
+	
 }
 
 
@@ -427,7 +489,30 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		}*/
 		return;
 	}
+
+
+	std::vector<UCollision*> PlayerResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
+	{
+		if (SnowStack = 5)
+		{
+			StateChange(EMonsterState::Rolling);
+			return;
+		}
+		
+	}
+	// 
+
+
+
+
 }
+
+void APlay_Monster::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
+{
+	MoveVector = _DirDelta * MoveAcc;
+}
+
 
 void APlay_Monster::MonsterGravity(float _DeltaTime)
 {

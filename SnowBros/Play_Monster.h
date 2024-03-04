@@ -28,7 +28,7 @@ public:
 
 	bool IsRolling()
 	{
-		return State == EMonsterState::Rolling && SnowStack <= 4;
+		return State == EMonsterState::Snowball && SnowStack > 4;
 	}
 
 	void StateChange(EMonsterState _State);
@@ -40,6 +40,8 @@ protected:
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterGravity(float _DeltaTime);
 
+	void ColMoveUpdate(float _DeltaTime);
+	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
 
 	void DirCheck();
 
@@ -60,7 +62,7 @@ protected:
 	void Snowball(float _DeltaTime);
 	void Rolling(float _DeltaTime);
 
-	void StackSnowball(float _DeltaTime);
+	//void StackSnowball(float _DeltaTime);
 	void SnowballStackCheck(float _DeltaTime);
 	
 	int SnowStack = -1;
@@ -82,6 +84,7 @@ protected:
 
 private:
 
+	FVector MoveAcc = FVector::Right * 50.0f;
 
 	FVector JumpVector = FVector::Zero;
 	FVector MoveVector = FVector::Zero;
