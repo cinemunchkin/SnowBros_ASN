@@ -339,12 +339,6 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	MoveUpdate(_DeltaTime);
 
 
-	//if (true == UEngineInput::IsPress(VK_LEFT) ||
-	//	true == UEngineInput::IsPress(VK_RIGHT))
-	//{
-	//	StateChange(EPlayState::PlayerRolling);
-	//	return;
-	//}
 
 	if (true == UEngineInput::IsFree(VK_LEFT)
 		&& true == UEngineInput::IsFree(VK_RIGHT)
@@ -354,6 +348,39 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		//MoveUpdate(_DeltaTime);
 		return;
 	}
+	//----------------------------------
+	if (true == UEngineInput::IsPress(VK_LEFT))
+	{
+		AddMoveVector(FVector::Left * _DeltaTime);
+	}
+
+	if (true == UEngineInput::IsPress(VK_RIGHT))
+	{
+		AddMoveVector(FVector::Right * _DeltaTime);
+	}
+
+	MoveUpdate(_DeltaTime);
+	FVector CheckPos = GetActorLocation();
+
+	switch (DirState)
+	{
+	case EActorDir::Left:
+		CheckPos.X -= 5;
+		break;
+	case EActorDir::Right:
+		CheckPos.X += 5;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 10;
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	if (Color != Color8Bit(0, 255, 255, 0)) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
+	{
+		AddActorLocation(MoveVector); /// 이거 잘봐!!
+		return;
+	}
+
 	return;
 
 }

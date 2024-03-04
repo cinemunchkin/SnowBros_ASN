@@ -28,7 +28,7 @@ void APlay_Monster::BeginPlay()
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
-		MonsterRenderer->SetTransform({ {0,0}, {48, 48} });
+		MonsterRenderer->SetTransform({ {0,-20}, {48, 48} });
 		MonsterRenderer->SetImage("Monster_01_R.png");
 		MonsterRenderer->SetImage("Monster_01_L.png");
 	}
@@ -58,7 +58,7 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
-		SnowBallRenderer->SetTransform({ { 0,-14 }, { 84,66 } });
+		SnowBallRenderer->SetTransform({ { 0,-32 }, { 84,66 } });
 
 
 
