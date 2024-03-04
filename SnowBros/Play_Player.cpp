@@ -349,15 +349,7 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		return;
 	}
 	//----------------------------------
-	if (true == UEngineInput::IsPress(VK_LEFT))
-	{
-		AddMoveVector(FVector::Left * _DeltaTime);
-	}
 
-	if (true == UEngineInput::IsPress(VK_RIGHT))
-	{
-		AddMoveVector(FVector::Right * _DeltaTime);
-	}
 
 	MoveUpdate(_DeltaTime);
 	FVector CheckPos = GetActorLocation();
@@ -374,10 +366,29 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		break;
 	}
 	CheckPos.Y -= 10;
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	if (Color != Color8Bit(0, 255, 255, 0)) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
+	//Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	//if (Color) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
+	std::vector<UCollision*> SnowballResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
 	{
-		AddActorLocation(MoveVector); /// 이거 잘봐!!
+		//AddActorLocation(MoveVector); /// 이거 잘봐!!
+		if (true == UEngineInput::IsPress(VK_LEFT))
+		{
+			FVector _PlayerRollingSpeed = FVector::Zero;
+			_PlayerRollingSpeed += PlayerRollingSpeed;
+			AddMoveVector(FVector::Left * _DeltaTime*_PlayerRollingSpeed);
+			
+			//return;
+		}
+		MoveUpdate(_DeltaTime);
+		if (true == UEngineInput::IsPress(VK_RIGHT))
+		{
+			FVector _PlayerRollingSpeed = FVector::Zero;
+			_PlayerRollingSpeed += PlayerRollingSpeed;
+			AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
+			//return;
+		}
+		MoveUpdate(_DeltaTime);
 		return;
 	}
 
@@ -606,10 +617,7 @@ void APlay_Player::Fire_Bullet()
 		break;
 	}
 
-	if (true == Bullet->IsBulletCol)
-	{
-		Bullet->SetAnimation("BulletCol");
-	}
+	
 
 
 

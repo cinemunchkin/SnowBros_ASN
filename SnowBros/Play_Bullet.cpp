@@ -141,8 +141,8 @@ void APlay_Bullet::BulletPhysics(float _DeltaTime)
 		//StateChange(EBulletState::BulletCol);
 		if (BulletRenderer->IsCurAnimationEnd())
 		{
-		//	BulletRenderer->Destroy(_DeltaTime);
-		}
+		Destroy();
+		} // 여긴 아무 작용안하는듯
 		return;
 	}
 
@@ -156,7 +156,7 @@ void APlay_Bullet::Bullet(float _DeltaTime)
 }
 void APlay_Bullet::BulletCol(float _DeltaTime)
 {
-	
+	Destroy();
 	
 }
 

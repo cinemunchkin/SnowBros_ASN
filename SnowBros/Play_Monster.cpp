@@ -247,10 +247,9 @@ void APlay_Monster::DownJumpStart()
 }
 
 
-
 void APlay_Monster::RollingStart()
 {
-	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 	DirCheck();
 }
 
@@ -464,7 +463,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
-		Bullet->Destroy();
+		Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
 		//	return;
@@ -475,6 +474,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 				SnowBallRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 				return;
 			}*/
+		Bullet->Destroy();
 		return;
 	}
 
@@ -482,10 +482,17 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	std::vector<UCollision*> PlayerResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
+		
+		SnowBallRenderer->ChangeAnimation("StackSnow");
 
 		if (SnowStack = 5)
 		{
 			StateChange(EMonsterState::Rolling);
+
+			FVector MonMove = FVector::Zero;
+			FVector CurMonMove = GetActorLocation() * FVector::Right;
+			AddActorLocation(CurMonMove * _DeltaTime * RollingSpeed);
+
 
 			return;
 		}

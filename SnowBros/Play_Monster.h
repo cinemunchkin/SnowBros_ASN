@@ -35,6 +35,7 @@ public:
 	void ColMoveUpdate(float _DeltaTime);
 
 	EMonsterDir MonsterDirState = EMonsterDir::Right;
+	FVector RollingSpeed = FVector::Right * 150.0f;
 	
 protected:
 	void BeginPlay() override;

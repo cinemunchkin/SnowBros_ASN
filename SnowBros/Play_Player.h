@@ -31,7 +31,7 @@ public:
 	EActorDir DirState = EActorDir::Right;
 	
 	void PlayerColState(EPlayState _State);
-	FVector PlayerRollingSpeed = FVector::Right * 15.0f;
+	FVector PlayerRollingSpeed = FVector::Right * 150.0f;
 
 protected:
 	void BeginPlay() override;
