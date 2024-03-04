@@ -329,7 +329,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
 		MonsterColPhysics(_DeltaTime);
-		ColMoveUpdate(_DeltaTime);
+		//ColMoveUpdate(_DeltaTime);
 	}
 	return;
 
@@ -389,7 +389,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
 		MonsterColPhysics(_DeltaTime);
-		ColMoveUpdate(_DeltaTime);
+		//ColMoveUpdate(_DeltaTime);
 	}
 	return;
 	//여기에 걸어줘야하나..!
@@ -420,23 +420,29 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime)
 	
 	FVector CurMonsterPos = GetActorLocation();
 
+	FVector PlayerSpeed = Player->PlayerRollingSpeed;
 
 
 
 	if (CurMonsterPos.iX() < CurPlayerPos.iX())
 	{
-		CurMonsterPos = FVector::Left * _DeltaTime;
-		FVector MonsterDir = -CurPlayerPos /*+ CurMonsterPos*/;
-		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
 		
+		CurMonsterPos = FVector::Left * _DeltaTime;
+		FVector MonsterDir = -CurPlayerPos; /*+ CurMonsterPos*/;
+		MonsterDir.iX() == CurPlayerPos.iX();
+		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+		AddActorLocation(MonsterDirNormal * _DeltaTime* PlayerSpeed);
+		
+		//아니 X축으로만 움직이라고
+		// 캐릭터 속도랑 같이 움직이라고 -> PlayerSpeed
+		 
 	}
 	else
 	{
 		CurMonsterPos = FVector::Right * _DeltaTime;
 		FVector MonsterDir = -CurPlayerPos/* + CurMonsterPos*/;
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
+		AddActorLocation(MonsterDirNormal * _DeltaTime* PlayerSpeed);
 	}
 //
 //
@@ -494,9 +500,11 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	std::vector<UCollision*> PlayerResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
+		
 		if (SnowStack = 5)
 		{
 			StateChange(EMonsterState::Rolling);
+			
 			return;
 		}
 		

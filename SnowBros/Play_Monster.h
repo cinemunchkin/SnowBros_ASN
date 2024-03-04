@@ -32,6 +32,7 @@ public:
 	}
 
 	void StateChange(EMonsterState _State);
+	void ColMoveUpdate(float _DeltaTime);
 
 	
 protected:
@@ -40,7 +41,6 @@ protected:
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterGravity(float _DeltaTime);
 
-	void ColMoveUpdate(float _DeltaTime);
 	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
 
 	void DirCheck();

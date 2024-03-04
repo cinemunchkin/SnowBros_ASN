@@ -678,6 +678,7 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 		{
 		//	Monster->StateChange(EMonsterState::Rolling); // 몬스터는 rolling 상태
 			this->StateChange(EPlayState::PlayerRolling);
+			Monster->ColMoveUpdate(_DeltaTime);
 			
 			return;
 		}
