@@ -102,6 +102,12 @@ private:
 	bool Dir = false;
 
 
+	FVector GetPlayerDir()
+	{
+		return PlayerDir;
+	}
+
+
 
 	float FreeMoveSpeed = 1000.0f;
 
@@ -134,15 +140,16 @@ private:
 	// ¿Ãµø
 	void CalLastMoveVector(float _DeltaTime);
 	void CalMoveVector(float _DeltaTime);
-	void CalJumpVector(float _DeltaTime);
+//	void CalJumpVector(float _DeltaTime);
 	void CalGravityVector(float _DeltaTime);
 	void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
 	void StrobeUpdate(float _DeltaTime);
 	
 	void Fire_Bullet();
+	FVector PlayerDir = FVector::Zero;
 	
-	//void GroundUp();
+	void GroundUp(float _DeltaTime);
 
 
 };

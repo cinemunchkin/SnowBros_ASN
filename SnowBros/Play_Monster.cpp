@@ -22,7 +22,7 @@ APlay_Monster::~APlay_Monster()
 void APlay_Monster::BeginPlay()
 {
 	AActor::BeginPlay();
-	
+
 
 	{
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
@@ -32,7 +32,7 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->SetImage("Monster_01_R.png");
 		MonsterRenderer->SetImage("Monster_01_L.png");
 	}
-	
+
 	{
 		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
@@ -69,7 +69,7 @@ void APlay_Monster::BeginPlay()
 		//눈 렌더 //snowballrolling
 		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.5f, true);
 		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.5f, true);
-		
+
 		//SnowBallRenderer->CreateAnimation("RollingFinal_Right",)
 
 		//SnowBallRenderer->CreateAnimation("Snowball_1", "Snowball_01_R.png", 0, 0, 0.5f, true);
@@ -80,11 +80,11 @@ void APlay_Monster::BeginPlay()
 		//SnowBallRenderer->CreateAnimation("Snowball_6", "Snowball_01_R.png", 5, 5, 0.5f, true);//헐 이것도 추가해야함
 
 		// SnowBallRenderer->CreateAnimation("Rolling", "Rolling_01_R.png", 0, 3, 0.1f, true);
-		
+
 		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
 
-		StateChange(EMonsterState::Idle);
+	StateChange(EMonsterState::Idle);
 
 }
 
@@ -100,7 +100,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 	{
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
-	
+
 	MonsterColPhysics(_DeltaTime);
 	StateUpdate(_DeltaTime);
 }
@@ -120,7 +120,7 @@ void APlay_Monster::DirCheck()
 
 	if (PlayerPos.X > MonsterPos.X)
 	{
-		Dir = EMonsterDir::Right; 
+		Dir = EMonsterDir::Right;
 		return;
 	}
 	if (PlayerPos.X < MonsterPos.X)
@@ -228,7 +228,7 @@ void APlay_Monster::IdleStart()
 {
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Idle"));
 	DirCheck();
-	
+
 }
 
 
@@ -258,7 +258,7 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 {
 	//DirCheck();
 	MonsterGravity(_DeltaTime);
-	
+
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	FVector PlayerPos = Player->GetActorLocation();
@@ -267,7 +267,7 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 
 
 	//몬스터 쫓아다니는 함수
-	
+
 	//FVector MonsterDir = PlayerPos - MonsterPos;
 	//MonsterDir.Y = 0.0f;
 	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
@@ -294,7 +294,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 	DirCheck();
 	MoveCheck(_DeltaTime);
 
-	
+
 	//FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
@@ -336,7 +336,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 	/*MonsterColPhysics(_DeltaTime);
 
 	FVector MonsterPos = this->GetActorLocation();
-	
+
 
 	if (MonsterPos.X > 200.0f)
 	{
@@ -366,11 +366,11 @@ void APlay_Monster::SnowballStart()
 {// 몬스터 -> snowballstart 하면, snowrender -> on
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
-									   // 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
-									   //	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
-	
-	
-	//SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); -> 이건 없어도됨
+	// 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
+	//	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
+
+
+//SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); -> 이건 없어도됨
 	DirCheck();
 }
 
@@ -395,7 +395,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	//여기에 걸어줘야하나..!
 	//오오오ㅗ오됐다도샏ㅅ담쇠도됐다 //
 	//애니메이션 인덱스 오버되는거 해결함
-}	
+}
 
 
 
@@ -412,64 +412,41 @@ void APlay_Monster::Rolling(float _DeltaTime)
 
 
 
-void APlay_Monster::ColMoveUpdate(float _DeltaTime)
+void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 때, 플레이어가 밀 수 있음
 {
-	APlay_Player* Player= APlay_Player::GetMainPlayer();
-
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	FVector CurPlayerPos = Player->GetActorLocation();
-	
 	FVector CurMonsterPos = GetActorLocation();
-
 	FVector PlayerSpeed = Player->PlayerRollingSpeed;
 
-
-
-	if (CurMonsterPos.iX() < CurPlayerPos.iX())
+	switch (Player->DirState)
 	{
-		
-		CurMonsterPos = FVector::Left * _DeltaTime;
-		FVector MonsterDir = -CurPlayerPos; /*+ CurMonsterPos*/;
+	case EActorDir::Left:
+	{
+		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
 		MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime* PlayerSpeed);
+		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
+	}
+	break;
+	case EActorDir::Right:
 		
-		//아니 X축으로만 움직이라고
-		// 캐릭터 속도랑 같이 움직이라고 -> PlayerSpeed
-		 
-	}
-	else
 	{
-		CurMonsterPos = FVector::Right * _DeltaTime;
-		FVector MonsterDir = -CurPlayerPos/* + CurMonsterPos*/;
+		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
+		MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime* PlayerSpeed);
+		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
 	}
-//
-//
-///	
-//		switch (Player->DirState)
-//		{
-//		case EActorDir::Left:
-//
-//			if (true == IsRolling()&&true == UEngineInput::IsPress(VK_LEFT))
-//			{
-//
-//				SnowBallRenderer->SetPosition(CurMonsterPos.X -15, CurMonsterPos.Y);
-//				
-//				return;
-//			}
-//			break;
-//
-//		case EActorDir::Right:
-//			if (true == IsRolling() && true == UEngineInput::IsPress(VK_RIGHT))
-//			{
-//				
-//			}
-//			break;
-//
-//		}
-//	return;
-	
+	break;
+	default:
+		break;
+
+	}
+
+
+
+
+
 }
 
 
@@ -485,14 +462,14 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->Destroy();
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
-	//	return;
+		//	return;
 
-		/*int StackNum = 5;
-		if (SnowStack >= StackNum)
-		{
-			SnowBallRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-			return;
-		}*/
+			/*int StackNum = 5;
+			if (SnowStack >= StackNum)
+			{
+				SnowBallRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+				return;
+			}*/
 		return;
 	}
 
@@ -500,14 +477,14 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	std::vector<UCollision*> PlayerResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
-		
+
 		if (SnowStack = 5)
 		{
 			StateChange(EMonsterState::Rolling);
-			
+
 			return;
 		}
-		
+
 	}
 	// 
 
@@ -562,7 +539,7 @@ void APlay_Monster::MonsterGravityVector(float _DeltaTime)
 {
 	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. \
 
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), 
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
 		GetActorLocation().iY(), Color8Bit::CyanA);
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{

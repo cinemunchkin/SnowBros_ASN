@@ -34,6 +34,7 @@ public:
 	void StateChange(EMonsterState _State);
 	void ColMoveUpdate(float _DeltaTime);
 
+	EMonsterDir MonsterDirState = EMonsterDir::Right;
 	
 protected:
 	void BeginPlay() override;
@@ -77,7 +78,7 @@ protected:
 	void MoveCheck(float _DeltaTime);
 
 	EMonsterState State = EMonsterState::None;
-	EMonsterDir MonsterDirState = EMonsterDir::Right;
+	
 	std::string CurAnimationName = "None";
 
 

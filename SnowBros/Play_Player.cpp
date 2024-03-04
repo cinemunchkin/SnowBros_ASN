@@ -24,7 +24,7 @@ void APlay_Player::BeginPlay()
 {
 	AActor::BeginPlay();
 	MainPlayer = this;  // 아오 이걸 주석처리해놔서 계속 플레이어 없음이 떴네 ..
-	
+
 
 	{
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
@@ -43,16 +43,16 @@ void APlay_Player::BeginPlay()
 
 
 
-		Renderer->SetTransform({ {0,0}, {64*1.1f, 128*1.1f} });
+		Renderer->SetTransform({ {0,0}, {64 * 1.1f, 128 * 1.1f} });
 		Renderer->CreateAnimation("Idle_Right", "SnowBros_Idle_R.png", 0, 0, 1.0f, true);
 		Renderer->CreateAnimation("Idle_Left", "SnowBros_Idle_L.png", 0, 0, 1.0f, true);
-		
+
 		Renderer->CreateAnimation("Run_Right", "SnowBros_Run_R.png", 0, 3, 0.1f, true);
 		Renderer->CreateAnimation("Run_Left", "SnowBros_Run_L.png", 0, 3, 0.1f, true);
 
 		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
-		
+
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
 
 		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.02f, true);
@@ -76,8 +76,8 @@ void APlay_Player::BeginPlay()
 	}
 
 	/*
-	
-	
+
+
 	*/
 }
 
@@ -86,7 +86,7 @@ void APlay_Player::BeginPlay()
 void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-	
+
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	if (nullptr == Player)
@@ -113,14 +113,14 @@ void APlay_Player::DirCheck()
 		Dir = EActorDir::Right;
 	}
 
-/*여기에 Jump를 추가하니까, '그런 이름의 애니메이션은 없다~'라고. */
+	/*여기에 Jump를 추가하니까, '그런 이름의 애니메이션은 없다~'라고. */
 
 	if (Dir != DirState)
 	{
 		DirState = Dir;
 		std::string Name = GetAnimationName(CurAnimationName);
 
-		Renderer->ChangeAnimation(Name, true, Renderer->GetCurAnimationFrame(), Renderer-> GetCurAnimationTime());
+		Renderer->ChangeAnimation(Name, true, Renderer->GetCurAnimationFrame(), Renderer->GetCurAnimationTime());
 		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
 		Renderer->ChangeAnimation(Name);
 	}
@@ -177,11 +177,11 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::Attack: // 공격
 			AttackStart();
 			break;
-		
+
 		case EPlayState::FastRun: // 포션먹고 빨리달리기
 			FastRunStart();
 			break;
-	
+
 		case EPlayState::Fly: // Stage이동할 때 날기
 			FlyStart();
 			break;
@@ -271,7 +271,7 @@ void APlay_Player::IdleStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("Idle"));
 	DirCheck();
-	
+
 }
 
 void APlay_Player::RunStart()
@@ -321,7 +321,7 @@ void APlay_Player::AttackStart()
 	Renderer->ChangeAnimation(GetAnimationName("Attack"));
 	DirCheck();
 	Fire_Bullet();
-	
+
 }
 
 void APlay_Player::PlayerRollingStart()
@@ -335,8 +335,9 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 {
 
 	DirCheck();
-	//PlayerColPhysics(_DeltaTime);
+	PlayerColPhysics(_DeltaTime);
 	MoveUpdate(_DeltaTime);
+
 
 	//if (true == UEngineInput::IsPress(VK_LEFT) ||
 	//	true == UEngineInput::IsPress(VK_RIGHT))
@@ -364,7 +365,7 @@ void APlay_Player::Idle(float _DeltaTime)
 {
 	//MoveVector = FVector::Zero;
 	DirCheck();
-	PlayerColPhysics(_DeltaTime);
+	//PlayerColPhysics(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -397,9 +398,9 @@ void APlay_Player::Run(float _DeltaTime)
 	PlayerColPhysics(_DeltaTime);
 	
 
-	
+
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
-	if (true == UEngineInput::IsFree(VK_LEFT) 
+	if (true == UEngineInput::IsFree(VK_LEFT)
 		&& true == UEngineInput::IsFree(VK_RIGHT)
 		)
 	{
@@ -410,31 +411,35 @@ void APlay_Player::Run(float _DeltaTime)
 
 	//뛰는 동안에 점프키 누르면 점프
 	//방향키 누르는 방향으로 전진 - 가속도 필요없음
-	if (true == UEngineInput::IsDown('Z'))
+	/*if (true == UEngineInput::IsDown('Z'))
 	{
 		StateChange(EPlayState::Jump);
-		return;		
-	}
-
-	if (true==UEngineInput::IsPress(VK_LEFT))
+		return;
+	}*/
+	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
-
 		AddMoveVector(FVector::Left * _DeltaTime);
-		//return;
+		if (true == UEngineInput::IsDown('Z'))
+		{
+			JumpVector += FVector::Right * _DeltaTime;
+		}
+		
 	}
-
 
 	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		AddMoveVector(FVector::Right*_DeltaTime);	
-		
+		AddMoveVector(FVector::Right * _DeltaTime);
+		if (true == UEngineInput::IsDown('Z'))
+		{
+			JumpVector += FVector::Right * _DeltaTime;
+		}
 	}
-	
-	
+
+
 	MoveUpdate(_DeltaTime);
 
 	FVector CheckPos = GetActorLocation();
-	
+
 	switch (DirState)
 	{
 	case EActorDir::Left:
@@ -446,7 +451,7 @@ void APlay_Player::Run(float _DeltaTime)
 	default:
 		break;
 	}
-	CheckPos.Y -= 15;
+	CheckPos.Y -= 32;
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 	if (Color != Color8Bit(0, 255, 255, 0)) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
 	{
@@ -526,12 +531,12 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 void APlay_Player::Attack(float _DeltaTime)
 {
 	DirCheck();
-	
 
-	if(Renderer->IsCurAnimationEnd())
+
+	if (Renderer->IsCurAnimationEnd())
 	{
 		StateChange(EPlayState::Idle);
-		return; 
+		return;
 	}
 	MoveUpdate(_DeltaTime);
 
@@ -554,33 +559,33 @@ void APlay_Player::Fire_Bullet()
 	{
 	case EActorDir::None:
 		break;
-	
+
 	case EActorDir::Left:
-	Bullet->Dir = FVector::Left;
-	Bullet->SetAnimation("Bullet_Left");
-	//Bullet의 애니메이션을 정해주는 함수 필요
-	//==>>>G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
-	// 충돌하면 -> 파티클 모양 바뀌는걸.. 여기서 해야할 것 같은데.. 왜 안될까..
-	
-	break;
-	
-	case EActorDir::Right:
-		Bullet->Dir = FVector::Right;	
-		Bullet->SetAnimation("Bullet_Right");
-		
+		Bullet->Dir = FVector::Left;
+		Bullet->SetAnimation("Bullet_Left");
+		//Bullet의 애니메이션을 정해주는 함수 필요
+		//==>>>G헐허러러하러러러도ㅒㅆ다됐다!!!! 양쪽으로 방향따라서 애니메이션!!!!!!! ㅠㅠㅠㅠㅠㅠㅠㅠ
+		// 충돌하면 -> 파티클 모양 바뀌는걸.. 여기서 해야할 것 같은데.. 왜 안될까..
+
 		break;
-	
+
+	case EActorDir::Right:
+		Bullet->Dir = FVector::Right;
+		Bullet->SetAnimation("Bullet_Right");
+
+		break;
+
 	default:
 		break;
 	}
-	
+
 	if (true == Bullet->IsBulletCol)
 	{
 		Bullet->SetAnimation("BulletCol");
 	}
 
 
-	
+
 	return;
 }
 
@@ -588,22 +593,19 @@ void APlay_Player::Fire_Bullet()
 
 
 void APlay_Player::Jump(float _DeltaTime)
-{	
+{
 	DirCheck();
-	PlayerColPhysics(_DeltaTime);
-	
-	
+	//PlayerColPhysics(_DeltaTime);
 
-	if ( true == UEngineInput::IsDown(VK_RIGHT))
+
+
+	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
-		JumpVector += FVector::Right * _DeltaTime;
-		return;
+		AddMoveVector(FVector::Left * _DeltaTime);
 	}
-
-	if (true == UEngineInput::IsDown(VK_LEFT) )
+	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
-		JumpVector += FVector::Left * _DeltaTime;
-		return;
+		AddMoveVector(FVector::Right * _DeltaTime);
 	}
 
 
@@ -613,12 +615,15 @@ void APlay_Player::Jump(float _DeltaTime)
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
-		JumpVector = FVector::Zero;
-		//	JumpVector = FVector::Zero;
-		StateChange(EPlayState::Idle);
-		return;
-	}
+		//if (true == UEngineInput::IsDown('Z'))
 		
+			GroundUp(_DeltaTime); // 땅에 박히는거 해결!!
+			JumpVector = FVector::Zero;
+			StateChange(EPlayState::Idle);
+			return;
+		
+	}
+//	MoveUpdate(_DeltaTime);
 
 }
 
@@ -626,13 +631,11 @@ void APlay_Player::Jump(float _DeltaTime)
 
 void APlay_Player::DownJump(float _DeltaTime)
 {
-	// Down키 + Jump키  = 아래단으로 내려가기 => 그 순간에만 바닥 충돌 컬러 바꾸면 되나!?
 
 	DirCheck();
 	PlayerColPhysics(_DeltaTime);
 
-	//Jump 상태에서, 스페이스바나 방향키 모두 안눌려있을때 -> Idle로 돌아가기
-	
+
 
 }
 
@@ -647,57 +650,56 @@ void APlay_Player::Fly(float _DeltaTime)
 
 //플레이어 충돌시 
 void APlay_Player::PlayerColPhysics(float _DeltaTime)
-{	
+{
 	std::vector<UCollision*> MonsterResult;
-	// 설마 설마.. 헤더에 벡터 추가 안해서 ㄱ여태 안됏던 것 같다.??. 잠시 멍청했지만 이제 극복햇다
-	//해내버렸다.. 
-	
+
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{//플레이어가 몬스터랑 충돌했을때, 
 
 		AActor* Owner = MonsterResult[0]->GetOwner();
 		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
 
-		CollisionNum++;
-
 		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
 		{
 			MsgBoxAssert("몬스터가 아닙니다");
 		}
 
-		
-		if (EMonsterState::Snowball != Monster->GetState()) 
-		// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
+		if (EMonsterState::Snowball != Monster->GetState())
+			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
 			Strobe(_DeltaTime);
 			return;
-
 		}
 
-		else if(EMonsterState::Snowball == Monster->GetState() && CollisionNum == 1)
+		else if (EMonsterState::Snowball == Monster->GetState())
 		{
-		//	Monster->StateChange(EMonsterState::Rolling); // 몬스터는 rolling 상태
-			this->StateChange(EPlayState::PlayerRolling);
-			Monster->ColMoveUpdate(_DeltaTime);
-			
+			// 몬스터는 rolling 상태에서 충돌하면,
+			// 플레이어는 미는 애니메이, +  몬스터는 snowball 상태에서 밀리는 애니메이션.
+			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_LEFT))
+			{
+				this->StateChange(EPlayState::PlayerRolling);
+				Monster->ColMoveUpdate(_DeltaTime);
+				return;
+			}
+			else
+			{
+				this->StateChange(EPlayState::Idle);
+				Monster->ColMoveUpdate(_DeltaTime);
+			}
 			return;
 		}
-		else
+		
+	/*	else
 		{
 			this->StateChange(EPlayState::Idle);
-			CollisionNum = 0;
 			return;
 		}
-	
+	*/
 
 		return;
 	}
-	
-	
-	// 몬스터에서 벗어나면 알파값 다시 255(=1.0f)로 돌아오도록
-	// 3초 쯤 뒤에 돌아오는로 수정
 
-	
+
 
 }
 
@@ -767,12 +769,30 @@ void APlay_Player::CalLastMoveVector(float _DeltaTime)
 	LastMoveVector = LastMoveVector + MoveVector;
 	LastMoveVector = LastMoveVector + GravityVector;
 	LastMoveVector = LastMoveVector + JumpVector;
-	 // 왜 또 더해줌?
-	// 최종 위치 = x축으로 움직인 위치 + 점프+ 중력
+	// 왜 또 더해줌?
+   // 최종 위치 = x축으로 움직인 위치 + 점프+ 중력
 
 }
 
 
+void APlay_Player::GroundUp(float _DeltaTime)
+{
+	while (true)
+	{
+		FVector Location = GetActorLocation();
+		Location.Y -= 0.5f;
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(Location.iX(), Location.iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			AddActorLocation(FVector::Up);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+}
 
 void APlay_Player::MoveUpdate(float _DeltaTime)
 {
@@ -780,9 +800,7 @@ void APlay_Player::MoveUpdate(float _DeltaTime)
 	CalGravityVector(_DeltaTime);
 	CalLastMoveVector(_DeltaTime);
 	CamMoveLastMoveVector(_DeltaTime);
-	
-
-	//GroundUp();
+	//GroundUp(_DeltaTime);
 
 }
 
@@ -794,6 +812,8 @@ APlay_Player* APlay_Player::GetMainPlayer()
 {
 	return MainPlayer;
 }
+
+
 
 
 //////////////////
