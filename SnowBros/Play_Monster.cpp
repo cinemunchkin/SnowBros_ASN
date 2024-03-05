@@ -410,7 +410,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 		if (Player->GetState() == EPlayState::PlayerRolling)
 		{
 			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
-			SnowBallMoveVector(_DeltaTime);
+			SnowBallMoveVector(_DeltaTime);// 스노우볼 벽에 부딪히면 destroy @ yellow
 			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
 			return;
 		}
@@ -589,6 +589,8 @@ void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 	{
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 		Destroy(_DeltaTime);
+		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
+		// 그 안에서 destroy 하기
 	}
 
 
