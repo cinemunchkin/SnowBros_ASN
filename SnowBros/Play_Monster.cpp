@@ -280,10 +280,10 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 void APlay_Monster::Idle(float _DeltaTime)
 {
 	DirCheck();
-
+	ColMoveUpdate(_DeltaTime);
 	//SetAnimation("Idle_Left");
 	MoveCheck(_DeltaTime);
-	SetAnimation("Idle_Right");
+	//SetAnimation("Idle_Right");
 	
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
@@ -428,17 +428,20 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 
 	switch (Player->DirState)
 	{
-	case EActorDir::Left:
+	case EActorDir::Left: // 
 	{
+		this->SetAnimation("Idle_Left");
 		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-		//MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
+
+		
 	}
 	break;
 	case EActorDir::Right:
 		
 	{
+		this->SetAnimation("Idle_Right");
 		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
 		//MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
