@@ -83,8 +83,9 @@ void USnowBros_Core::BeginPlay()
 	UEngineResourcesManager::GetInst().CuttingImage("Snowball_01_R.png", 5, 1);
 	//스노우볼 // 굴리기
 	UEngineResourcesManager::GetInst().CuttingImage("Rolling_01_R.png", 4, 1);
-	
-	
+	//스노우볼 //빵
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBomb_01.png", 4, 1);
+
 
 
 	//기타 애니메이션

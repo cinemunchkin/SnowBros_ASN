@@ -58,6 +58,7 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
+		SnowBallRenderer->SetImage("SnowBomb_01.png");
 		SnowBallRenderer->SetTransform({ { 0,-32 }, { 84,66 } });
 
 
@@ -70,7 +71,11 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 3, 0.1f, true);
 		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 3, 0.1f, true);
 
+		//눈 렌더 //맨 아랫층 벽에 닿으면 터짐
+		SnowBallRenderer->CreateAnimation("SnowBomb", "SnowBomb_01.png", 0, 3, 1.5f, true);
 		
+
+
 		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
 
@@ -251,7 +256,7 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 	MonsterGravity(_DeltaTime);
 
 
-	
+
 
 
 	//몬스터 쫓아다니는 함수
@@ -284,18 +289,18 @@ void APlay_Monster::Idle(float _DeltaTime)
 	//SetAnimation("Idle_Left");
 	MoveCheck(_DeltaTime);
 	//SetAnimation("Idle_Right");
-	
+
 
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
-	
+
 
 	FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	AddActorLocation(FVector::Right * MonsterDirNormal*MoveAcc* _DeltaTime);
+	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
 
 	/*switch (MonsterDirState)
 	{
@@ -313,6 +318,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 		break;
 
 	}*/
+
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
 		int StackNum = 5;
@@ -400,9 +406,9 @@ void APlay_Monster::Rolling(float _DeltaTime)
 {// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
 
 	DirCheck();
-	
+
 	MoveCheck(_DeltaTime);
-	
+
 	if (true == IsRolling())
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
@@ -419,6 +425,45 @@ void APlay_Monster::Rolling(float _DeltaTime)
 
 
 
+void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
+{
+
+	FVector CheckPos = GetActorLocation();
+	switch (MonsterDirState)
+	{
+	case EMonsterDir::Left:
+		CheckPos.X += 20;
+		break;
+	case EMonsterDir::Right:
+		CheckPos.X -= 20;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 10.0f;
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
+	
+	if (ColorCyan == Color8Bit(0, 255, 255, 0))
+	{
+		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+		SnowBallRenderer->ChangeAnimation("SnowBomb");
+		return;
+		//Destroy(_DeltaTime);
+		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
+		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
+		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
+	}
+	else if (ColorCyan == Color8Bit(255, 255, 0, 0))
+	{
+		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+		Destroy();
+	}
+	
+}
+
+
+
 void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 때, 플레이어가 밀 수 있음
 {
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
@@ -428,34 +473,30 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 
 	switch (Player->DirState)
 	{
-	case EActorDir::Left: // 
+	case EActorDir::Left: // 아니 이러면 플레이어가 방향 바꿀때마다.. 
+							//몬스터가 고개돌려버림
 	{
-		this->SetAnimation("Idle_Left");
 		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
+		this->SetAnimation("Idle_Left");
+		//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+		//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
 
-		
 	}
 	break;
 	case EActorDir::Right:
-		
+
 	{
-		this->SetAnimation("Idle_Right");
 		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
+		this->SetAnimation("Idle_Right");
 		//MonsterDir.iX() == CurPlayerPos.iX();
-		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
 	}
 	break;
 	default:
 		break;
 
 	}
-
-
-
-
+	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+	AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed * 0.1f);
 
 }
 
@@ -472,7 +513,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
-	
+
 		Bullet->Destroy();
 		return;
 	}
@@ -481,7 +522,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	std::vector<UCollision*> PlayerResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
-		
+
 		SnowBallRenderer->ChangeAnimation("StackSnow");
 
 	}
@@ -502,9 +543,9 @@ void APlay_Monster::MonsterGravity(float _DeltaTime)
 	MonsterGravityVector(_DeltaTime);
 	MonsterLastMoveVector(_DeltaTime);
 
-	
 
-	
+
+
 	AddActorLocation(TotalLastMoveVector * _DeltaTime);
 }
 
@@ -535,8 +576,8 @@ void APlay_Monster::MonsterDirVector(float _DeltaTime)
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
-	FVector MonsterDir = PlayerPos-MonsterPos; 
-	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();  
+	FVector MonsterDir = PlayerPos - MonsterPos;
+	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
 	return;
 
@@ -563,42 +604,12 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
-		
+
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 	}
 
 
 }
-
-
-void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
-{
-
-	FVector CheckPos = GetActorLocation();
-	switch (MonsterDirState)
-	{
-	case EMonsterDir::Left:
-		CheckPos.X += 30;
-		break;
-	case EMonsterDir::Right:
-		CheckPos.X -= 30;
-		break;
-	default:
-		break;
-	}
-	CheckPos.Y -= 10.0f;
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
-	if (Color == Color8Bit(255, 255, 0, 0))
-	{
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		Destroy(_DeltaTime);
-		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
-		// 그 안에서 destroy 하기
-	}
-
-
-}
-
 
 void APlay_Monster::MonsterGravityVector(float _DeltaTime)
 {
