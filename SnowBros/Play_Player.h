@@ -43,7 +43,7 @@ protected:
 	// 각 상태마다 언제나 가장 위에 실행되어야 한다.
 	void DirCheck();
 
-	
+	FVector MonsterDir = FVector::Left;
 
 	std::string GetAnimationName(std::string _Name);
 
@@ -107,6 +107,11 @@ private:
 		return PlayerDir;
 	}
 
+	
+	EPlayState GetState()
+	{
+		return State;
+	}
 
 
 	float FreeMoveSpeed = 1000.0f;

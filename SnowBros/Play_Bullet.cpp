@@ -55,7 +55,7 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 	//이것도 곡선으로 나가는거.. 해야함.. 포물선
 
-	AddActorLocation(Dir * _DeltaTime * 150.0f);
+	AddActorLocation(Dir * _DeltaTime * 150.0f);// Dir가 Left임 
 
 	//BulletPhysics(_DeltaTime); //왜 여기다가 놓으면 자꾸.. Col이미지로 렌더되는거임
 }
@@ -172,20 +172,4 @@ void APlay_Bullet::BulletColStart()
 {
 	BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
 }
-
-//{
-//	if (/*충돌하면0 > GetPos().Y*/)
-//	{
-//		Destroy();
-//		return;
-//	}
-//	else
-//	{
-//		/*
-//		n초후 삭제
-//		*/
-//	}
-//AddMoveVector;
-//}
-
 

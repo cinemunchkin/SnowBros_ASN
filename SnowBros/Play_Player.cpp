@@ -94,6 +94,7 @@ void APlay_Player::Tick(float _DeltaTime)
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
 
+	PlayerColPhysics(_DeltaTime);
 	FVector PlayerPos = Player->GetActorLocation();
 	StateUpdate(_DeltaTime);
 }
@@ -420,7 +421,7 @@ void APlay_Player::Idle(float _DeltaTime)
 		StateChange(EPlayState::Jump);
 		return;
 	}
-	///Z키로 공격
+	/// 공격
 	if (true == UEngineInput::IsDown('X'))
 	{
 		StateChange(EPlayState::Attack);
@@ -708,16 +709,44 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 
 		else if (EMonsterState::Snowball == Monster->GetState())
 		{
+			bool MonsterRolling = Monster->IsRolling();
 			// 몬스터는 rolling 상태에서 충돌하면,
 			// 플레이어는 미는 애니메이, +  몬스터는 snowball 상태에서 밀리는 애니메이션.
 			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_LEFT))
 			{
+				
 				this->StateChange(EPlayState::PlayerRolling);
 				Monster->ColMoveUpdate(_DeltaTime);
+				APlay_Player* Player = APlay_Player::GetMainPlayer();
+					// 공격키 누르면 앞으로 튀어 나가도록
+				if (true == UEngineInput::IsDown('X') && Player->GetState() == EPlayState::PlayerRolling)
+				{
+					MonsterRolling = true;
+					switch (DirState)
+					{
+					case EActorDir::Left:
+						Monster->MonsterDir = FVector::Left;
+						Monster->Rolling(_DeltaTime);
+						
+						break;
+
+					case EActorDir::Right:
+						Monster->MonsterDir = FVector::Right;
+						Monster->Rolling(_DeltaTime);
+						break;
+
+					default:
+						break;
+
+					}
+
+				}
 				return;
+				MonsterRolling = false;
 			}
 			else
 			{
+				MonsterRolling = false;
 				this->StateChange(EPlayState::Idle);
 				Monster->ColMoveUpdate(_DeltaTime);
 			}

@@ -67,20 +67,10 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->CreateAnimation("SnowStack_Left", "Snowball_01_R.png", 0, 3, 0.5f, true);
 
 		//눈 렌더 //snowballrolling
-		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.5f, true);
-		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.5f, true);
+		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.1f, true);
+		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.1f, true);
 
-		//SnowBallRenderer->CreateAnimation("RollingFinal_Right",)
-
-		//SnowBallRenderer->CreateAnimation("Snowball_1", "Snowball_01_R.png", 0, 0, 0.5f, true);
-		//SnowBallRenderer->CreateAnimation("Snowball_2", "Snowball_01_R.png", 1, 1, 0.5f, true);
-		//SnowBallRenderer->CreateAnimation("Snowball_3", "Snowball_01_R.png", 2, 2, 0.5f, true);
-		//SnowBallRenderer->CreateAnimation("Snowball_4", "Snowball_01_R.png", 3, 3, 0.5f, true);
-		//SnowBallRenderer->CreateAnimation("Snowball_5", "Snowball_01_R.png", 4, 4, 0.5f, true);
-		//SnowBallRenderer->CreateAnimation("Snowball_6", "Snowball_01_R.png", 5, 5, 0.5f, true);//헐 이것도 추가해야함
-
-		// SnowBallRenderer->CreateAnimation("Rolling", "Rolling_01_R.png", 0, 3, 0.1f, true);
-
+		
 		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
 
@@ -100,7 +90,7 @@ void APlay_Monster::Tick(float _DeltaTime)
 	{
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
-
+	Rolling(_DeltaTime);
 	MonsterColPhysics(_DeltaTime);
 	StateUpdate(_DeltaTime);
 	MonsterGroundUp(_DeltaTime);
@@ -407,10 +397,14 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 void APlay_Monster::Rolling(float _DeltaTime)
 {
-	SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
-	//ColMoveUpdate(_DeltaTime);
-	// Rolling함수 실행하면.. 
-	return;
+	IsRolling() == false;
+	if (true == IsRolling())
+	{
+		SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+		AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
+		return;
+	}
+	
 
 }
 

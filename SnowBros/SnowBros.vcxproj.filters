@@ -66,14 +66,14 @@
     <ClCompile Include="SnowBros_Core.cpp">
       <Filter>SnowBros_Core</Filter>
     </ClCompile>
-    <ClCompile Include="SnowBros_Helper.cpp">
-      <Filter>SnowBros_Core</Filter>
-    </ClCompile>
     <ClCompile Include="Play_Bullet.cpp">
       <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
     </ClCompile>
     <ClCompile Include="Play_SnowBall.cpp">
       <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
+    </ClCompile>
+    <ClCompile Include="SnowBros_Helper.cpp">
+      <Filter>SnowBros_Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

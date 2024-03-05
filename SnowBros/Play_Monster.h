@@ -30,6 +30,7 @@ public:
 	{
 		return State == EMonsterState::Snowball && SnowStack > 4;
 	}
+	void Rolling(float _DeltaTime);
 
 	void StateChange(EMonsterState _State);
 	void ColMoveUpdate(float _DeltaTime);
@@ -62,10 +63,10 @@ protected:
 	void Jump(float _DeltaTime);
 	void DownJump(float _DeltaTime);
 	void Snowball(float _DeltaTime);
-	void Rolling(float _DeltaTime);
+	
 
 	//void StackSnowball(float _DeltaTime);
-	void SnowballStackCheck(float _DeltaTime);
+	//void SnowballStackCheck(float _DeltaTime);
 	
 	int SnowStack = -1;
 
@@ -81,7 +82,7 @@ protected:
 	EMonsterState State = EMonsterState::None;
 	
 	std::string CurAnimationName = "None";
-
+	
 
 
 private:
