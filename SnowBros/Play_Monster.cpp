@@ -400,6 +400,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 {// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
 
 	DirCheck();
+	
 	MoveCheck(_DeltaTime);
 	
 	if (true == IsRolling())
@@ -409,6 +410,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 		if (Player->GetState() == EPlayState::PlayerRolling)
 		{
 			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+			SnowBallMoveVector(_DeltaTime);
 			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
 			return;
 		}
@@ -558,7 +560,35 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
+		
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+	}
+
+
+}
+
+
+void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
+{
+
+	FVector CheckPos = GetActorLocation();
+	switch (MonsterDirState)
+	{
+	case EMonsterDir::Left:
+		CheckPos.X += 30;
+		break;
+	case EMonsterDir::Right:
+		CheckPos.X -= 30;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 10.0f;
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
+	if (Color == Color8Bit(255, 255, 0, 0))
+	{
+		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+		Destroy(_DeltaTime);
 	}
 
 
