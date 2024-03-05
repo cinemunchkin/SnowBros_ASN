@@ -63,12 +63,12 @@ void APlay_Monster::BeginPlay()
 
 
 		//´« ·»´õ //snowballstack
-		SnowBallRenderer->CreateAnimation("SnowStack_Right", "Snowball_01_R.png", 0, 3, 0.5f, true);
-		SnowBallRenderer->CreateAnimation("SnowStack_Left", "Snowball_01_R.png", 0, 3, 0.5f, true);
+		SnowBallRenderer->CreateAnimation("SnowStack_Right", "Snowball_01_R.png", 0, 4, 0.5f, true);
+		SnowBallRenderer->CreateAnimation("SnowStack_Left", "Snowball_01_R.png", 0, 4, 0.5f, true);
 
 		//´« ·»´õ //snowballrolling
-		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 4, 0.1f, true);
-		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 4, 0.1f, true);
+		SnowBallRenderer->CreateAnimation("Rolling_Right", "Rolling_01_R.png", 0, 3, 0.1f, true);
+		SnowBallRenderer->CreateAnimation("Rolling_Left", "Rolling_01_R.png", 0, 3, 0.1f, true);
 
 		
 		SnowBallRenderer->ActiveOff();// SnowBallRender´Â Ã³À½¿¡ OffÇØµÎ°í
