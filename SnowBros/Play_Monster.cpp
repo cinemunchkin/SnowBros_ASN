@@ -480,11 +480,9 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 		this->SetAnimation("Idle_Left");
 		//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 		//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
-
 	}
 	break;
 	case EActorDir::Right:
-
 	{
 		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
 		this->SetAnimation("Idle_Right");

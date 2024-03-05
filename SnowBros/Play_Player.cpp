@@ -510,37 +510,12 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	float Strobetime = _StrobeTime;
-	StrobeUpdate(_StrobeTime);
-
-	//IsStrobeUpdate = false;
-	//if -> 0ÃÊº¸´Ù Å©¸é, Á¡Á¡ ÁÙ¾îµé°í ±×µ¿¾È ±ôºý
-	//if (0.0f <= _StrobeTime)
-	//{
-	//	for (_StrobeTime; _StrobeTime == 0.0f; _StrobeTime--)
-	//	{
-	//		StrobeUpdate(_StrobeTime);
-	//		//±ôºý°Å¸®´Â°ÅÁö 
-	//	}
-	//}
-	//else
-	//{
-	//	APlay_Player::StateChange(EPlayState::Idle);
-	//}
-
-	/*if (_StrobeTime < 5.0f)
-	{
-		Renderer->ChangeAnimation(GetAnimationName("Idle"));
-		StateChange(EPlayState::Idle);
-
-	}*/
-
-
-
+	//StrobeUpdate(_StrobeTime);
 }
 
 
 void APlay_Player::StrobeUpdate(float _DeltaTime)
-{
+{//±ôºý±ôºý ¾î¶»°Ô? 
 
 	AlphaTime += _DeltaTime;
 
@@ -559,10 +534,12 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 	}
 	if (AlphaTime > 5.0f)
 	{
-		Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		StateChange(EPlayState::Idle);
+		Renderer->ChangeAnimation(GetAnimationName("Idle"));
+		return;
 	}
 
+	//MoveUpdate(_DeltaTime);
 }
 
 
