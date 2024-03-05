@@ -109,7 +109,7 @@ void APlay_Player::DirCheck()
 	{
 		Dir = EActorDir::Left;
 	}
-	if (UEngineInput::IsDown(VK_RIGHT))
+	if(UEngineInput::IsDown(VK_RIGHT))
 	{
 		Dir = EActorDir::Right;
 	}
@@ -187,7 +187,7 @@ void APlay_Player::StateChange(EPlayState _State)
 			FlyStart();
 			break;
 
-		case EPlayState::PlayerRolling: 
+		case EPlayState::PlayerRolling:
 			PlayerRollingStart();
 			break;
 
@@ -377,8 +377,8 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		{
 			FVector _PlayerRollingSpeed = FVector::Zero;
 			_PlayerRollingSpeed += PlayerRollingSpeed;
-			AddMoveVector(FVector::Left * _DeltaTime*_PlayerRollingSpeed);
-			
+			AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+
 			//return;
 		}
 		MoveUpdate(_DeltaTime);
@@ -435,7 +435,7 @@ void APlay_Player::Run(float _DeltaTime)
 {
 	DirCheck();
 	PlayerColPhysics(_DeltaTime);
-	
+
 
 
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
@@ -462,7 +462,7 @@ void APlay_Player::Run(float _DeltaTime)
 		{
 			JumpVector += FVector::Right * _DeltaTime;
 		}
-		
+
 	}
 
 	if (true == UEngineInput::IsPress(VK_RIGHT))
@@ -618,7 +618,7 @@ void APlay_Player::Fire_Bullet()
 		break;
 	}
 
-	
+
 
 
 
@@ -652,14 +652,14 @@ void APlay_Player::Jump(float _DeltaTime)
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
 		//if (true == UEngineInput::IsDown('Z'))
-		
-			GroundUp(_DeltaTime); // 땅에 박히는거 해결!!
-			JumpVector = FVector::Zero;
-			StateChange(EPlayState::Idle);
-			return;
-		
+
+		GroundUp(_DeltaTime); // 땅에 박히는거 해결!!
+		JumpVector = FVector::Zero;
+		StateChange(EPlayState::Idle);
+		return;
+
 	}
-//	MoveUpdate(_DeltaTime);
+	//	MoveUpdate(_DeltaTime);
 
 }
 
@@ -693,12 +693,14 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 	{//플레이어가 몬스터랑 충돌했을때, 
 
 		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
 		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
 
-		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
-		{
-			MsgBoxAssert("몬스터가 아닙니다");
-		}
+					if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+					{
+						MsgBoxAssert("몬스터가 아닙니다");
+					}
 
 		if (EMonsterState::Snowball != Monster->GetState())
 			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
@@ -707,27 +709,33 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			return;
 		}
 
+
 		else if (EMonsterState::Snowball == Monster->GetState())
-		{
+		{// 몬스터가 Snowball 상태일 때, 
 			bool MonsterRolling = Monster->IsRolling();
-			// 몬스터는 rolling 상태에서 충돌하면,
-			// 플레이어는 미는 애니메이, +  몬스터는 snowball 상태에서 밀리는 애니메이션.
+			// 몬스터 bool= IsRolling 받는 함수
+
 			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_LEFT))
 			{
-				
 				this->StateChange(EPlayState::PlayerRolling);
+				//Collision 있는 상태에서, 플레이어가 방향키 둘중 하나를 누르면
 				Monster->ColMoveUpdate(_DeltaTime);
-				APlay_Player* Player = APlay_Player::GetMainPlayer();
-					// 공격키 누르면 앞으로 튀어 나가도록
+				// 몬스터는 왼/오로 방향 설정하고 AddActorLocation
+
+				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
 				if (true == UEngineInput::IsDown('X') && Player->GetState() == EPlayState::PlayerRolling)
+					// 공격키 누르면 앞으로 튀어 나가도록
 				{
+					// 현재 상태 : 플레이어가 미는 상태이고, 
+					// 5회 이상은 5회로 친다
+
 					MonsterRolling = true;
+					// 여기 들어오면, IsRolling은 true로 보고, 
 					switch (DirState)
 					{
 					case EActorDir::Left:
 						Monster->MonsterDir = FVector::Left;
 						Monster->Rolling(_DeltaTime);
-						
 						break;
 
 					case EActorDir::Right:
@@ -739,6 +747,8 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 						break;
 
 					}
+					return;
+
 
 				}
 				return;
@@ -752,13 +762,13 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			}
 			return;
 		}
-		
-	/*	else
-		{
-			this->StateChange(EPlayState::Idle);
-			return;
-		}
-	*/
+
+		/*	else
+			{
+				this->StateChange(EPlayState::Idle);
+				return;
+			}
+		*/
 
 		return;
 	}

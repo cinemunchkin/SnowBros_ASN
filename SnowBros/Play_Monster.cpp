@@ -289,6 +289,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
+	
 
 	FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
@@ -371,17 +372,17 @@ void APlay_Monster::SnowballStart()
 void APlay_Monster::Snowball(float _DeltaTime)
 {
 	DirCheck();
-
+	MoveCheck(_DeltaTime);
 
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-	int StackNum = 5;
+	int StackNum = 3;
 	if (SnowStack < StackNum)
 	{
 		return;
 	}
 	else
 	{
-		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		MonsterColPhysics(_DeltaTime);
 		//ColMoveUpdate(_DeltaTime);
 	}
@@ -396,16 +397,22 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 
 void APlay_Monster::Rolling(float _DeltaTime)
-{
-	IsRolling() == false;
+{// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
+
+	DirCheck();
+	MoveCheck(_DeltaTime);
+	
 	if (true == IsRolling())
 	{
-		SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
-		AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
-		return;
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
+		APlay_Player* Player = APlay_Player::GetMainPlayer();
+		if (Player->GetState() == EPlayState::PlayerRolling)
+		{
+			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
+			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
+			return;
+		}
 	}
-	
-
 }
 
 
@@ -422,7 +429,7 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 	case EActorDir::Left:
 	{
 		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-		MonsterDir.iX() == CurPlayerPos.iX();
+		//MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
 	}
@@ -431,7 +438,7 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 		
 	{
 		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
-		MonsterDir.iX() == CurPlayerPos.iX();
+		//MonsterDir.iX() == CurPlayerPos.iX();
 		FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 		AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed);
 	}
@@ -460,14 +467,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
-		//	return;
-
-			/*int StackNum = 5;
-			if (SnowStack >= StackNum)
-			{
-				SnowBallRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-				return;
-			}*/
+	
 		Bullet->Destroy();
 		return;
 	}
@@ -479,23 +479,8 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		
 		SnowBallRenderer->ChangeAnimation("StackSnow");
 
-		if (SnowStack = 5)
-		{
-			StateChange(EMonsterState::Rolling);
-
-			FVector MonMove = FVector::Zero;
-			FVector CurMonMove = GetActorLocation() * FVector::Right;
-			AddActorLocation(CurMonMove * _DeltaTime * RollingSpeed);
-
-
-			return;
-		}
-
 	}
 	// 
-
-
-
 
 }
 

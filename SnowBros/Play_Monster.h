@@ -30,13 +30,15 @@ public:
 	{
 		return State == EMonsterState::Snowball && SnowStack > 4;
 	}
+	int SnowStack = -1;
+
 	void Rolling(float _DeltaTime);
 
 	void StateChange(EMonsterState _State);
 	void ColMoveUpdate(float _DeltaTime);
 
 	EMonsterDir MonsterDirState = EMonsterDir::Right;
-	FVector RollingSpeed = FVector::Right * 150.0f;
+	FVector RollingSpeed = FVector::Right * 250.0f;
 	
 protected:
 	void BeginPlay() override;
@@ -68,7 +70,7 @@ protected:
 	//void StackSnowball(float _DeltaTime);
 	//void SnowballStackCheck(float _DeltaTime);
 	
-	int SnowStack = -1;
+	
 
 	// 상태 시작 함수들
 	void IdleStart();

@@ -32,7 +32,10 @@ public:
 	
 	void PlayerColState(EPlayState _State);
 	FVector PlayerRollingSpeed = FVector::Right * 150.0f;
-
+	EPlayState GetState()
+	{
+		return State;
+	}
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
@@ -46,6 +49,8 @@ protected:
 	FVector MonsterDir = FVector::Left;
 
 	std::string GetAnimationName(std::string _Name);
+
+	//int SnowStackNum = -1;
 
 	// 상태 주요 업데이트
 	void StateChange(EPlayState _State);
@@ -108,10 +113,7 @@ private:
 	}
 
 	
-	EPlayState GetState()
-	{
-		return State;
-	}
+	
 
 
 	float FreeMoveSpeed = 1000.0f;
