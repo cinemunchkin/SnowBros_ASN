@@ -41,8 +41,8 @@ void APlay_Monster::BeginPlay()
 
 		//´« ¼Ó¿¡ °¤È÷°í ÀÖÀ»¶§ ¾ÆµÕ¹ÙµÕ
 		//¹®Á¦ ;; ´«µ¢ÀÌ ¾È¿¡ ÀÖÀ»¶§ destroy ÇØ¾ßµÊ!!!
-		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 12, 23, 0.1f, true);
-		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 12, 23, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 7, 9, 0.05f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 8, 10, 0.05f, true);
 
 		//¸ó½ºÅÍ Á¡ÇÁ
 		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
