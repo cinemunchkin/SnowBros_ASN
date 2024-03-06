@@ -101,7 +101,6 @@ void APlay_Player::Tick(float _DeltaTime)
 	// 이걸 여기에 넣어서 자꾸 미는구나 이거 주석거니깐 바로 잘됨
 	// -> 해결된거 ; 스노우볼 1개씩 밀고, 몬스터/플레이어 겹쳤을때도 안움직임
 
-	FVector PlayerPos = Player->GetActorLocation();
 	StateUpdate(_DeltaTime);
 }
 
@@ -191,6 +190,10 @@ void APlay_Player::StateChange(EPlayState _State)
 
 		case EPlayState::Fly: // Stage이동할 때 날기
 			FlyStart();
+			break;
+
+		case EPlayState::PlayerPush: // Stage이동할 때 날기
+			PlayerPushStart();
 			break;
 
 		case EPlayState::PlayerRolling:
@@ -368,6 +371,51 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	}
 	//----------------------------------
 
+	MoveUpdate(_DeltaTime);
+	FVector CheckPos = GetActorLocation();
+
+	switch (DirState)
+	{
+	case EActorDir::Left:
+		CheckPos.X -= 5;
+		break;
+	case EActorDir::Right:
+		CheckPos.X += 5;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 10;
+	std::vector<UCollision*> SnowballResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
+	{
+
+	}
+
+	return;
+
+}
+
+//
+void APlay_Player::PlayerPush(float _DeltaTime)
+{//문제 많음 Rolling이랑  push랑 구분좀
+	
+	DirCheck();
+	PlayerColPhysics(_DeltaTime);
+	MoveUpdate(_DeltaTime);
+
+	//-------------
+
+
+	if (true == UEngineInput::IsFree(VK_LEFT)
+		&& true == UEngineInput::IsFree(VK_RIGHT)
+		)
+	{
+		StateChange(EPlayState::Idle);
+		//MoveUpdate(_DeltaTime);
+		return;
+	}
+	//----------------------------------
 
 	MoveUpdate(_DeltaTime);
 	FVector CheckPos = GetActorLocation();
@@ -384,26 +432,27 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		break;
 	}
 	CheckPos.Y -= 10;
-	//Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 	//if (Color) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
 	std::vector<UCollision*> SnowballResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
-	{
+	{	
+		AActor* Owner = SnowballResult[0]->GetOwner();
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
 		//AddActorLocation(MoveVector); /// 이거 잘봐!!
-		if (true == UEngineInput::IsPress(VK_LEFT))
+		if (true == UEngineInput::IsPress(VK_LEFT)&& Monster->SnowStack>4)
 		{
 			FVector _PlayerRollingSpeed = FVector::Zero;
 			_PlayerRollingSpeed += PlayerRollingSpeed;
-			//AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
-			// 이거 일단 주석 걸어도 아무런 작용이없군
-			//return;
+			Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+			AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
 		}
 		MoveUpdate(_DeltaTime);
-		if (true == UEngineInput::IsPress(VK_RIGHT))
+		if (true == UEngineInput::IsPress(VK_RIGHT) && Monster->SnowStack > 4)
 		{
 			FVector _PlayerRollingSpeed = FVector::Zero;
 			_PlayerRollingSpeed += PlayerRollingSpeed;
-			//AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
+			Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+			AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
 			//return;
 		}
 		MoveUpdate(_DeltaTime);
@@ -412,10 +461,8 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 
 	return;
 
-}
 
-void APlay_Player::PlayerPush(float _DeltaTime)
-{
+
 
 }
 
@@ -714,12 +761,13 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 			{
 				Monster->ColMoveUpdate(_DeltaTime);
-				this->StateChange(EPlayState::PlayerRolling);
+				this->StateChange(EPlayState::PlayerPush);
 				//Collision 있는 상태에서, 플레이어가 방향키 둘중 하나를 누르면
 				// 몬스터는 왼/오로 방향 설정하고 AddActorLocation
 
 				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
-				if (true ==(Player->GetState() == EPlayState::PlayerRolling &&  UEngineInput::IsDown('X')))
+				//문제많음
+				if (true ==(Player->GetState() == EPlayState::PlayerPush &&  UEngineInput::IsDown('X')))
 					// 문제!! 이게 근데 1차 -> 2차 이런게 있네 , 조건 두개가 동시에 true이려면?
 					// 완전 눈덩어리 일 때만 Monster->SnowStack>5 밀 수 있어야함 ㅠㅠ
 					// 공격키 누르면 앞으로 튀어 나가도록

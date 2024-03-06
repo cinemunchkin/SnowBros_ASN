@@ -137,12 +137,10 @@ void APlay_Bullet::BulletPhysics(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
 		BulletRenderer->SetTransform({ {16,-24}, {80 * 0.9f, 64 * 0.9f} });
-		this->SetAnimation("BulletCol");
+		this->SetAnimation("BulletCol"); 
+		// 이거 하면 함수 bulletcol로 들어가긴하나?
 		//StateChange(EBulletState::BulletCol);
-		if (BulletRenderer->IsCurAnimationEnd())
-		{
-		Destroy();
-		} // 여긴 아무 작용안하는듯
+		
 		return;
 	}
 
@@ -156,8 +154,11 @@ void APlay_Bullet::Bullet(float _DeltaTime)
 }
 void APlay_Bullet::BulletCol(float _DeltaTime)
 {
-	Destroy();
-	
+	//BulletPhysics(_DeltaTime);
+	if (IsBulletCol = false)
+	{
+		
+	}
 }
 
 

@@ -103,7 +103,8 @@ void APlay_Monster::Tick(float _DeltaTime)
 	MonsterColPhysics(_DeltaTime);
 	StateUpdate(_DeltaTime);
 	MonsterGroundUp(_DeltaTime);
-	// 문제ㅠㅠ 여기 stateupdate만 놔두고, 나머지 함수들은 각 state함수에 넣어두자
+	// 문제ㅠㅠ 여기 stateupdate만 놔두고,
+	//  나머지 함수들은 각 state함수에 넣어두자
 }
 
 
@@ -126,81 +127,69 @@ void APlay_Monster::DirCheck()
 
 	//몬스터 방향 로직
 
-	switch (MonsterDirState)
-	{
+	//switch (MonsterDirState)
+	//{
 
-	case EMonsterDir::Left:
-		//원래 R - > M - > L
-		if (PrevDir == EMonsterDir::Right)
-		{
-			Dir = EMonsterDir::Mid;
-			NextDir = Dir;
-			this->MonsterDir = FVector::Zero;
-			MonsterRenderer->ChangeAnimation("MonIdle");
-			//StateChange(EMonsterState::MonMove)
-			if (MonsterRenderer->IsCurAnimationEnd())
-			{
-				Dir = EMonsterDir::Left;
-				this->MonsterDir = FVector::Left;
-				NextDir = Dir;
-			/*	if (MonsterRenderer->IsCurAnimationEnd())
-				{
-					Dir = EMonsterDir::Mid;
-					this->MonsterDir = FVector::Zero;
-					NextDir = Dir;
+	//case EMonsterDir::Left:
+	//	//원래 R - > M - > L
+	//	if (PrevDir == EMonsterDir::Left)
+	//	{
+	//	
+	//		this->MonsterDir = FVector::Left;
+	//		MonsterRenderer->ChangeAnimation("MonMove");
+	//		if (MonsterRenderer->IsCurAnimationEnd())
+	//		{
+	//			Dir = EMonsterDir::Right;
+	//			this->MonsterDir = FVector::Right;
+	//			NextDir = Dir;
 
-				}*/
-			}
-		}
-		break;
+	//			return;
+	//		}
+	//		Dir = EMonsterDir::Right;
+	//	}
+	//	break;
 
-	case EMonsterDir::Right:
-		//원래L - > M - > R
+	//case EMonsterDir::Right:
+	//	//원래L - > M - > R
 
-		if (PrevDir == EMonsterDir::Left)
-		{
-			Dir = EMonsterDir::Mid;
-			NextDir = Dir;
-			this->MonsterDir = FVector::Zero;
-			MonsterRenderer->ChangeAnimation("MonIdle");
-			//StateChange(EMonsterState::MonMove)
-			if (MonsterRenderer->IsCurAnimationEnd())
-			{
-				Dir = EMonsterDir::Right;
-				this->MonsterDir = FVector::Right;
-				NextDir = Dir;
-			/*	if (MonsterRenderer->IsCurAnimationEnd())
-				{
-					Dir = EMonsterDir::Mid;
-					this->MonsterDir = FVector::Zero;
-					NextDir = Dir;
+	//	if (PrevDir == EMonsterDir::Left)
+	//	{
+	//		
+	//		this->MonsterDir = FVector::Right;
+	//		MonsterRenderer->ChangeAnimation("MonMove");
+	//		if (MonsterRenderer->IsCurAnimationEnd())
+	//		{
+	//			Dir = EMonsterDir::Left;
+	//			this->MonsterDir = FVector::Left;
+	//			NextDir = Dir;
 
-				}*/
-			}
+	//			return;
+	//		}
 
-			return;
-		}
-		break;
+	//		Dir = EMonsterDir::Left;
+	//		return;
+	//	}
+	//	break;
 
-	default:
-		break;
-	}
+	//default:
+	//	break;
+	//}
 
 
 
 	//문제네 ; 여기서 계속 monsterDir 이 Right로만 들어감
-	//if (PlayerPos.X > MonsterPos.X) 
-	//{
-	//	Dir = EMonsterDir::Right;
-	//	MonsterDirState = Dir;
-	//	return;
-	//}
-	//else
-	//{
-	//	Dir = EMonsterDir::Left;
-	//	MonsterDirState = Dir;
-	//	return;
-	//}
+	if (PlayerPos.X > MonsterPos.X) 
+	{
+		Dir = EMonsterDir::Right;
+		MonsterDirState = Dir;
+		return;
+	}
+	else
+	{
+		Dir = EMonsterDir::Left;
+		MonsterDirState = Dir;
+		return;
+	}
 
 	if (Dir != MonsterDirState)
 	{
@@ -372,23 +361,26 @@ void APlay_Monster::MonMove(float _DeltaTime)
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
-	FVector MonsterDir = PlayerPos - MonsterPos;
+	//FVector MonsterDir = MonsterDIrState
+	// MonsterDir -> case로 바꾸기
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
 //	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
 	// 여기도 문제 있음 -> Idle에서 Right로 놔둔거 고치기
 	
+	
+
 	if (MonsterDirState == EMonsterDir::Left)
 	{
 		SetAnimation("MonMove_Left");
-		AddActorLocation(MonsterDirNormal * _DeltaTime * MoveAcc);
+		AddActorLocation(FVector::Left * _DeltaTime * MoveAcc);
 		return;
 	}
-	else if (MonsterDirState == EMonsterDir::Right)
+	if (MonsterDirState == EMonsterDir::Right)
 	{
-		SetAnimation("MonMove_Left");
-		AddActorLocation(MonsterDirNormal * _DeltaTime * MoveAcc);
+		SetAnimation("MonMove_Right");
+		AddActorLocation(FVector::Right* _DeltaTime * MoveAcc);
 		return;
 	}
 
@@ -591,8 +583,9 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
-
+		
 		Bullet->Destroy();
+		//Bullet->BulletPhysics(_DeltaTime);
 		return;
 	}
 
