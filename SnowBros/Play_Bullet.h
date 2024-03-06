@@ -70,7 +70,7 @@ protected:
 	
 
 	void BulletPhysics(float _DeltaTime);
-
+	void BulletMoveVector(float _DeltaTime);
 	void BulletStart();
 	void BulletColStart();
 
