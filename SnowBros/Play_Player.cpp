@@ -94,7 +94,10 @@ void APlay_Player::Tick(float _DeltaTime)
 		MsgBoxAssert("플레이어가 존재하지 않습니다.");
 	}
 
-	PlayerColPhysics(_DeltaTime);
+	// PlayerColPhysics(_DeltaTime);
+	// 이걸 여기에 넣어서 자꾸 미는구나 이거 주석거니깐 바로 잘됨
+	// -> 해결된거 ; 스노우볼 1개씩 밀고, 몬스터/플레이어 겹쳤을때도 안움직임
+
 	FVector PlayerPos = Player->GetActorLocation();
 	StateUpdate(_DeltaTime);
 }
@@ -547,8 +550,6 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 void APlay_Player::Attack(float _DeltaTime)
 {
 	DirCheck();
-
-
 	if (Renderer->IsCurAnimationEnd())
 	{
 		StateChange(EPlayState::Idle);

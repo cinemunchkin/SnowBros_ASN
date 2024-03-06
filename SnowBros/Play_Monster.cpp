@@ -456,6 +456,7 @@ void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 	}
 	else if (ColorCyan == Color8Bit(255, 255, 0, 0))
 	{
+	
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
 		Destroy();
 	}
