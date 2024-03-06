@@ -28,7 +28,7 @@ void APlay_Monster::BeginPlay()
 		//UImageRenderer* MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
-		MonsterRenderer->SetTransform({ {0,-20}, {48, 48} });
+		MonsterRenderer->SetTransform({ {0,-26}, {48*1.3f, 48*1.3f} });
 		MonsterRenderer->SetImage("Monster_01_R.png");
 		MonsterRenderer->SetImage("Monster_01_L.png");
 	}
@@ -37,13 +37,15 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
 
-		//눈 속에 갇히고 있을때 1~4 / 5일때는 destroy
+		//눈 속에 갇히고 있을때 아둥바둥
+		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
 		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 12, 23, 0.1f, true);
 		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 12, 23, 0.1f, true);
-		/*
-		아대박 그러고 보니까 눈 속에 갇히고 있을때+눈덩이에서는, 몬스터 Physics 끄는 기능 만들기
-		그때는 플레이어랑 충돌해도 그닥 갠차늠 strobe 없음
-		*/
+
+		//몬스터 점프
+		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
+		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
+		
 	}
 
 
@@ -59,7 +61,7 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
 		SnowBallRenderer->SetImage("SnowBomb_01.png");
-		SnowBallRenderer->SetTransform({ { 0,-32 }, { 84,66 } });
+		SnowBallRenderer->SetTransform({ { +6,-38 }, { 80*1.2f,66*1.2f } });
 
 
 
@@ -255,30 +257,6 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 	MonsterDirVector(_DeltaTime);
 	MonsterGravity(_DeltaTime);
 
-
-
-
-
-	//몬스터 쫓아다니는 함수
-
-	//FVector MonsterDir = PlayerPos - MonsterPos;
-	//MonsterDir.Y = 0.0f;
-	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-	//AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
-	//if (this->MonsterDirState == EMonsterDir::Right) // 여기 작동을 안하는듯함..ㅠㅠbullet보고 수정필요 
-	//{
-	//	MonsterRenderer->ChangeAnimation("Idle_Right");
-	//	AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
-	//	return;
-	//}
-	//if (this->MonsterDirState == EMonsterDir::Left)
-	//{
-	//	MonsterRenderer->ChangeAnimation("Idle_Left");
-	//	AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
-	//	return;
-	//}
-
-
 }
 
 
@@ -301,7 +279,7 @@ void APlay_Monster::Idle(float _DeltaTime)
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
 	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
-
+	// 여기도 문제 있음 -> Idle에서 Right로 놔둔거 고치기
 	/*switch (MonsterDirState)
 	{
 	case EMonsterDir::None:
@@ -337,7 +315,6 @@ void APlay_Monster::Idle(float _DeltaTime)
 	/*MonsterColPhysics(_DeltaTime);
 
 	FVector MonsterPos = this->GetActorLocation();
-
 
 	if (MonsterPos.X > 200.0f)
 	{
@@ -389,6 +366,9 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	else
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
+		MonsterRenderer->SetTransform({this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f}});
+		// 꼼수로 됐다 눈덩이 안에 들어가면 몬스터 스케일 요만하게 만들어버림
+		// 근데 만약에 반대로 
 		MonsterColPhysics(_DeltaTime);
 		//ColMoveUpdate(_DeltaTime);
 	}
@@ -406,7 +386,6 @@ void APlay_Monster::Rolling(float _DeltaTime)
 {// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
 
 	DirCheck();
-
 	MoveCheck(_DeltaTime);
 
 	if (true == IsRolling())
@@ -496,6 +475,7 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 	}
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 	AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed * 0.1f);
+	
 
 }
 
@@ -559,6 +539,7 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 		if (Color == Color8Bit(0, 255, 255, 0))
 		{
 			AddActorLocation(FVector::Up);
+		//	this->StateChange(EMonsterState::Jump);
 		}
 		else
 		{

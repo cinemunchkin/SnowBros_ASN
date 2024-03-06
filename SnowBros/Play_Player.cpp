@@ -380,8 +380,8 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		{
 			FVector _PlayerRollingSpeed = FVector::Zero;
 			_PlayerRollingSpeed += PlayerRollingSpeed;
-			AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
-
+			//AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+			// 이거 일단 주석 걸어도 아무런 작용이없군
 			//return;
 		}
 		MoveUpdate(_DeltaTime);
@@ -389,7 +389,7 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 		{
 			FVector _PlayerRollingSpeed = FVector::Zero;
 			_PlayerRollingSpeed += PlayerRollingSpeed;
-			AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
+			//AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
 			//return;
 		}
 		MoveUpdate(_DeltaTime);
