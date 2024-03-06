@@ -58,8 +58,11 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.02f, true);
 		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.02f, true);
 
-		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 0, 10.0f, true);
-		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 0, 10.0f, true);
+		Renderer->CreateAnimation("PlayerPush_Left", "SnowBros_PlayerRolling_L.png", 0, 0, 10.0f, true);
+		Renderer->CreateAnimation("PlayerPush_Right", "SnowBros_PlayerRolling_R.png", 0, 0, 10.0f, true);
+
+		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 3, 10.0f, true);
+		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 3, 10.0f, true);
 
 
 
@@ -236,7 +239,10 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 	case EPlayState::Strobe: // Ãæµ¹½Ã ±ôºý±ôºý
 		Strobe(_DeltaTime);
 		break;
-	case EPlayState::PlayerRolling: // Ãæµ¹½Ã ±ôºý±ôºý
+	case EPlayState::PlayerPush: // ´«µ¢ÀÌ ¹Ð±â¸¸ ÇÏ±â
+		PlayerPush(_DeltaTime);
+		break;
+	case EPlayState::PlayerRolling: // ´«µ¢ÀÌ ±¼¸®±â
 		PlayerRolling(_DeltaTime);
 		break;
 	case EPlayState::Fly: // StageÀÌµ¿ÇÒ ¶§ ³¯±â
@@ -328,12 +334,20 @@ void APlay_Player::AttackStart()
 
 }
 
+
 void APlay_Player::PlayerRollingStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("PlayerRolling"));
 
 	DirCheck();
 }
+void APlay_Player::PlayerPushStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("PlayerPush"));
+
+	DirCheck();
+}
+
 
 void APlay_Player::PlayerRolling(float _DeltaTime)
 {
@@ -400,6 +414,10 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 
 }
 
+void APlay_Player::PlayerPush(float _DeltaTime)
+{
+
+}
 
 
 

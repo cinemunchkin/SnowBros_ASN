@@ -110,7 +110,8 @@ void APlay_Monster::Tick(float _DeltaTime)
 
 
 
-void APlay_Monster::DirCheck() // 몬스터의 DirCheck가 필요할까?
+void APlay_Monster::DirCheck() 
+// 
 {
 	EMonsterDir Dir = MonsterDirState;
 	PrevDir = Dir;
@@ -118,49 +119,65 @@ void APlay_Monster::DirCheck() // 몬스터의 DirCheck가 필요할까?
 
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
-	
+
 	// NowDir middle 상태 -> PrevDir Left면 NextDir = Right
 	// NowDir middle 상태 -> PrevDir Right면 NextDir = left
 	// NowDir Left또는 Right -> Next Dir = middle
-	 
-	//몬스터 방향 로직
-	
-	switch(MonsterDirState)
-	{
-	
-	case EMonsterDir::Left:
 
+	//몬스터 방향 로직
+
+	switch (MonsterDirState)
+	{
+
+	case EMonsterDir::Left:
+		//원래 R - > M - > L
 		if (PrevDir == EMonsterDir::Right)
 		{
 			Dir = EMonsterDir::Mid;
-			
+			NextDir = Dir;
+			this->MonsterDir = FVector::Zero;
+			MonsterRenderer->ChangeAnimation("MonIdle");
 			//StateChange(EMonsterState::MonMove)
 			if (MonsterRenderer->IsCurAnimationEnd())
 			{
 				Dir = EMonsterDir::Left;
-				return;
-			}
-			else if (PrevDir == EMonsterDir::Left)
-			{
-				if (MonsterRenderer->IsCurAnimationEnd())
+				this->MonsterDir = FVector::Left;
+				NextDir = Dir;
+			/*	if (MonsterRenderer->IsCurAnimationEnd())
 				{
 					Dir = EMonsterDir::Mid;
-				}
-			}
+					this->MonsterDir = FVector::Zero;
+					NextDir = Dir;
 
-			return;
+				}*/
+			}
 		}
 		break;
+
 	case EMonsterDir::Right:
+		//원래L - > M - > R
 
 		if (PrevDir == EMonsterDir::Left)
 		{
-			NextDir = EMonsterDir::Right;
+			Dir = EMonsterDir::Mid;
+			NextDir = Dir;
+			this->MonsterDir = FVector::Zero;
+			MonsterRenderer->ChangeAnimation("MonIdle");
+			//StateChange(EMonsterState::MonMove)
 			if (MonsterRenderer->IsCurAnimationEnd())
 			{
-				NextDir = EMonsterDir::Mid;
-				return;
+				Dir = EMonsterDir::Right;
+				this->MonsterDir = FVector::Right;
+				NextDir = Dir;
+			/*	if (MonsterRenderer->IsCurAnimationEnd())
+				{
+					Dir = EMonsterDir::Mid;
+					this->MonsterDir = FVector::Zero;
+					NextDir = Dir;
+
+				}*/
 			}
+
 			return;
 		}
 		break;
@@ -168,6 +185,7 @@ void APlay_Monster::DirCheck() // 몬스터의 DirCheck가 필요할까?
 	default:
 		break;
 	}
+
 
 
 	//문제네 ; 여기서 계속 monsterDir 이 Right로만 들어감
@@ -256,6 +274,7 @@ void APlay_Monster::StateChange(EMonsterState _State)
 }
 
 
+
 void APlay_Monster::StateUpdate(float _DeltaTime)
 {
 	switch (State)
@@ -266,8 +285,6 @@ void APlay_Monster::StateUpdate(float _DeltaTime)
 	case EMonsterState::MonMove:
 		MonMove(_DeltaTime);
 		break;
-
-
 	case EMonsterState::Jump:
 		Jump(_DeltaTime);
 		break;
@@ -279,6 +296,8 @@ void APlay_Monster::StateUpdate(float _DeltaTime)
 		break;
 	case EMonsterState::Rolling:
 		Rolling(_DeltaTime);
+		break;
+	default:
 		break;
 	}
 
@@ -323,12 +342,17 @@ void APlay_Monster::RollingStart()
 }
 
 
-void APlay_Monster::MoveCheck(float _DeltaTime)
-{
-	//DirCheck();
-	MonsterDirVector(_DeltaTime);
-	MonsterGravity(_DeltaTime);
 
+void APlay_Monster::SnowballStart()
+{// 몬스터 -> snowballstart 하면, snowrender -> on
+	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
+	// 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
+	//	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
+
+
+//SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); -> 이건 없어도됨
+	DirCheck();
 }
 
 void APlay_Monster::MonIdle(float _DeltaTime)
@@ -355,29 +379,25 @@ void APlay_Monster::MonMove(float _DeltaTime)
 //	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
 	// 여기도 문제 있음 -> Idle에서 Right로 놔둔거 고치기
 	
-	switch (MonsterDirState)
+	if (MonsterDirState == EMonsterDir::Left)
 	{
-	
-	case EMonsterDir::Left:
-		this->MonsterDir = FVector::Left;
 		SetAnimation("MonMove_Left");
-		AddActorLocation(MonsterDirNormal * _DeltaTime  * MoveAcc);
-		break;
-
-	case EMonsterDir::Right:
-		this->MonsterDir = FVector::Right;
-		SetAnimation("MonMove_Right");
 		AddActorLocation(MonsterDirNormal * _DeltaTime * MoveAcc);
-		break;
-
-	case EMonsterDir::Mid:
-		SetAnimation("MonIdle");
-		break;
-
-
-	default:
-		break;
+		return;
 	}
+	else if (MonsterDirState == EMonsterDir::Right)
+	{
+		SetAnimation("MonMove_Left");
+		AddActorLocation(MonsterDirNormal * _DeltaTime * MoveAcc);
+		return;
+	}
+
+	else if (MonsterDirState == EMonsterDir::None)
+	{
+		SetAnimation("MonIdle");
+		return;
+	}
+
 
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
@@ -422,17 +442,6 @@ void APlay_Monster::DownJump(float _DeltaTime)
 
 }
 
-void APlay_Monster::SnowballStart()
-{// 몬스터 -> snowballstart 하면, snowrender -> on
-	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
-	// 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
-	//	그냥 렌더 한번 더 얹는걸로 바뀜ㅁ
-
-
-//SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); -> 이건 없어도됨
-	DirCheck();
-}
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
@@ -525,6 +534,14 @@ void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 }
 
 
+
+void APlay_Monster::MoveCheck(float _DeltaTime)
+{
+	//DirCheck();
+	MonsterDirVector(_DeltaTime);
+	MonsterGravity(_DeltaTime);
+
+}
 
 void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 때, 플레이어가 밀 수 있음
 {

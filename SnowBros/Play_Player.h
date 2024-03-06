@@ -72,6 +72,7 @@ protected:
 	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	void PlayerRolling(float _DeltaTime);
+	void PlayerPush(float _DeltaTime);
 
 	// 상태 시작 함수들
 	void IdleStart();
@@ -86,6 +87,8 @@ protected:
 	void FlyStart();
 
 	void PlayerRollingStart();
+	void PlayerPushStart();
+
 
 	bool IsStrobeUpdate = false;
 	

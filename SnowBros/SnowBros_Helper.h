@@ -70,7 +70,8 @@ enum class EPlayState
 	FastRun,
 	Fly,
 
-	PlayerRolling
+	PlayerRolling,
+	PlayerPush,
 	
 };
 
