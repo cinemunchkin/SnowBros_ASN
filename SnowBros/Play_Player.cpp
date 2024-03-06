@@ -693,30 +693,32 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			bool MonsterRolling = Monster->IsRolling();
 			// 몬스터 bool= IsRolling 받는 함수
 
-			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_LEFT))
+			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 			{
+				Monster->ColMoveUpdate(_DeltaTime);
 				this->StateChange(EPlayState::PlayerRolling);
 				//Collision 있는 상태에서, 플레이어가 방향키 둘중 하나를 누르면
-				Monster->ColMoveUpdate(_DeltaTime);
 				// 몬스터는 왼/오로 방향 설정하고 AddActorLocation
 
 				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
-				if (true == UEngineInput::IsDown('X') && Player->GetState() == EPlayState::PlayerRolling)
+				if (true ==(Player->GetState() == EPlayState::PlayerRolling &&  UEngineInput::IsDown('X')))
+					// 문제!! 이게 근데 1차 -> 2차 이런게 있네 , 조건 두개가 동시에 true이려면?
+					// 완전 눈덩어리 일 때만 Monster->SnowStack>5 밀 수 있어야함 ㅠㅠ
 					// 공격키 누르면 앞으로 튀어 나가도록
 				{
-					// 현재 상태 : 플레이어가 미는 상태이고, 
-					// 5회 이상은 5회로 친다
-
+					DirCheck();
 					MonsterRolling = true;
 					// 여기 들어오면, IsRolling은 true로 보고, 
 					switch (DirState)
 					{
 					case EActorDir::Left:
+						PlayerDir = FVector::Left;
 						Monster->MonsterDir = FVector::Left;
 						Monster->Rolling(_DeltaTime);
 						break;
 
 					case EActorDir::Right:
+						PlayerDir = FVector::Right;
 						Monster->MonsterDir = FVector::Right;
 						Monster->Rolling(_DeltaTime);
 						break;
@@ -726,8 +728,7 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 
 					}
 					return;
-
-
+					
 				}
 				return;
 				MonsterRolling = false;
@@ -737,6 +738,7 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 				MonsterRolling = false;
 				this->StateChange(EPlayState::Idle);
 				Monster->ColMoveUpdate(_DeltaTime);
+				//Monster->StateChange(EMonsterState::Snowball);
 			}
 			return;
 		}

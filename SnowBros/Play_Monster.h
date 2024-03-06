@@ -39,6 +39,9 @@ public:
 
 	EMonsterDir MonsterDirState = EMonsterDir::Right;
 	FVector RollingSpeed = FVector::Right * 250.0f;
+
+	EMonsterDir NextDir = EMonsterDir::Left;
+	EMonsterDir PrevDir = EMonsterDir::Mid;
 	
 protected:
 	void BeginPlay() override;
@@ -61,7 +64,8 @@ protected:
 	void StateUpdate(float _DeltaTime);
 
 
-	void Idle(float _DeltaTime);
+	void MonIdle(float _DeltaTime);
+	void MonMove(float _DeltaTime);
 	void Jump(float _DeltaTime);
 	void DownJump(float _DeltaTime);
 	void Snowball(float _DeltaTime);
@@ -73,7 +77,8 @@ protected:
 	
 
 	// 상태 시작 함수들
-	void IdleStart();
+	void MonIdleStart();
+	void MonMoveStart();
 	void JumpStart();
 	void DownJumpStart();
 	void SnowballStart();

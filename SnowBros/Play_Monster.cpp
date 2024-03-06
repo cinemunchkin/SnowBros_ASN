@@ -34,8 +34,10 @@ void APlay_Monster::BeginPlay()
 	}
 
 	{
-		MonsterRenderer->CreateAnimation("Idle_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
-		MonsterRenderer->CreateAnimation("Idle_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonIdle", "Monster_01_R.png", 6, 6, 0.1f, true);
+
+		MonsterRenderer->CreateAnimation("MonMove_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
 
 		//눈 속에 갇히고 있을때 아둥바둥
 		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
@@ -61,7 +63,7 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
 		SnowBallRenderer->SetImage("SnowBomb_01.png");
-		SnowBallRenderer->SetTransform({ { +6,-38 }, { 80*1.2f,66*1.2f } });
+		SnowBallRenderer->SetTransform({ { +6,-38 }, { 78*1.15f,66*1.15f } });
 
 
 
@@ -81,7 +83,7 @@ void APlay_Monster::BeginPlay()
 		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
 
-	StateChange(EMonsterState::Idle);
+	StateChange(EMonsterState::MonMove);
 
 }
 
@@ -101,31 +103,86 @@ void APlay_Monster::Tick(float _DeltaTime)
 	MonsterColPhysics(_DeltaTime);
 	StateUpdate(_DeltaTime);
 	MonsterGroundUp(_DeltaTime);
+	// 문제ㅠㅠ 여기 stateupdate만 놔두고, 나머지 함수들은 각 state함수에 넣어두자
 }
 
 
 
 
 
-void APlay_Monster::DirCheck()
+void APlay_Monster::DirCheck() // 몬스터의 DirCheck가 필요할까?
 {
 	EMonsterDir Dir = MonsterDirState;
+	PrevDir = Dir;
 	APlay_Player* Player = APlay_Player::GetMainPlayer();
 
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
+	
+	// NowDir middle 상태 -> PrevDir Left면 NextDir = Right
+	// NowDir middle 상태 -> PrevDir Right면 NextDir = left
+	// NowDir Left또는 Right -> Next Dir = middle
+	 
+	//몬스터 방향 로직
+	
+	switch(MonsterDirState)
+	{
+	
+	case EMonsterDir::Left:
+
+		if (PrevDir == EMonsterDir::Right)
+		{
+			Dir = EMonsterDir::Mid;
+			
+			//StateChange(EMonsterState::MonMove)
+			if (MonsterRenderer->IsCurAnimationEnd())
+			{
+				Dir = EMonsterDir::Left;
+				return;
+			}
+			else if (PrevDir == EMonsterDir::Left)
+			{
+				if (MonsterRenderer->IsCurAnimationEnd())
+				{
+					Dir = EMonsterDir::Mid;
+				}
+			}
+
+			return;
+		}
+		break;
+	case EMonsterDir::Right:
+
+		if (PrevDir == EMonsterDir::Left)
+		{
+			NextDir = EMonsterDir::Right;
+			if (MonsterRenderer->IsCurAnimationEnd())
+			{
+				NextDir = EMonsterDir::Mid;
+				return;
+			}
+			return;
+		}
+		break;
+
+	default:
+		break;
+	}
 
 
-	if (PlayerPos.X > MonsterPos.X)
-	{
-		Dir = EMonsterDir::Right;
-		return;
-	}
-	if (PlayerPos.X < MonsterPos.X)
-	{
-		Dir = EMonsterDir::Left;
-		return;
-	}
+	//문제네 ; 여기서 계속 monsterDir 이 Right로만 들어감
+	//if (PlayerPos.X > MonsterPos.X) 
+	//{
+	//	Dir = EMonsterDir::Right;
+	//	MonsterDirState = Dir;
+	//	return;
+	//}
+	//else
+	//{
+	//	Dir = EMonsterDir::Left;
+	//	MonsterDirState = Dir;
+	//	return;
+	//}
 
 	if (Dir != MonsterDirState)
 	{
@@ -171,8 +228,11 @@ void APlay_Monster::StateChange(EMonsterState _State)
 	{
 		switch (_State)
 		{
-		case EMonsterState::Idle:
-			IdleStart();
+		case EMonsterState::MonIdle:
+			MonIdleStart();
+			break;
+		case EMonsterState::MonMove:
+			MonMoveStart();
 			break;
 		case EMonsterState::Jump:
 			JumpStart();
@@ -200,9 +260,14 @@ void APlay_Monster::StateUpdate(float _DeltaTime)
 {
 	switch (State)
 	{
-	case EMonsterState::Idle:
-		Idle(_DeltaTime);
+	case EMonsterState::MonIdle:
+		MonIdle(_DeltaTime);
 		break;
+	case EMonsterState::MonMove:
+		MonMove(_DeltaTime);
+		break;
+
+
 	case EMonsterState::Jump:
 		Jump(_DeltaTime);
 		break;
@@ -222,9 +287,16 @@ void APlay_Monster::StateUpdate(float _DeltaTime)
 
 
 
-void APlay_Monster::IdleStart()
+void APlay_Monster::MonIdleStart()
 {
-	MonsterRenderer->ChangeAnimation(GetAnimationName("Idle"));
+	MonsterRenderer->ChangeAnimation(GetAnimationName("MonIdle"));
+	DirCheck();
+
+}
+
+void APlay_Monster::MonMoveStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("MonMove"));
 	DirCheck();
 
 }
@@ -259,8 +331,11 @@ void APlay_Monster::MoveCheck(float _DeltaTime)
 
 }
 
+void APlay_Monster::MonIdle(float _DeltaTime)
+{
+}
 
-void APlay_Monster::Idle(float _DeltaTime)
+void APlay_Monster::MonMove(float _DeltaTime)
 {
 	DirCheck();
 	ColMoveUpdate(_DeltaTime);
@@ -273,29 +348,36 @@ void APlay_Monster::Idle(float _DeltaTime)
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
-
 	FVector MonsterDir = PlayerPos - MonsterPos;
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
-	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
+//	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
 	// 여기도 문제 있음 -> Idle에서 Right로 놔둔거 고치기
-	/*switch (MonsterDirState)
+	
+	switch (MonsterDirState)
 	{
-	case EMonsterDir::None:
-		break;
+	
 	case EMonsterDir::Left:
 		this->MonsterDir = FVector::Left;
-		SetAnimation("Idle_Left");
-		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
-		break;
-	case EMonsterDir::Right:
-		this->MonsterDir = FVector::Right;
-		SetAnimation("Idle_Right");
-		AddActorLocation(MonsterDirNormal * _DeltaTime * 50.0f);
+		SetAnimation("MonMove_Left");
+		AddActorLocation(MonsterDirNormal * _DeltaTime  * MoveAcc);
 		break;
 
-	}*/
+	case EMonsterDir::Right:
+		this->MonsterDir = FVector::Right;
+		SetAnimation("MonMove_Right");
+		AddActorLocation(MonsterDirNormal * _DeltaTime * MoveAcc);
+		break;
+
+	case EMonsterDir::Mid:
+		SetAnimation("MonIdle");
+		break;
+
+
+	default:
+		break;
+	}
 
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
@@ -368,7 +450,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		MonsterRenderer->SetTransform({this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f}});
 		// 꼼수로 됐다 눈덩이 안에 들어가면 몬스터 스케일 요만하게 만들어버림
-		// 근데 만약에 반대로 
+		// 근데 만약에 반대로 눈덩이에서 빠져나올때는 -> 스케일이 다시 되돌아오는지 확인해야함
 		MonsterColPhysics(_DeltaTime);
 		//ColMoveUpdate(_DeltaTime);
 	}
@@ -457,7 +539,7 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 							//몬스터가 고개돌려버림
 	{
 		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-		this->SetAnimation("Idle_Left");
+		this->SetAnimation("MonMove_Left");
 		//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 		//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
 	}
@@ -465,7 +547,7 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 	case EActorDir::Right:
 	{
 		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
-		this->SetAnimation("Idle_Right");
+		this->SetAnimation("MonMove_Right");
 		//MonsterDir.iX() == CurPlayerPos.iX();
 	}
 	break;

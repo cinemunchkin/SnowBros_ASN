@@ -38,7 +38,8 @@ enum class EMonsterDir
 {
 	None,
 	Left,
-	Right
+	Right,
+	Mid
 };
 
 enum class ESnowballState
@@ -76,7 +77,8 @@ enum class EPlayState
 enum class EMonsterState
 {
 	None,
-	Idle,
+	MonMove,
+	MonIdle,
 	Jump,
 	DownJump,
 	Snowball,
