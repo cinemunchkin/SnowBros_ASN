@@ -1,3 +1,5 @@
+// Playe Сп SCORE, LIFE UI
+
 #include "Play_UI.h"
 #include "Play_Player.h"
 
@@ -25,11 +27,25 @@ void APlay_UI::BeginPlay()
 		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
 		UIRenderer->SetImage("LetterTest_01.png");
 
-		UIRenderer->SetTransform({ {1440/4,20}, {28,128} });
+		UIRenderer->SetTransform({ {360,21}, {48*0.85f,128 * 0.9f} });
 		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
 		UIRenderer->CreateAnimation("TotalScore", "LetterTest_01.png", 0,25, 1.0f, true);
 	
 	}
+
+	{
+		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
+		UIRenderer->SetImage("NumUI_01.png");
+
+		UIRenderer->SetTransform({ {360+22,22}, {40 * 0.9f,48 * 0.75f} });
+		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
+		UIRenderer->CreateAnimation("TotalScore", "NumUI_01.png", 0, 9, 1.0f, true);
+
+
+
+	}
+
+	
 
 	StateChange(EUIState::TotalScore);
 

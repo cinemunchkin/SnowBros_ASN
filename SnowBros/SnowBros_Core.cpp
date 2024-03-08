@@ -50,6 +50,7 @@ void USnowBros_Core::BeginPlay()
 	//UI 애니메이션
 
 	UEngineResourcesManager::GetInst().CuttingImage("LetterTest_01.png", 26, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("NumUI_01.png", 10, 1);
 
 	//플레이어 애니메이션
 	///점프
