@@ -47,6 +47,9 @@ void USnowBros_Core::BeginPlay()
 		UEngineResourcesManager::GetInst().LoadImg(File.GetFullPath());
 	}
 	
+	//UI 애니메이션
+
+	UEngineResourcesManager::GetInst().CuttingImage("LetterTest_01.png", 26, 1);
 
 	//플레이어 애니메이션
 	///점프

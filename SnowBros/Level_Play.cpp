@@ -1,4 +1,5 @@
 #include "Level_Play.h"
+#include "Play_UI.h"
 #include "Play_Map.h"
 #include "Ending_Map.h"
 #include "Play_Monster.h"
@@ -22,13 +23,17 @@ void ULevel_Play::BeginPlay()
 	Map->SetMapImage("SnowBros_Lv_1.png");
 	Map->SetColMapImage("SnowBros_Lv_1_Col.png");
 	
+	{
+		APlay_UI* UI = SpawnActor<APlay_UI>();
+		UI->SetActorLocation({});
+		UI->SetName("UI");
+	}
 	// Map->SwitchDebug();
 
-	//APlay_UIMap* UIMap = SpawnActor<APlay_UIMap>();
-	//UIMap->SetMapImage("SnowBros_UI.png");
  
 	 {
-		 APlay_Player* Player = SpawnActor<APlay_Player>(); // 아오 이걸 계속 APlay_Map으로 놨었네
+		 APlay_Player* Player = SpawnActor<APlay_Player>();
+		 // 아오 이걸 계속 APlay_Map으로 놨었네
 		 Player->SetActorLocation({ 300, 300 });
 		 Player->SetName("Player");
 	 }
@@ -58,6 +63,7 @@ void ULevel_Play::BeginPlay()
 		 Monster4->SetActorLocation({ 400, 200 });
 	 }
 
+	 
 }
 
 

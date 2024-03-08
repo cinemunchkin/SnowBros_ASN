@@ -63,13 +63,14 @@ void APlay_Monster::BeginPlay()
 
 		//눈 속에 갇히고 있을때 아둥바둥
 		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
-		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_02_R.png", 8, 9, 0.1f, true);
-		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_02_L.png", 6, 7, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_02_R.png", 8, 9, 0.07f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_02_L.png", 6, 7, 0.07f, true);
 		//MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 7, 9, 0.05f, true);
 		//MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 8, 10, 0.05f, true);
 
 
 		//몬스터 점프
+		MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
 		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
 		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
 		
@@ -142,84 +143,123 @@ void APlay_Monster::DirCheck()
 	FVector PlayerPos = Player->GetActorLocation();
 	FVector MonsterPos = GetActorLocation();
 
-	// NowDir middle 상태 -> PrevDir Left면 NextDir = Right
-	// NowDir middle 상태 -> PrevDir Right면 NextDir = left
-	// NowDir Left또는 Right -> Next Dir = middle
 
-	//몬스터 방향 로직
-
-	//switch (MonsterDirState)
-	//{
-
-	//case EMonsterDir::Left:
-	//	//원래 R - > M - > L
-	//	if (PrevDir == EMonsterDir::Left)
-	//	{
-	//	
-	//		this->MonsterDir = FVector::Left;
-	//		MonsterRenderer->ChangeAnimation("MonMove");
-	//		if (MonsterRenderer->IsCurAnimationEnd())
-	//		{
-	//			Dir = EMonsterDir::Right;
-	//			this->MonsterDir = FVector::Right;
-	//			NextDir = Dir;
-
-	//			return;
-	//		}
-	//		Dir = EMonsterDir::Right;
-	//	}
-	//	break;
-
-	//case EMonsterDir::Right:
-	//	//원래L - > M - > R
-
-	//	if (PrevDir == EMonsterDir::Left)
-	//	{
-	//		
-	//		this->MonsterDir = FVector::Right;
-	//		MonsterRenderer->ChangeAnimation("MonMove");
-	//		if (MonsterRenderer->IsCurAnimationEnd())
-	//		{
-	//			Dir = EMonsterDir::Left;
-	//			this->MonsterDir = FVector::Left;
-	//			NextDir = Dir;
-
-	//			return;
-	//		}
-
-	//		Dir = EMonsterDir::Left;
-	//		return;
-	//	}
-	//	break;
-
-	//default:
-	//	break;
-	//}
-
-
-
-	//문제네 ; 여기서 계속 monsterDir 이 Right로만 들어감
-	if (PlayerPos.X > MonsterPos.X) 
+	if (true == IsRolling())
+	// Snowball상태일 때 DirCheck
 	{
-		Dir = EMonsterDir::Right;
-		MonsterDirState = Dir;
-		return;
-	}
-	else
-	{
-		Dir = EMonsterDir::Left;
-		MonsterDirState = Dir;
-		return;
+		if (PlayerPos.X > MonsterPos.X) // 이게 왜 안걸릴까
+		{
+			Dir = EMonsterDir::Left;
+			MonsterDirState = Dir;
+			return;
+		}
+		else
+		{
+			Dir = EMonsterDir::Right;
+			MonsterDirState = Dir;
+			return;
+		}
+
+		if (Dir != MonsterDirState) //이게 무슨 의미가 있는 지 모르겠ㄷ다.. 
+		{
+			MonsterDirState = Dir;
+			std::string Name = GetAnimationName(CurAnimationName);
+
+			MonsterRenderer->ChangeAnimation(Name, true, MonsterRenderer->GetCurAnimationFrame(), MonsterRenderer->GetCurAnimationTime());
+			//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
+			MonsterRenderer->ChangeAnimation(Name);
+		}
+
+
 	}
 
-	if (Dir != MonsterDirState)
+	//Snowball상태가 아닐 때 DirCheck
+	// 문제 ; 여기 걸리긴 하나?
+	if(false == IsRolling())
 	{
-		MonsterDirState = Dir;
-		std::string Name = GetAnimationName(CurAnimationName);
+		if (PlayerPos.X > MonsterPos.X) 
+		{
+			Dir = EMonsterDir::Right;
+			MonsterDirState = Dir;
+			return;
+		}
+		else
+		{
+			Dir = EMonsterDir::Left;
+			MonsterDirState = Dir;
+			return;
+		}
 
-		MonsterRenderer->ChangeAnimation(Name, true, MonsterRenderer->GetCurAnimationFrame(), MonsterRenderer->GetCurAnimationTime());
-		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
-		MonsterRenderer->ChangeAnimation(Name);
+		if (Dir != MonsterDirState)
+		{
+			MonsterDirState = Dir;
+			std::string Name = GetAnimationName(CurAnimationName);
+
+			MonsterRenderer->ChangeAnimation(Name, true, MonsterRenderer->GetCurAnimationFrame(), MonsterRenderer->GetCurAnimationTime());
+			//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
+			MonsterRenderer->ChangeAnimation(Name);
+		}
+
+
+
+
+
+		// NowDir middle 상태 -> PrevDir Left면 NextDir = Right
+		// NowDir middle 상태 -> PrevDir Right면 NextDir = left
+		// NowDir Left또는 Right -> Next Dir = middle
+
+		//몬스터 방향 로직
+
+		//switch (MonsterDirState)
+		//{
+
+		//case EMonsterDir::Left:
+		//	//원래 R - > M - > L
+		//	if (PrevDir == EMonsterDir::Left)
+		//	{
+		//	
+		//		this->MonsterDir = FVector::Left;
+		//		MonsterRenderer->ChangeAnimation("MonMove");
+		//		if (MonsterRenderer->IsCurAnimationEnd())
+		//		{
+		//			Dir = EMonsterDir::Right;
+		//			this->MonsterDir = FVector::Right;
+		//			NextDir = Dir;
+
+		//			return;
+		//		}
+		//		Dir = EMonsterDir::Right;
+		//	}
+		//	break;
+
+		//case EMonsterDir::Right:
+		//	//원래L - > M - > R
+
+		//	if (PrevDir == EMonsterDir::Left)
+		//	{
+		//		
+		//		this->MonsterDir = FVector::Right;
+		//		MonsterRenderer->ChangeAnimation("MonMove");
+		//		if (MonsterRenderer->IsCurAnimationEnd())
+		//		{
+		//			Dir = EMonsterDir::Left;
+		//			this->MonsterDir = FVector::Left;
+		//			NextDir = Dir;
+
+		//			return;
+		//		}
+
+		//		Dir = EMonsterDir::Left;
+		//		return;
+		//	}
+		//	break;
+
+		//default:
+		//	break;
+		//}
+
+
+
 	}
 }
 
@@ -369,6 +409,7 @@ void APlay_Monster::MonFlyingStart()
 
 void APlay_Monster::SnowballStart()
 {// 몬스터 -> snowballstart 하면, snowrender -> on
+	MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
 	// 이렇게 하면 되는군나... 처음에 그냥 snowball을 액터로 만들어서-> 같은 포지션에 spawn함
@@ -511,9 +552,11 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 
 
-
-void APlay_Monster::Rolling(float _DeltaTime)
-{// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
+// 여긴 스노우볼의 Rolling 이고, Snowballrender->Rolling 이랑 전진이동 
+void APlay_Monster::Rolling(float _DeltaTime) 
+// Rolling으로 들어와서, Snowball정지이미지
+// 플레이어가  push상태면 굴릴 수 있도록
+{
 
 	DirCheck();
 	MoveCheck(_DeltaTime);
@@ -524,11 +567,31 @@ void APlay_Monster::Rolling(float _DeltaTime)
 		APlay_Player* Player = APlay_Player::GetMainPlayer();
 		if (Player->GetState() == EPlayState::PlayerPush) // 플레이어가 이때 push 상태이면
 		{
+			DirCheck();
 			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 			SnowBallMoveVector(_DeltaTime);// 스노우볼 벽에 부딪히면 destroy @ yellow
+			/*
+			MonsterDir가 왜 왜 Left만??
+			*/
+			switch (Player->DirState)
+			{
+			case EActorDir::Left:
+				MonsterDir = FVector::Left;
+				break;
+
+			case EActorDir::Right:
+				MonsterDir = FVector::Right;
+				break;
+
+			default:
+				break;
+
+			}
 			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
 			return;
 		}
+		IsRolling() == false;
+		return;
 	}
 }
 
@@ -589,30 +652,30 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 	FVector CurMonsterPos = GetActorLocation();
 	FVector PlayerSpeed = Player->PlayerRollingSpeed;
 
-	switch (Player->DirState)
-	{
-	case EActorDir::Left: // 아니 이러면 플레이어가 방향 바꿀때마다.. 
-							//몬스터가 고개돌려버림
-	{
-		FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-		this->SetAnimation("MonMove_Left");
-		//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-		//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
-	}
-	break;
-	case EActorDir::Right:
-	{
-		FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
-		this->SetAnimation("MonMove_Right");
-		//MonsterDir.iX() == CurPlayerPos.iX();
-	}
-	break;
-	default:
-		break;
+	//switch (Player->DirState)
+	//{
+	//case EActorDir::Left: // 아니 이러면 플레이어가 방향 바꿀때마다.. 
+	//						//몬스터가 고개돌려버림
+	//{
+	//	FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
+	//	this->SetAnimation("MonMove_Left");
+	//	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+	//	//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
+	//}
+	//break;
+	//case EActorDir::Right:
+	//{
+	//	FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
+	//	this->SetAnimation("MonMove_Right");
+	//	//MonsterDir.iX() == CurPlayerPos.iX();
+	//}
+	//break;
+	//default:
+	//	break;
 
-	}
-	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-	AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed * 0.1f);
+	//}
+	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
+	//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed * 0.1f);
 	
 
 }

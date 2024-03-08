@@ -59,6 +59,8 @@ void APlay_Map::SwitchDebug()
 	}
 
 }
+
+
 void APlay_Map::BeginPlay()
 {
 	// 여기서 상수로 고정시키면.

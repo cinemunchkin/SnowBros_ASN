@@ -37,6 +37,9 @@
     <ClInclude Include="Play_SnowBall.h">
       <Filter>SnowBros_Object\Level_Play\Actor_Level_Play</Filter>
     </ClInclude>
+    <ClInclude Include="Play_UI.h">
+      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play\Play_UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Level_Title.cpp">
@@ -75,6 +78,9 @@
     <ClCompile Include="SnowBros_Helper.cpp">
       <Filter>SnowBros_Core</Filter>
     </ClCompile>
+    <ClCompile Include="Play_UI.cpp">
+      <Filter>SnowBros_Object\Level_Play\Actor_Level_Play\Play_UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SnowBros_Object">
@@ -100,6 +106,9 @@
     </Filter>
     <Filter Include="SnowBros_Core">
       <UniqueIdentifier>{e3615f62-e6ef-42b1-a296-03b9dde171bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SnowBros_Object\Level_Play\Actor_Level_Play\Play_UI">
+      <UniqueIdentifier>{14a47160-e5d8-4884-b5af-bc9acde218c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
