@@ -7,9 +7,11 @@
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
 #include <EngineBase/EngineTime.h>
+#include "SnowBros_Helper.h"
 
 #include <conio.h>
-#include <vector>
+#include <string>
+
 
 APlay_UI::APlay_UI()
 {
@@ -52,9 +54,14 @@ void APlay_UI::BeginPlay()
 }
 
 
+
+
+
 void APlay_UI::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
+
+	PlayerScore(_DeltaTime);
 
 
 	if (UEngineInput::IsDown('O'))
@@ -148,11 +155,49 @@ void APlay_UI::TotalScore(float _DeltaTime)
 {
 
 }
+
 void APlay_UI::PlayerScore(float _DeltaTime)
 {
 
+	/*
+	이건 애니메이션으로 XXX
+	1. 몬스터 1마리 monster destroy 될 때마다 -> Score 올라감
+	
+	2. 1플레이어 Score + (2플레이어 Score) == Total Score
+
+	3. 아이템 vs 플레이어 -> 아이템 destroy 할 때마다 => score 올라감 
+	
+	4. Helper에 있는 static -> SnowbrosScore
+	 1) 1~3 할 때마다 +SnowbrosScore
+	 2) UI에서 string snowbrosscore
+	 3) 출력되는 0~9이미지 변화
+
+	 아하!
+	*/
+
+
+	//std::string ScoreNumIndex = std::to_string(USnowBros_Helper::SnowbrosScore);
+	////to_string ; 문자열로 변환
+	////int SnowBrosScore = 1000000;
+	//std::string _string;
+	//for (int i = 0; i < 7; ++i)
+	//{
+	//	_string = ScoreNumIndex.substr(i + 1, 1);
+	//// substr -> 그 자리의 수부터(첫번째 인자), 그 갯수만큼(두번째 인자)  
+	////	위처럼 하면, _String에는 ScoreNumIndex의 i+1의 수부터 시작하는 1개의숫자가 담기는 셈
+	//	// for문 돌리면서 i번째 숫자들 조건문으로 바꿔주기
+	//// 그리고 아래에서 _string 뒤에 append 해줌
+	//	_string.append("_NumUI.png");
+	//	ScoreUIArray[i] -> SetImage(_string);
+	//}
+	//
+
+
 }
-void APlay_UI::PlayerLife(float _DeltaTime) {
+
+
+void APlay_UI::PlayerLife(float _DeltaTime) 
+{
 
 }
 

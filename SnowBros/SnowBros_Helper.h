@@ -114,6 +114,8 @@ public:
 	//static AActor* ActorPos; 
 	static FVector GetMousePos();
 
+	static int SnowbrosScore;
+
 private:
 	// constrcuter destructer
 	USnowBros_Helper();

@@ -2,7 +2,7 @@
 
 #include <EngineCore\Actor.h>
 #include <EngineBase/Transform.h>
-#include "SnowBros_Helper.h"
+
 
 
 class APlay_UI : public AActor
@@ -28,6 +28,8 @@ protected:
 	void PlayerScoreStart();
 	void PlayerLifeStart();
 
+	int SnowBrosScore = 1000000;
+
 	void SetAnimation(std::string _Name);
 	std::string GetAnimationFullName(std::string _Name);
 
@@ -42,5 +44,7 @@ protected:
 private:
 	
 	UImageRenderer* UIRenderer = nullptr;
+	UImageRenderer* ScoreUIArray[7] = { nullptr, };
+
 
 };
