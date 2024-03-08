@@ -61,8 +61,8 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("PlayerPush_Left", "SnowBros_PlayerRolling_L.png", 0, 0, 10.0f, true);
 		Renderer->CreateAnimation("PlayerPush_Right", "SnowBros_PlayerRolling_R.png", 0, 0, 10.0f, true);
 
-		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 3, 10.0f, true);
-		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 3, 10.0f, true);
+		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 3, 5.0f, true);
+		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 3, 5.0f, true);
 
 
 
@@ -389,6 +389,27 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	std::vector<UCollision*> SnowballResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
 	{
+		AActor* Owner = SnowballResult[0]->GetOwner();
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+		//AddActorLocation(MoveVector); /// 이거 잘봐!!
+		if (true == UEngineInput::IsPress(VK_LEFT) && Monster->SnowStack > 4)
+		{
+			FVector _PlayerRollingSpeed = FVector::Zero;
+			_PlayerRollingSpeed += PlayerRollingSpeed;
+			Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+			AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+		}
+		MoveUpdate(_DeltaTime);
+		if (true == UEngineInput::IsPress(VK_RIGHT) && Monster->SnowStack > 4)
+		{
+			FVector _PlayerRollingSpeed = FVector::Zero;
+			_PlayerRollingSpeed += PlayerRollingSpeed;
+			Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
+			AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
+			//return;
+		}
+		MoveUpdate(_DeltaTime);
+		return;
 
 	}
 
@@ -767,8 +788,9 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 
 				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
 				//문제많음
-				if (true ==(Player->GetState() == EPlayState::PlayerPush &&  UEngineInput::IsDown('X')))
-					// 문제!! 이게 근데 1차 -> 2차 이런게 있네 , 조건 두개가 동시에 true이려면?
+				//if (true ==(Player->GetState() == EPlayState::PlayerPush &&  UEngineInput::IsDown('X')))
+				if (true == UEngineInput::IsDown('X') && true == UEngineInput::IsDown(VK_LEFT))
+				// 문제!! 이게 근데 1차 -> 2차 이런게 있네 , 조건 두개가 동시에 true이려면?
 					// 완전 눈덩어리 일 때만 Monster->SnowStack>5 밀 수 있어야함 ㅠㅠ
 					// 공격키 누르면 앞으로 튀어 나가도록
 				{

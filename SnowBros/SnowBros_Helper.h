@@ -18,7 +18,6 @@ enum class SnowBrosRenderOrder
 enum class SnowBrosCollisionOrder
 {
 	PlayerAttack,
-	SnowBall,
 	Monster,
 	Player,
 	Bullet,
@@ -84,6 +83,7 @@ enum class EMonsterState
 	DownJump,
 	Snowball,
 	Rolling,
+	MonFlying,
 
 };
 

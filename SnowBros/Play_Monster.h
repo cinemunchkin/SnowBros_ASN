@@ -69,6 +69,8 @@ protected:
 	void Jump(float _DeltaTime);
 	void DownJump(float _DeltaTime);
 	void Snowball(float _DeltaTime);
+	//void Rolling(float _DeltaTime); -> public에 있으니 안심해!!
+	void MonFlying(float _DeltaTime);
 	
 
 	//void StackSnowball(float _DeltaTime);
@@ -83,6 +85,8 @@ protected:
 	void DownJumpStart();
 	void SnowballStart();
 	void RollingStart();
+	void MonFlyingStart();
+
 
 	void MoveCheck(float _DeltaTime);
 

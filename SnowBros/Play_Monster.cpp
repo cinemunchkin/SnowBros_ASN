@@ -29,26 +29,16 @@ void APlay_Monster::BeginPlay()
 
 		MonsterRenderer = CreateImageRenderer(SnowBrosRenderOrder::Monster);
 		MonsterRenderer->SetTransform({ {0,-26}, {48*1.3f, 48*1.3f} });
+		
+		//몬스터 기본 애니메이션
 		MonsterRenderer->SetImage("Monster_01_R.png");
 		MonsterRenderer->SetImage("Monster_01_L.png");
-	}
-
-	{
-		MonsterRenderer->CreateAnimation("MonIdle", "Monster_01_R.png", 6, 6, 0.1f, true);
-
-		MonsterRenderer->CreateAnimation("MonMove_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
-		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
-
-		//눈 속에 갇히고 있을때 아둥바둥
-		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
-		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 7, 9, 0.05f, true);
-		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 8, 10, 0.05f, true);
-
-		//몬스터 점프
-		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
-		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
 		
+		//몬스터 기타 애니메이션
+		MonsterRenderer->SetImage("Monster_02_R.png");
+		MonsterRenderer->SetImage("Monster_02_L.png");
 	}
+
 
 
 	{
@@ -56,6 +46,36 @@ void APlay_Monster::BeginPlay()
 		BodyCollision->SetPosition(MonsterRenderer->GetPosition());
 		BodyCollision->SetColType(ECollisionType::Rect);
 		BodyCollision->SetScale({ 80, 80 });
+	}
+	{
+		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Snowball);
+		BodyCollision->SetPosition(MonsterRenderer->GetPosition());
+		BodyCollision->SetColType(ECollisionType::Rect);
+		//BodyCollision->SetScale({ 80, 80 });
+	}
+	
+	{
+		MonsterRenderer->CreateAnimation("MonIdle", "Monster_01_R.png", 6, 6, 0.1f, true);
+
+		// 몬스터 기본 ; 이동
+		MonsterRenderer->CreateAnimation("MonMove_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
+
+		//눈 속에 갇히고 있을때 아둥바둥
+		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
+		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_02_R.png", 8, 9, 0.1f, true);
+		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_02_L.png", 6, 7, 0.1f, true);
+		//MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 7, 9, 0.05f, true);
+		//MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_01_L.png", 8, 10, 0.05f, true);
+
+
+		//몬스터 점프
+		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
+		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
+		
+		// 몬스터가 스노우볼에 맞아서 날아갈때 
+		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 1.0f, true);
+		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 1.0f, true);
 	}
 
 	{
@@ -82,6 +102,7 @@ void APlay_Monster::BeginPlay()
 
 		SnowBallRenderer->ActiveOff();// SnowBallRender는 처음에 Off해두고
 	}
+
 
 	StateChange(EMonsterState::MonMove);
 
@@ -253,6 +274,9 @@ void APlay_Monster::StateChange(EMonsterState _State)
 		case EMonsterState::Rolling:
 			RollingStart();
 
+		case EMonsterState::MonFlying:
+			MonFlyingStart();
+
 			break;
 		default:
 			break;
@@ -285,6 +309,9 @@ void APlay_Monster::StateUpdate(float _DeltaTime)
 		break;
 	case EMonsterState::Rolling:
 		Rolling(_DeltaTime);
+		break;
+	case EMonsterState::MonFlying:
+		MonFlying(_DeltaTime);
 		break;
 	default:
 		break;
@@ -328,6 +355,14 @@ void APlay_Monster::RollingStart()
 {
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 	DirCheck();
+}
+
+
+void APlay_Monster::MonFlyingStart()
+{
+	MonsterRenderer->ChangeAnimation(GetAnimationName("MonFlying"));
+	DirCheck();
+
 }
 
 
@@ -418,6 +453,18 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 }
 
+
+
+void APlay_Monster::MonFlying(float _DeltaTime)
+{
+
+
+	DirCheck();
+	MoveCheck(_DeltaTime);
+	MonsterColPhysics(_DeltaTime);
+}
+
+
 void APlay_Monster::Jump(float _DeltaTime)
 {
 	DirCheck();
@@ -475,7 +522,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		APlay_Player* Player = APlay_Player::GetMainPlayer();
-		if (Player->GetState() == EPlayState::PlayerRolling)
+		if (Player->GetState() == EPlayState::PlayerPush) // 플레이어가 이때 push 상태이면
 		{
 			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 			SnowBallMoveVector(_DeltaTime);// 스노우볼 벽에 부딪히면 destroy @ yellow
@@ -594,10 +641,20 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
 
-		SnowBallRenderer->ChangeAnimation("StackSnow");
+		//SnowBallRenderer->ChangeAnimation("StackSnow");
 
 	}
-	// 
+
+	std::vector<UCollision*> SnowBallResult;//스노우볼 완성된 상태에서 몬스터(몬스터상태)와 충돌했을때
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
+	{
+		if (this->GetState() == EMonsterState::Rolling)
+		{
+			MonsterRenderer->ChangeAnimation("MonFlying");
+		}
+
+
+	}
 
 }
 
