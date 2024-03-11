@@ -377,10 +377,10 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	switch (DirState)
 	{
 	case EActorDir::Left:
-		CheckPos.X -= 5;
+		CheckPos.X -= 35;
 		break;
 	case EActorDir::Right:
-		CheckPos.X += 5;
+		CheckPos.X += 35;
 		break;
 	default:
 		break;
@@ -389,29 +389,7 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	std::vector<UCollision*> SnowballResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
 	{
-		//AActor* Owner = SnowballResult[0]->GetOwner();
-		//APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
-		////AddActorLocation(MoveVector); /// 이거 잘봐!!
-		//if (true == UEngineInput::IsPress(VK_LEFT) && Monster->SnowStack > 4)
-		//{
-		//	FVector _PlayerRollingSpeed = FVector::Zero;
-		//	_PlayerRollingSpeed += PlayerRollingSpeed;
-		//	Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
-		//	AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
-		//}
-		//MoveUpdate(_DeltaTime);
-		//if (true == UEngineInput::IsPress(VK_RIGHT) && Monster->SnowStack > 4)
-		//{
-		//	FVector _PlayerRollingSpeed = FVector::Zero;
-		//	_PlayerRollingSpeed += PlayerRollingSpeed;
-		//	Monster->AddActorLocation(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
-		//	// 이걸 계속 FVector::Left로 놨네. .. 미쳣ㄴ다..
-		//	AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
-		//	//return;
-		//}
-		//MoveUpdate(_DeltaTime);
-		//return;
-
+		
 	}
 
 	return;
@@ -445,10 +423,10 @@ void APlay_Player::PlayerPush(float _DeltaTime)
 	switch (DirState)
 	{
 	case EActorDir::Left:
-		CheckPos.X -= 5;
+		CheckPos.X -= 35;
 		break;
 	case EActorDir::Right:
-		CheckPos.X += 5;
+		CheckPos.X += 35;
 		break;
 	default:
 		break;
@@ -460,23 +438,7 @@ void APlay_Player::PlayerPush(float _DeltaTime)
 	{	
 		AActor* Owner = SnowballResult[0]->GetOwner();
 		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
-		//AddActorLocation(MoveVector); /// 이거 잘봐!!
-		if (true == UEngineInput::IsPress(VK_LEFT)&& Monster->SnowStack>4)
-		{
-			//FVector _PlayerRollingSpeed = FVector::Zero;
-		/*	_PlayerRollingSpeed += PlayerRollingSpeed;
-			Monster->AddActorLocation(FVector::Left * _DeltaTime * _PlayerRollingSpeed);
-			AddMoveVector(FVector::Left * _DeltaTime * _PlayerRollingSpeed);*/
-		}
-		MoveUpdate(_DeltaTime);
-		if (true == UEngineInput::IsPress(VK_RIGHT) && Monster->SnowStack > 4)
-		{
-			//FVector _PlayerRollingSpeed = FVector::Zero;
-			/*_PlayerRollingSpeed += PlayerRollingSpeed;
-			Monster->AddActorLocation(FVector::Right * _DeltaTime * _PlayerRollingSpeed);
-			AddMoveVector(FVector::Right * _DeltaTime * _PlayerRollingSpeed);*/
-			//return;
-		}
+		
 		MoveUpdate(_DeltaTime);
 		return;
 	}
@@ -781,6 +743,8 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			bool MonsterRolling = Monster->IsRolling();
 			// 몬스터 bool= IsRolling 받는 함수
 
+			// 이걸 몬스터로 옮겨주자.
+
 			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
 			{
 				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
@@ -800,39 +764,7 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 					break;
 
 				}
-				//AddMoveVector(PlayerDir * _DeltaTime * 50.0f);
-				//Collision 있는 상태에서, 플레이어가 방향키 둘중 하나를 누르면
-				// 몬스터는 왼/오로 방향 설정하고 AddActorLocation
-
-				//문제
-				if (true ==(Player->GetState() == EPlayState::PlayerPush && UEngineInput::IsDown('X')))
-				//if (true == UEngineInput::IsDown('X'))
-				// 문제!! 이게 근데 1차 -> 2차 이런게 있네 , 조건 두개가 동시에 true이려면? // 완전 눈덩어리 일 때만 Monster->SnowStack>5 밀 수 있어야함 ㅠㅠ
-				{
-					DirCheck();
-					MonsterRolling = true;
-					// 여기 들어오면, IsRolling은 true로 보고, 
-					switch (DirState)
-					{
-					case EActorDir::Left:
-						PlayerDir = FVector::Left;
-						Monster->MonsterDir = FVector::Left; // 아 됐다 양쪽으로 굴리기
-						Monster->Rolling(_DeltaTime); // Rolling으로 감!
-						break;
-
-					case EActorDir::Right:
-						PlayerDir = FVector::Right;
-						Monster->MonsterDir = FVector::Right;
-						Monster->Rolling(_DeltaTime);
-						break;
-
-					default:
-						break;
-
-					}
-					return;
-					
-				}
+				//Monster->ColMoveUpdate(_DeltaTime);
 				return;
 				MonsterRolling = false;
 			}
@@ -846,12 +778,6 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			return;
 		}
 
-		/*	else
-			{
-				this->StateChange(EPlayState::Idle);
-				return;
-			}
-		*/
 
 		return;
 	}
@@ -969,78 +895,5 @@ APlay_Player* APlay_Player::GetMainPlayer()
 {
 	return MainPlayer;
 }
-
-
-
-
-//////////////////
-
-//////////////////
-
-//
-//void APlay_Player::CameraFreeMove(float _DeltaTime)
-//{
-//	if (UEngineInput::IsPress(VK_LEFT))
-//	{
-//		GetWorld()->AddCameraPos(FVector::Left * _DeltaTime * 500.0f);
-//		// AddActorLocation(FVector::Left * _DeltaTime * 500.0f);
-//	}
-//
-//	if (UEngineInput::IsPress(VK_RIGHT))
-//	{
-//		GetWorld()->AddCameraPos(FVector::Right * _DeltaTime * 500.0f);
-//	}
-//
-//	if (UEngineInput::IsPress(VK_UP))
-//	{
-//		GetWorld()->AddCameraPos(FVector::Up * _DeltaTime * 500.0f);
-//		// AddActorLocation(FVector::Up * _DeltaTime * 500.0f);
-//	}
-//
-//	if (UEngineInput::IsPress(VK_DOWN))
-//	{
-//		GetWorld()->AddCameraPos(FVector::Down * _DeltaTime * 500.0f);
-//		// AddActorLocation(FVector::Down * _DeltaTime * 500.0f);
-//	}
-//
-//	if (UEngineInput::IsDown('2'))
-//	{
-//		StateChange(EPlayState::Idle);
-//	}
-//}
-//
-//void APlay_Player::FreeMove(float _DeltaTime)
-//{
-//	FVector MovePos;
-//
-//	if (UEngineInput::IsPress(VK_LEFT))
-//	{
-//		MovePos += FVector::Left * _DeltaTime * FreeMoveSpeed;
-//	}
-//
-//	if (UEngineInput::IsPress(VK_RIGHT))
-//	{
-//		MovePos += FVector::Right * _DeltaTime * FreeMoveSpeed;
-//	}
-//
-//	if (UEngineInput::IsPress(VK_UP))
-//	{
-//		MovePos += FVector::Up * _DeltaTime * FreeMoveSpeed;
-//	}
-//
-//	if (UEngineInput::IsPress(VK_DOWN))
-//	{
-//		MovePos += FVector::Down * _DeltaTime * FreeMoveSpeed;
-//	}
-//
-//	AddActorLocation(MovePos);
-//	GetWorld()->AddCameraPos(MovePos);
-//
-//	if (UEngineInput::IsDown('1'))
-//	{
-//		StateChange(EPlayState::Idle);
-//	}
-//}
-//
 
 

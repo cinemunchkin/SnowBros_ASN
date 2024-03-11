@@ -36,6 +36,7 @@ public:
 	{
 		return State;
 	}
+	void DirCheck();
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
@@ -44,7 +45,7 @@ protected:
 	//void GravityCheck(float _DeltaTime);
 
 	// 각 상태마다 언제나 가장 위에 실행되어야 한다.
-	void DirCheck();
+	
 
 	FVector MonsterDir = FVector::Left;
 

@@ -19,7 +19,7 @@ public:
 	APlay_Monster& operator=(const APlay_Monster& _Other) = delete;
 	APlay_Monster& operator=(APlay_Monster&& _Other) noexcept = delete;
 
-	FVector MonsterDir = FVector::Left;
+	FVector MonsterDir = FVector::Zero;
 
 	EMonsterState GetState()
 	{
