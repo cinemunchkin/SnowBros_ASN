@@ -37,6 +37,8 @@ public:
 		return State;
 	}
 	void DirCheck();
+	UImageRenderer* Renderer = nullptr;
+
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
@@ -74,6 +76,7 @@ protected:
 
 	void PlayerRolling(float _DeltaTime);
 	void PlayerPush(float _DeltaTime);
+	void PlayerStuck(float _DeltaTime);
 
 	// 상태 시작 함수들
 	void IdleStart();
@@ -89,6 +92,7 @@ protected:
 
 	void PlayerRollingStart();
 	void PlayerPushStart();
+	void PlayerStuckStart();
 
 
 	bool IsStrobeUpdate = false;
@@ -102,7 +106,7 @@ private:
 	UCollision* BodyCollision = nullptr;
 	UCollision* BulletCollision = nullptr;
 
-	UImageRenderer* Renderer = nullptr;
+
 	float AnimationTime = 0.0f;
 	int AnimationFrame = 0;
 

@@ -11,6 +11,13 @@
 #include <string>
 
 
+/*
+Random
+UEngineRandom 
+*/
+
+
+
 APlay_Monster::APlay_Monster()
 {
 }
@@ -47,6 +54,7 @@ void APlay_Monster::BeginPlay()
 		BodyCollision->SetColType(ECollisionType::Rect);
 		BodyCollision->SetScale({ 80, 80 });
 	}
+
 	{
 		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Snowball);
 		BodyCollision->SetPosition(MonsterRenderer->GetPosition());
@@ -313,7 +321,7 @@ void APlay_Monster::StateChange(EMonsterState _State)
 			break;
 		case EMonsterState::Rolling:
 			RollingStart();
-
+			break;
 		case EMonsterState::MonFlying:
 			MonFlyingStart();
 
@@ -527,7 +535,6 @@ void APlay_Monster::Snowball(float _DeltaTime)
 {
 	DirCheck();
 	MoveCheck(_DeltaTime);
-
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
 	int StackNum = 3;
 	if (SnowStack < StackNum)
@@ -538,6 +545,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
+		
 		// 꼼수로 됐다 눈덩이 안에 들어가면 몬스터 스케일 요만하게 만들어버림
 		// 근데 만약에 반대로 눈덩이에서 빠져나올때는 -> 스케일이 다시 되돌아오는지 확인해야함
 		MonsterColPhysics(_DeltaTime);
@@ -560,6 +568,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 
 	DirCheck();
 	MoveCheck(_DeltaTime);
+
 
 	if (true == IsRolling())
 	{
@@ -586,20 +595,23 @@ void APlay_Monster::Rolling(float _DeltaTime)
 				break;
 
 			}
+
 			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
+			
 			return;
 		}
-		IsRolling() == false;
 		return;
 	}
+
 }
 
 
 
 void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 {
-
+	MoveCheck(_DeltaTime);
+	
 	FVector CheckPos = GetActorLocation();
 	switch (MonsterDirState)
 	{
@@ -616,21 +628,25 @@ void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
 
-	if (ColorCyan == Color8Bit(0, 255, 255, 0))
+	if (ColorYellow == Color8Bit(255, 255, 0, 0))
 	{
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		SnowBallRenderer->ChangeAnimation("SnowBomb");
-		return;
+		//SnowBallRenderer->ChangeAnimation("SnowBomb");
+		//Destroy();
+		BallAngleReverse(_DeltaTime);
+
 		//Destroy(_DeltaTime);
 		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
 		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
 		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
 	}
-	else if (ColorCyan == Color8Bit(255, 255, 0, 0))
+	else if (ColorCyan == Color8Bit(0, 255, 255, 0))
 	{
 
+		
 		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		Destroy();
+		//Destroy();
+		return;
 	}
 
 }
@@ -682,6 +698,27 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 
 
 
+void APlay_Monster::BallAngleReverse(float _DeltaTime)
+{ /*
+  Snowball상태일 때 벽에 닿으면 AddActorLocation방향을 반대로 바꾸자
+   ReverseMonsterDir = MonsterDir.X * -1
+  */
+	switch (MonsterDirState)
+	{
+	case EMonsterDir::Left:
+		MonsterDir = FVector::Right;
+		break;
+	case EMonsterDir::Right:
+		MonsterDir = FVector::Left;
+		break;
+	default:
+		break;
+	}
+		MoveCheck(_DeltaTime);
+	return;
+}
+
+
 void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 {// 몬스터 충돌시 반응
 	//DirCheck();
@@ -693,8 +730,9 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		StateChange(EMonsterState::Snowball);
-
 		Bullet->Destroy();
+
+		
 		//Bullet->BulletPhysics(_DeltaTime);
 		return;
 	}
@@ -705,8 +743,6 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
 
-		//SnowBallRenderer->ChangeAnimation("StackSnow");
-
 		APlay_Player* Player = APlay_Player::GetMainPlayer();
 		if (EMonsterState::Snowball == this->GetState()
 			&& EPlayState::PlayerPush == Player->GetState())
@@ -716,17 +752,36 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 			{
 			case EActorDir::Left:
 				MonsterDir = FVector::Left;
+				//AddMoveVector(MonsterDir * _DeltaTime * 50.0f);
+
 				break;
 
 			case EActorDir::Right:
 				MonsterDir = FVector::Right;
+				//AddMoveVector(MonsterDir * _DeltaTime * 50.0f);
+
 				break;
 
 			default:
 				break;
 
 			}
-			//AddMoveVector(MonsterDir * _DeltaTime * 50.0f);
+
+				std::vector<UCollision*> MontoSnowballResult;
+				std::vector<UCollision*> SnowBallResult;
+			if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MontoSnowballResult))
+			{
+				if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
+				{
+					//스노우볼 완성된 상태에서 몬스터(몬스터상태)와 충돌했을때
+					// 몬스터와 몬스터가 충돌했을때 
+						//	APlay_Monster* Monster = (APlay_Monster*)TestResult[1]->GetOwner();
+					SetAnimation("MonFlying_Right");
+					return;
+				}
+			}
+
+
 			
 			if (true == UEngineInput::IsDown('X') 
 				&& (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT)))
@@ -734,7 +789,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 				// 스노우볼 상태에서, 
 
 				Player->DirCheck();
-				IsRolling() == true;
+				//IsRolling() == true;
 				// 여기 들어오면, IsRolling은 true로 보고, 
 				switch (Player->DirState)
 				{
@@ -752,11 +807,13 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 					break;
 
 				}
+
 				return;
 			}
 
 
 
+
 		}
 
 
@@ -765,16 +822,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 
 	}
 
-	std::vector<UCollision*> SnowBallResult;//스노우볼 완성된 상태에서 몬스터(몬스터상태)와 충돌했을때
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
-	{
-		if (this->GetState() == EMonsterState::Rolling)
-		{
-			MonsterRenderer->ChangeAnimation("MonFlying");
-		}
 
-
-	}
 
 }
 

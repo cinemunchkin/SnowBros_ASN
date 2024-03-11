@@ -22,7 +22,8 @@ enum class SnowBrosCollisionOrder
 	Monster,
 	Player,
 	Bullet,
-	Snowball
+	Snowball,
+	Rolling
 };
 
 
@@ -72,6 +73,7 @@ enum class EPlayState
 
 	PlayerRolling,
 	PlayerPush,
+	PlayerStuck
 	
 };
 

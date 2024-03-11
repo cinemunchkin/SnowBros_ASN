@@ -42,12 +42,14 @@ public:
 
 	EMonsterDir NextDir = EMonsterDir::Left;
 	EMonsterDir PrevDir = EMonsterDir::Mid;
-	
+	UImageRenderer* SnowBallRenderer = nullptr;
+
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterGravity(float _DeltaTime);
+	void BallAngleReverse(float _DeltaTime);
 
 	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
 
@@ -110,7 +112,7 @@ private:
 	UImageRenderer* MonsterRenderer = nullptr;
 	FVector TotalLastMoveVector = FVector::Zero;
 	
-	UImageRenderer* SnowBallRenderer = nullptr;
+	
 	//UCollision* SnowCollision = nullptr;
 	EActorDir SnowBallDir = EActorDir::Right;
 

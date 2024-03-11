@@ -40,6 +40,9 @@ void APlay_Player::BeginPlay()
 		Renderer->SetImage("SnowBros_PlayerRolling_R.png");
 		Renderer->SetImage("SnowBros_PlayerRolling_L.png");
 
+		/*Renderer->SetImage("SnowBros_PlayerStuck_R.png");
+		Renderer->SetImage("SnowBros_PlayerStuck_L.png");
+		*/
 
 
 
@@ -63,6 +66,9 @@ void APlay_Player::BeginPlay()
 
 		Renderer->CreateAnimation("PlayerRolling_Left", "SnowBros_PlayerRolling_L.png", 0, 3, 5.0f, true);
 		Renderer->CreateAnimation("PlayerRolling_Right", "SnowBros_PlayerRolling_R.png", 0, 3, 5.0f, true);
+
+		Renderer->CreateAnimation("PlayerStuck_Left", "SnowBros_Melt.png", 0, 0, 5.0f, true);
+		Renderer->CreateAnimation("PlayerStuck_Right", "SnowBros_Melt.png", 0, 0, 5.0f, true);
 
 
 
@@ -199,6 +205,9 @@ void APlay_Player::StateChange(EPlayState _State)
 		case EPlayState::PlayerRolling:
 			PlayerRollingStart();
 			break;
+		case EPlayState::PlayerStuck:
+			PlayerStuckStart();
+			break;
 
 		default:
 			break;
@@ -247,6 +256,9 @@ void APlay_Player::StateUpdate(float _DeltaTime)
 		break;
 	case EPlayState::PlayerRolling: // 눈덩이 굴리기
 		PlayerRolling(_DeltaTime);
+		break;
+	case EPlayState::PlayerStuck: // 눈덩이 밀기만 하기
+		PlayerStuck(_DeltaTime);
 		break;
 	case EPlayState::Fly: // Stage이동할 때 날기
 		Fly(_DeltaTime);
@@ -351,7 +363,29 @@ void APlay_Player::PlayerPushStart()
 	DirCheck();
 }
 
+void APlay_Player::PlayerStuckStart()
+{
+	Renderer->ChangeAnimation(GetAnimationName("PlayerPush"));
 
+	DirCheck();
+}
+
+
+void APlay_Player::PlayerStuck(float _DeltaTime)
+{
+
+	DirCheck();
+	PlayerColPhysics(_DeltaTime);
+	MoveUpdate(_DeltaTime);
+
+	{
+		std::vector<UCollision*> MonsterResult;
+		APlay_Monster* Monster = (APlay_Monster*)MonsterResult[0]->GetOwner();
+		
+		Renderer->SetPosition(Monster->SnowBallRenderer->GetPosition());
+	}
+
+}
 void APlay_Player::PlayerRolling(float _DeltaTime)
 {
 
@@ -716,7 +750,6 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 {
 	DirCheck();
 	std::vector<UCollision*> MonsterResult;
-
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{//플레이어가 몬스터랑 충돌했을때, 
 
@@ -737,6 +770,10 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			return;
 		}
 
+		else if (EMonsterState::Rolling == Monster->GetState())
+		{
+			this->StateChange(EPlayState::PlayerStuck);
+		}
 
 		else if (EMonsterState::Snowball == Monster->GetState())
 		{// 몬스터가 Snowball 상태일 때, 
@@ -746,7 +783,7 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			// 이걸 몬스터로 옮겨주자.
 
 			if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
-			{
+			{// 몬스터가 snowball상태일 때 방향키를 밀면
 				APlay_Player* Player = APlay_Player::GetMainPlayer(); 
 				this->StateChange(EPlayState::PlayerPush);
 				
@@ -768,7 +805,13 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 				return;
 				MonsterRolling = false;
 			}
-			else
+			else if (true == UEngineInput::IsDown('X') &&
+				true == (UEngineInput::IsPress(VK_LEFT) || UEngineInput::IsPress(VK_RIGHT)))
+				//// 몬스터가 snowball상태일 때 방향키를 밀면
+			{
+				Monster->StateChange(EMonsterState::Rolling);
+			}
+			else 
 			{
 				MonsterRolling = false;
 				this->StateChange(EPlayState::Idle);
@@ -777,6 +820,8 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 			}
 			return;
 		}
+
+
 
 
 		return;
