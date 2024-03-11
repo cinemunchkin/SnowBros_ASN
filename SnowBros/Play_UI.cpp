@@ -2,12 +2,12 @@
 
 #include "Play_UI.h"
 #include "Play_Player.h"
+#include "SnowBros_Helper.h"
 
 #include <EngineCore\EngineResourcesManager.h>
 #include <EnginePlatform/EngineInput.h>
 #include <EngineBase\EngineDebug.h>
 #include <EngineBase/EngineTime.h>
-#include "SnowBros_Helper.h"
 
 #include <conio.h>
 #include <string>
@@ -26,16 +26,20 @@ void APlay_UI::BeginPlay()
 {
 	AActor::BeginPlay();
 	{
+		// 고정 UI 
 		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
 		UIRenderer->SetImage("LetterTest_01.png");
 
 		UIRenderer->SetTransform({ {360,21}, {48*0.85f,128 * 0.9f} });
 		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
 		UIRenderer->CreateAnimation("TotalScore", "LetterTest_01.png", 0,25, 1.0f, true);
-	
 	}
 
 	{
+		// 플레이어 Life UI 
+		// +3으로 시작
+		// 몬스터하고 1번 충돌할 때마다 -1
+		// 0이 되면 GameOver
 		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
 		UIRenderer->SetImage("NumUI_01.png");
 
@@ -43,11 +47,20 @@ void APlay_UI::BeginPlay()
 		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
 		UIRenderer->CreateAnimation("TotalScore", "NumUI_01.png", 0, 9, 1.0f, true);
 
-
-
 	}
 
-	
+	{
+		// 점수 UI
+		//애니메이션이 아니라 함수로!!
+		// ->PlayerScore();
+		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
+		UIRenderer->SetImage("NumUI_01.png");
+
+		UIRenderer->SetTransform({ {360 -24,22}, {40 * 0.9f,48 * 0.75f} });
+		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
+		UIRenderer->CreateAnimation("TotalScore", "NumUI_01.png", 0, 9, 1.0f, true);
+
+	}
 
 	StateChange(EUIState::TotalScore);
 
@@ -110,6 +123,8 @@ void APlay_UI::StateChange(EUIState _State)
 		}
 
 	}
+	UIState = _State;
+
 }
 
 

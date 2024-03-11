@@ -568,7 +568,6 @@ void APlay_Monster::Rolling(float _DeltaTime)
 		if (Player->GetState() == EPlayState::PlayerPush) // 플레이어가 이때 push 상태이면
 		{
 			DirCheck();
-			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 			SnowBallMoveVector(_DeltaTime);// 스노우볼 벽에 부딪히면 destroy @ yellow
 			/*
 			MonsterDir가 왜 왜 Left만??
@@ -587,6 +586,7 @@ void APlay_Monster::Rolling(float _DeltaTime)
 				break;
 
 			}
+			SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 			AddActorLocation(MonsterDir * _DeltaTime * RollingSpeed);
 			return;
 		}

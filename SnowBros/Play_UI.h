@@ -2,7 +2,7 @@
 
 #include <EngineCore\Actor.h>
 #include <EngineBase/Transform.h>
-
+#include "SnowBros_Helper.h"
 
 
 class APlay_UI : public AActor
@@ -19,10 +19,12 @@ public:
 
 	EUIState UIState = EUIState::None;
 
+
 protected:
 
 
 	void StateChange(EUIState _State);
+
 	void StateUpdate(float _DeltaTime);
 	void TotalScoreStart();
 	void PlayerScoreStart();
