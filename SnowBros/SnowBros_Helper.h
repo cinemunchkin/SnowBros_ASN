@@ -89,6 +89,7 @@ enum class EMonsterState
 	Snowball,
 	Rolling,
 	MonFlying,
+	SnowBomb
 
 };
 
