@@ -432,7 +432,7 @@ void APlay_Player::PlayerRolling(float _DeltaTime)
 	std::vector<UCollision*> SnowballResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
 	{
-		
+		//문제네 여기 뭐 아무것도 안하네 플레이어가 스노우볼하고 충돌했을때
 	}
 
 	return;

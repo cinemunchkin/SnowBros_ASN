@@ -61,12 +61,12 @@ void APlay_Monster::BeginPlay()
 		BodyCollision->SetScale({ 80, 80 });
 	}
 
-	{
-		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Snowball);
-		BodyCollision->SetPosition(MonsterRenderer->GetPosition());
-		BodyCollision->SetColType(ECollisionType::Rect);
-		//BodyCollision->SetScale({ 80, 80 });
-	}
+	//{
+	//	SnowCollision = CreateCollision(SnowBrosCollisionOrder::Snowball);
+	//	SnowCollision->SetPosition(MonsterRenderer->GetPosition());
+	//	SnowCollision->SetColType(ECollisionType::Rect);
+	//	//BodyCollision->SetScale({ 80, 80 });
+	//}
 
 	{
 		MonsterRenderer->CreateAnimation("MonIdle", "Monster_01_R.png", 6, 6, 0.1f, true);
@@ -98,13 +98,13 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("SnowBomb_Left", "SnowBomb_01.png", 0, 3, 0.05f, true);
 	}
 
-	
+
 
 	{
 		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
 		SnowBallRenderer->SetImage("Snowball_01_R.png");
 		SnowBallRenderer->SetImage("Rolling_01_R.png");
-		
+
 		SnowBallRenderer->SetTransform({ { +6,-38 }, { 78 * 1.15f,66 * 1.15f } });
 
 
@@ -361,8 +361,23 @@ void APlay_Monster::SnowballStart()
 	MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
 	MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
 	SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
+	SnowCollsionSpawn();
+
 	DirCheck();
 }
+
+void APlay_Monster::SnowCollsionSpawn()
+{
+
+
+	SnowCollision = CreateCollision(SnowBrosCollisionOrder::Snowball);
+	SnowCollision->SetPosition(MonsterRenderer->GetPosition());
+	SnowCollision->SetColType(ECollisionType::Rect);
+	//SnowCollision->SetScale({ 80, 80 });
+
+
+}
+
 
 void APlay_Monster::MonIdle(float _DeltaTime)
 {
@@ -453,23 +468,13 @@ void APlay_Monster::DownJump(float _DeltaTime)
 
 void APlay_Monster::SnowBomb(float _DeltaTime)
 {
-	/*switch (MonsterDirState)
-	{
-	case EMonsterDir::Left:
-		MonsterDir.X -= 10;
-		break;
-	case EMonsterDir::Right:
-		MonsterDir.X = 10;
-		break;
-	default:
-		break;
-	}*/
+	
 
-		SnowBallRenderer->ActiveOff();	
+	SnowBallRenderer->ActiveOff();
 	if (true == MonsterRenderer->IsCurAnimationEnd())
 	{
 		Destroy();
-		return;	
+		return;
 	}
 }
 
@@ -480,6 +485,9 @@ void APlay_Monster::SnowBomb(float _DeltaTime)
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
+
+	SnowballtoMonColCheck(_DeltaTime);
+
 	if (true == BulletColCheck(_DeltaTime))
 	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
 		return;
@@ -516,7 +524,6 @@ void APlay_Monster::Rolling(float _DeltaTime)
 void APlay_Monster::MoveCheck(float _DeltaTime)
 {
 	MonsterMoveUpdate(_DeltaTime);
-
 }
 
 void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 때, 플레이어가 밀 수 있음
@@ -545,24 +552,32 @@ bool APlay_Monster::BulletColCheck(float _DeltaTime)
 }
 
 
-bool APlay_Monster::SnowballtoMonColCheck(float _DeltaTime)
+void APlay_Monster::SnowballtoMonColCheck(float _DeltaTime)
 { // 몬스터가 스노우볼과 충돌했을때,
 	// 몬스터 collision 이랑 snowball collision 
 	std::vector<UCollision*> MontoSnowResult;
-	
+	std::vector<UCollision*> SnowBallResult;
+	//if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
+	if (true == SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, SnowBallResult))
+	{
 
-		std::vector<UCollision*> MontoSnowballResult;
-		std::vector<UCollision*> SnowBallResult;
-		if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MontoSnowballResult))
-		{
-			if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
-			{
-				SetAnimation("MonFlying_Right");
-				return false;
+		//int a = SnowBallResult.size();
+
+		//for (int i = 0; i < a; ++i) {
+		//	SnowBallResult[i];
+		//}
+		/*for (UCollision* collision : SnowBallResult) {
+			if (this->BodyCollision == collision) {
+				APlay_Monster* Monster = static_cast<APlay_Monster*>(collision->GetOwner());
+				Monster->Destroy();
 			}
-		}
+		}*/
+		return;
+	}
 
-		return false;
+
+
+	return;
 }
 
 
@@ -683,7 +698,7 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 			// 아 여기가 아닌디 눈덩이가 구르고 나서 터지는게 아님..!
 			StateChange(EMonsterState::SnowBomb);
 		}
-		MoveVector.X *= -1.0f; 
+		MoveVector.X *= -1.0f;
 	}
 
 
