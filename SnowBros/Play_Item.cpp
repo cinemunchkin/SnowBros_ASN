@@ -96,7 +96,7 @@ void APlay_Item::StateChange(EItemState _State)
 
 void APlay_Item::ItemSushi(float _DeltaTime)
 {
-	ItemPosVector(_DeltaTime);
+	ItemMoveUpdate(_DeltaTime);
 	ItemColCheck(_DeltaTime);
 
 }
@@ -116,18 +116,6 @@ void APlay_Item::ItemScoreStart(){}
 
 
 
-
-
-
-
-
-void APlay_Item::ItemPosVector(float _DeltaTime)
-{
-	AddActorLocation(ItemMoveVector * _DeltaTime * 150.0f);
-	/* 위치 잡는 함수..!
-	어디에 놔!!!*/
-}
-
 void APlay_Item::SetAnimation(std::string _Name)
 {
 	std::string FullAniName = GetAnimationFullName(_Name);
@@ -137,6 +125,33 @@ void APlay_Item::SetAnimation(std::string _Name)
 std::string APlay_Item::GetAnimationFullName(std::string _Name)
 {
 	return _Name;
+
+}
+
+
+
+void APlay_Item::ItemMoveUpdate(float _DeltaTime)
+{
+ItemLastMoveVector(_DeltaTime);
+AddActorLocation(TotalLastMoveVector * _DeltaTime );
+}
+
+void APlay_Item::ItemLastMoveVector(float _DeltaTime)
+{
+	{
+		ItemGravityVector += ItemGravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
+			GetActorLocation().iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			GravityVector = FVector::Zero;// 땅에 닿으면 0으로 초기화
+		}
+
+	}
+	
+	TotalLastMoveVector = FVector::Zero;
+	TotalLastMoveVector = TotalLastMoveVector + ItemMoveVector;
+	TotalLastMoveVector = TotalLastMoveVector + ItemGravityVector;
 
 }
 

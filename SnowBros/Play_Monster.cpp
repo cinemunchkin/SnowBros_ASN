@@ -626,11 +626,12 @@ void APlay_Monster::MonsterDeath(float _DeltaTime)
 
 void APlay_Monster::Spawn_Item()
 {
-	int a = 0;
 
 	APlay_Item* Item = GetWorld()->SpawnActor<APlay_Item>();
 	Item->SetName("Item");
 	Item->SetActorLocation(this->GetActorLocation());
+
+	Item->ItemMoveVector.X = MoveVector.X * -1.0f;
 
 	return;
 }

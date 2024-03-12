@@ -21,7 +21,9 @@ public:
 	APlay_Item& operator=(APlay_Item&& _Other) noexcept = delete;
 
 	std::string GetAnimationFullName(std::string _Name);
-	FVector ItemMoveVector = FVector::Right;
+	FVector ItemMoveVector = FVector::Zero;
+	FVector ItemGravityVector = FVector::Zero;
+	FVector ItemGravityAcc = FVector::Down * 1000.0f;
 
 
 	void SetAnimation(std::string _Name);
@@ -37,7 +39,8 @@ protected:
 	void StateUpdate(float _DeltaTime);
 
 	void ItemColCheck(float _Deltatime);
-	void ItemPosVector(float _DeltaTime);
+	void ItemMoveUpdate(float _DeltaTime);
+	void ItemLastMoveVector(float _DeltaTime);
 
 
 	void ItemSushi(float _DeltaTime);
@@ -51,6 +54,8 @@ protected:
 
 
 private:
+	FVector GravityVector = FVector::Zero;
+	FVector TotalLastMoveVector = FVector::Zero;
 
 	UImageRenderer* ItemRenderer = nullptr;
 	UCollision* BodyCollision = nullptr;
