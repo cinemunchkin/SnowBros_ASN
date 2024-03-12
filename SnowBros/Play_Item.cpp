@@ -155,7 +155,8 @@ void APlay_Item::ItemGravityCheck(float _DeltaTime)
 			GetActorLocation().iY(), Color8Bit::CyanA);
 		if (Color == Color8Bit(0, 255, 255, 0))
 		{
-			TotalLastMoveVector = FVector::Zero;
+			ItemGravityVector = FVector::Zero;
+			ItemMoveVector = FVector::Zero;
 		}
 
 }
