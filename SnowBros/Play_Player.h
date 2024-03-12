@@ -60,6 +60,8 @@ protected:
 	void StateChange(EPlayState _State);
 	void StateUpdate(float _DeltaTime);
 	void PlayerColPhysics(float _DeltaTime);
+	void StrobeColCheck(float _DeltaTime);
+
 
 	// 상태 함수들
 	//void CameraFreeMove(float _DeltaTime);

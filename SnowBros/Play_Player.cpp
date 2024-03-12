@@ -470,6 +470,7 @@ void APlay_Player::Idle(float _DeltaTime)
 	//MoveVector = FVector::Zero;
 	DirCheck();
 	//PlayerColPhysics(_DeltaTime);
+	StrobeColCheck(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -675,7 +676,7 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	float Strobetime = _StrobeTime;
-	//StrobeUpdate(_StrobeTime);
+	StrobeUpdate(_StrobeTime);
 }
 
 
@@ -823,6 +824,36 @@ void APlay_Player::Fly(float _DeltaTime)
 {
 }
 
+
+void APlay_Player::StrobeColCheck(float _DeltaTime)
+{
+
+	DirCheck();
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
+	{//플레이어가 몬스터랑 충돌했을때, 
+
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		if (EMonsterState::Snowball != Monster->GetState())
+			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
+		{
+			Strobe(_DeltaTime);
+			return;
+		}
+
+		return;
+	}
+
+}
 
 
 //플레이어 충돌시 
