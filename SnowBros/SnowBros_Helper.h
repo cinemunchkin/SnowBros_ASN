@@ -12,6 +12,7 @@ enum class SnowBrosRenderOrder
 	Bullet,
 	Monster,
 	Snowball,
+	Item,
 };
 
 
@@ -23,6 +24,7 @@ enum class SnowBrosCollisionOrder
 	Player,
 	Bullet,
 	Snowball,
+	Item,
 	Rolling
 };
 

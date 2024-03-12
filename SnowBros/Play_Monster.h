@@ -27,7 +27,7 @@ public:
 
 	bool IsRolling()
 	{
-		return State == EMonsterState::Snowball && SnowStack > 4;
+		return State == EMonsterState::Snowball && SnowStack > 3;
 	}
 
 	void Rolling(float _DeltaTime);
@@ -127,10 +127,10 @@ private:
 	void MonsterMoveVector(float _DeltaTime);
 	void MonsterLastMoveVector(float _DeltaTime);
 	void MonsterGravityVector(float _DeltaTime);
-
-	void SnowBallMoveVector(float _DeltaTime);
-	void MonsterDeath(float _Deltatime);
-
 	void MonsterGroundUp(float _DeltaTime);
+
+	void MonsterDeath(float _Deltatime);
+	void Spawn_Item();
+
 };
 

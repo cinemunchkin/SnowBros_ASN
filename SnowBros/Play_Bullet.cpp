@@ -55,12 +55,17 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 	//이것도 곡선으로 나가는거.. 해야함.. 포물선
 
-	AddActorLocation(Dir * _DeltaTime * 150.0f);// Dir가 Left임 
-
+	//AddActorLocation(Dir * _DeltaTime * 150.0f);// Dir가 Left임 
+	BulletMoveVector(_DeltaTime);
 	//BulletPhysics(_DeltaTime); //왜 여기다가 놓으면 자꾸.. Col이미지로 렌더되는거임
 }
 
+void APlay_Bullet::BulletMoveVector(float _DeltaTime)
+{
+	AddActorLocation(Dir * _DeltaTime * 150.0f);
+	//Gravity
 
+}
 
 std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
@@ -150,47 +155,6 @@ void APlay_Bullet::BulletPhysics(float _DeltaTime)
 	IsBulletCol = false;
 }
 
-void APlay_Bullet::BulletMoveVector(float _DeltaTime)
-{
-	//문제 bullet 벽에 닿을때 함수
-
-	/*
-	
-	FVector CheckPos = GetActorLocation();
-	switch (MonsterDirState)
-	{
-	case EMonsterDir::Left:
-		CheckPos.X += 20;
-		break;
-	case EMonsterDir::Right:
-		CheckPos.X -= 20;
-		break;
-	default:
-		break;
-	}
-	CheckPos.Y -= 10.0f;
-	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
-	
-	if (ColorCyan == Color8Bit(0, 255, 255, 0))
-	{
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		SnowBallRenderer->ChangeAnimation("SnowBomb");
-		return;
-		//Destroy(_DeltaTime);
-		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
-		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
-		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
-	}
-	else if (ColorCyan == Color8Bit(255, 255, 0, 0))
-	{
-	
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		Destroy();
-	}
-	
-	*/
-}
 
 
 void APlay_Bullet::Bullet(float _DeltaTime)

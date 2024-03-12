@@ -580,7 +580,7 @@ bool APlay_Player::RollingCheck()
 
 
 		Monster->StateChange(EMonsterState::Rolling);
-		switch (DirState)
+		switch (DirState) // 여기서 몬스터를 밀어주는구나
 		{
 		case EActorDir::Left:
 			Monster->MonsterDir = FVector::Left;

@@ -86,6 +86,10 @@ void USnowBros_Core::BeginPlay()
 	///몬스터 기타
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_02_L.png", 5, 7);
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_02_R.png", 5, 7);
+
+	//몬스터 아이템
+	
+	UEngineResourcesManager::GetInst().CuttingImage("Monster_Item_01.png", 12, 1);
 	
 
 	//스노우볼 // 쌓기

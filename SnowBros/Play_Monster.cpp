@@ -2,6 +2,7 @@
 #include <EngineBase\EngineDebug.h>
 #include <EngineCore/SceneComponent.h>
 #include <iostream>
+#include "Play_Item.h"
 #include "Play_Monster.h"
 #include "Play_Bullet.h"
 #include "Play_Player.h"
@@ -44,6 +45,10 @@ void APlay_Monster::BeginPlay()
 		//몬스터 기타 애니메이션
 		MonsterRenderer->SetImage("Monster_02_R.png");
 		MonsterRenderer->SetImage("Monster_02_L.png");
+
+		MonsterRenderer->SetImage("Monster_Item_01.png");
+
+
 	}
 
 
@@ -81,16 +86,14 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
 		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
 
-		
+
 
 		// 몬스터가 스노우볼에 맞아서 날아갈때 
 		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 1.0f, true);
 		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 1.0f, true);
-		
-		//몬스터 아이템화
-		MonsterRenderer->CreateAnimation("MonFlying", "Monster_02_L.png", 15, 16, 1.0f, true)
-
 	}
+
+	
 
 	{
 		SnowBallRenderer = CreateImageRenderer(SnowBrosRenderOrder::Snowball);
@@ -387,31 +390,22 @@ void APlay_Monster::MonMove(float _DeltaTime)
 	}
 
 
-	{
-		SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-		int StackNum = 5;
-		if (SnowStack < StackNum)
-		{
-			return;
-		}
-		else
-		{
-			SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
-			MonsterColPhysics(_DeltaTime);
-			//ColMoveUpdate(_DeltaTime);
-		}
-		return;
-	}
-	/*MonsterColPhysics(_DeltaTime);
-
-	FVector MonsterPos = this->GetActorLocation();
-
-	if (MonsterPos.X > 200.0f)
-	{
-		StateChange(EMonsterState::Snowball);
-		return;
-	}*/
-
+	//{
+	//	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
+	//	int StackNum = 4;
+	//	if (SnowStack < StackNum)
+	//	{
+	//		return;
+	//	}
+	//	else
+	//	{
+	//		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
+	//		MonsterColPhysics(_DeltaTime);
+	//		//ColMoveUpdate(_DeltaTime);
+	//	}
+	//	return;
+	//}
+	//
 }
 
 
@@ -452,14 +446,14 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 	DirCheck();
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-	int StackNum = 3;
+	int StackNum = 4;
 	if (SnowStack < StackNum)
 	{
 		return;
 	}
 	else
 	{
-		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
 		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
 		MonsterColPhysics(_DeltaTime);
 	}
@@ -480,49 +474,6 @@ void APlay_Monster::Rolling(float _DeltaTime)
 
 
 
-void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
-{
-//	MoveCheck(_DeltaTime);
-//
-//	FVector CheckPos = GetActorLocation();
-//	switch (MonsterDirState)
-//	{
-//	case EMonsterDir::Left:
-//		CheckPos.X += 20;
-//		break;
-//	case EMonsterDir::Right:
-//		CheckPos.X -= 20;
-//		break;
-//	default:
-//		break;
-//	}
-//	CheckPos.Y -= 10.0f;
-//	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-//	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
-//
-//	if (ColorYellow == Color8Bit(255, 255, 0, 0))
-//	{
-//		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-//		//SnowBallRenderer->ChangeAnimation("SnowBomb");
-//		//Destroy();
-//
-//		Destroy(_DeltaTime);
-//		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
-//		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
-//		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
-//	}
-//	else if (ColorCyan == Color8Bit(0, 255, 255, 0))
-//	{
-//
-//
-//		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-//		//Destroy();
-//		return;
-//	}
-
-}
-
-
 
 void APlay_Monster::MoveCheck(float _DeltaTime)
 {
@@ -540,11 +491,9 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 }
 
 
-
-
 bool APlay_Monster::BulletColCheck(float _DeltaTime)
 {
-	std::vector<UCollision*> BulletResult;// 완전 반대로 적어놨네엥..
+	std::vector<UCollision*> BulletResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
@@ -561,19 +510,20 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 {// 몬스터 충돌시 반응
 	//DirCheck();
 
-	std::vector<UCollision*> BulletResult;// 완전 반대로 적어놨네엥..
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
-	{
-		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
-		Bullet->SetAnimation("BulletCol");
-		++SnowStack;
-		StateChange(EMonsterState::Snowball);
-		Bullet->Destroy();
+	// ->BulletColCheck로 만들어서 보내버림
+	//std::vector<UCollision*> BulletResult;// 완전 반대로 적어놨네엥..
+	//if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
+	//{
+	//	APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
+	//	Bullet->SetAnimation("BulletCol");
+	//	++SnowStack;
+	//	StateChange(EMonsterState::Snowball);
+	//	Bullet->Destroy();
 
 
-		//Bullet->BulletPhysics(_DeltaTime);
-		return;
-	}
+	//	//Bullet->BulletPhysics(_DeltaTime);
+	//	return;
+	//}
 
 
 	std::vector<UCollision*> PlayerResult;
@@ -585,18 +535,15 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 		if (EMonsterState::Snowball == this->GetState()
 			&& EPlayState::PlayerPush == Player->GetState())
 		{	//만약 몬스터 상태가 스노우볼이고, 플레이어가 Push 상태이면
-			//IsRolling();
 			switch (Player->DirState)
 			{
 			case EActorDir::Left:
 				MonsterDir = FVector::Left;
-				//AddMoveVector(MonsterDir * _DeltaTime * 50.0f);
 
 				break;
 
 			case EActorDir::Right:
 				MonsterDir = FVector::Right;
-				//AddMoveVector(MonsterDir * _DeltaTime * 50.0f);
 
 				break;
 
@@ -611,42 +558,9 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 			{
 				if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
 				{
-					//스노우볼 완성된 상태에서 몬스터(몬스터상태)와 충돌했을때
-					// 몬스터와 몬스터가 충돌했을때 
-						//	APlay_Monster* Monster = (APlay_Monster*)TestResult[1]->GetOwner();
 					SetAnimation("MonFlying_Right");
 					return;
 				}
-			}
-
-
-
-			if (true == UEngineInput::IsDown('X')
-				&& (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT)))
-			{
-				// 스노우볼 상태에서, 
-
-				Player->DirCheck();
-				//IsRolling() == true;
-				// 여기 들어오면, IsRolling은 true로 보고, 
-				switch (Player->DirState)
-				{
-				case EActorDir::Left:
-					MonsterDir = FVector::Left; // 아 됐다 양쪽으로 굴리기
-					this->Rolling(_DeltaTime); // Rolling으로 감!
-					break;
-
-				case EActorDir::Right:
-					MonsterDir = FVector::Right;
-					this->Rolling(_DeltaTime);
-					break;
-
-				default:
-					break;
-
-				}
-
-				return;
 			}
 
 
@@ -701,23 +615,34 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 
 
 void APlay_Monster::MonsterDeath(float _DeltaTime)
-{
+{ //문제
+	SnowBallRenderer->ActiveOff();
+
+	Spawn_Item();
 
 	/*
 	monster -> death 
-	destroy하고 
-
 	item으로 
-	
 	*/
 
-	MonsterRenderer -> 
-
-
-
-
+	//this->SetAnimation("MonSushi");
+	/*GravityVector = FVector::Zero;
+	MoveVector = FVector::Zero;
+	spawn_Item();
+	*/
 
 }
+
+void APlay_Monster::Spawn_Item()
+{
+	int a = 0;
+
+	APlay_Item* Item = GetWorld()->SpawnActor<APlay_Item>();
+	Item->SetName("Item");
+	Item->SetActorLocation(this->GetActorLocation());
+}
+
+
 
 void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 {
@@ -726,10 +651,10 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 	switch (MonsterDirState)
 	{
 	case EMonsterDir::Left:
-		CheckPos.X -= 50;
+		CheckPos.X -= 5;
 		break;
 	case EMonsterDir::Right:
-		CheckPos.X += 50;
+		CheckPos.X += 5;
 		break;
 	default:
 		break;
@@ -742,8 +667,6 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 		if (ColorMagenta == Color8Bit(255, 0, 255, 0))
 		{
 			MonsterDeath(_DeltaTime);
-			// Magenta 추가해서 -> magenta벽 만나면, Destroy되는걸 만들어야함!!
-			//문제
 		}
 		MoveVector.X *= -1.0f; 
 	}
