@@ -70,7 +70,6 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
 
 		//눈 속에 갇히고 있을때 아둥바둥
-		//문제 ;; 눈덩이 안에 있을때 destroy 해야됨!!!
 		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_02_R.png", 8, 9, 0.07f, true);
 		MonsterRenderer->CreateAnimation("Snowball_Left", "Monster_02_L.png", 5, 6, 0.07f, true);
 		//MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_01_R.png", 7, 9, 0.05f, true);
@@ -82,9 +81,15 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("Jump_Left", "Monster_01_L.png", 10, 11, 0.5f, true);
 		MonsterRenderer->CreateAnimation("Jump_Right", "Monster_01_R.png", 6, 7, 0.5f, true);
 
+		
+
 		// 몬스터가 스노우볼에 맞아서 날아갈때 
 		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 1.0f, true);
 		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 1.0f, true);
+		
+		//몬스터 아이템화
+		MonsterRenderer->CreateAnimation("MonFlying", "Monster_02_L.png", 15, 16, 1.0f, true)
+
 	}
 
 	{
@@ -441,7 +446,7 @@ void APlay_Monster::DownJump(float _DeltaTime)
 void APlay_Monster::Snowball(float _DeltaTime)
 {
 	if (true == BulletColCheck(_DeltaTime))
-	{
+	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
 		return;
 	}
 
@@ -477,44 +482,43 @@ void APlay_Monster::Rolling(float _DeltaTime)
 
 void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 {
-	MoveCheck(_DeltaTime);
-
-	FVector CheckPos = GetActorLocation();
-	switch (MonsterDirState)
-	{
-	case EMonsterDir::Left:
-		CheckPos.X += 20;
-		break;
-	case EMonsterDir::Right:
-		CheckPos.X -= 20;
-		break;
-	default:
-		break;
-	}
-	CheckPos.Y -= 10.0f;
-	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
-
-	if (ColorYellow == Color8Bit(255, 255, 0, 0))
-	{
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		//SnowBallRenderer->ChangeAnimation("SnowBomb");
-		//Destroy();
-		BallAngleReverse(_DeltaTime);
-
-		Destroy(_DeltaTime);
-		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
-		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
-		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
-	}
-	else if (ColorCyan == Color8Bit(0, 255, 255, 0))
-	{
-
-
-		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
-		//Destroy();
-		return;
-	}
+//	MoveCheck(_DeltaTime);
+//
+//	FVector CheckPos = GetActorLocation();
+//	switch (MonsterDirState)
+//	{
+//	case EMonsterDir::Left:
+//		CheckPos.X += 20;
+//		break;
+//	case EMonsterDir::Right:
+//		CheckPos.X -= 20;
+//		break;
+//	default:
+//		break;
+//	}
+//	CheckPos.Y -= 10.0f;
+//	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+//	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::YellowA);
+//
+//	if (ColorYellow == Color8Bit(255, 255, 0, 0))
+//	{
+//		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+//		//SnowBallRenderer->ChangeAnimation("SnowBomb");
+//		//Destroy();
+//
+//		Destroy(_DeltaTime);
+//		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
+//		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
+//		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
+//	}
+//	else if (ColorCyan == Color8Bit(0, 255, 255, 0))
+//	{
+//
+//
+//		MoveVector = FVector::Zero; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+//		//Destroy();
+//		return;
+//	}
 
 }
 
@@ -533,55 +537,9 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 	FVector CurMonsterPos = GetActorLocation();
 	FVector PlayerSpeed = Player->PlayerRollingSpeed;
 
-	//switch (Player->DirState)
-	//{
-	//case EActorDir::Left: // 아니 이러면 플레이어가 방향 바꿀때마다.. 
-	//						//몬스터가 고개돌려버림
-	//{
-	//	FVector MonsterDir = CurMonsterPos - CurPlayerPos; /*+ CurMonsterPos*/
-	//	this->SetAnimation("MonMove_Left");
-	//	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-	//	//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed*0.1f);
-	//}
-	//break;
-	//case EActorDir::Right:
-	//{
-	//	FVector MonsterDir = CurPlayerPos - CurMonsterPos; /*+ CurMonsterPos*/
-	//	this->SetAnimation("MonMove_Right");
-	//	//MonsterDir.iX() == CurPlayerPos.iX();
-	//}
-	//break;
-	//default:
-	//	break;
-
-	//}
-	//FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
-	//AddActorLocation(MonsterDirNormal * _DeltaTime * PlayerSpeed * 0.1f);
-
-
 }
 
 
-
-void APlay_Monster::BallAngleReverse(float _DeltaTime)
-{ /*
-  Snowball상태일 때 벽에 닿으면 AddActorLocation방향을 반대로 바꾸자
-   ReverseMonsterDir = MonsterDir.X * -1
-  */
-	MoveCheck(_DeltaTime);
-	switch (MonsterDirState)
-	{
-	case EMonsterDir::Left:
-		MonsterDir = FVector::Right;
-		break;
-	case EMonsterDir::Right:
-		MonsterDir = FVector::Left;
-		break;
-	default:
-		break;
-	}
-	return;
-}
 
 
 bool APlay_Monster::BulletColCheck(float _DeltaTime)
@@ -706,6 +664,7 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 
 }
 
+
 void APlay_Monster::AddMoveVector(const FVector& _DirDelta) // 가속도 -> 등속으로 바꿈
 {
 	MoveVector = _DirDelta * MoveAcc;
@@ -741,6 +700,24 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 }
 
 
+void APlay_Monster::MonsterDeath(float _DeltaTime)
+{
+
+	/*
+	monster -> death 
+	destroy하고 
+
+	item으로 
+	
+	*/
+
+	MonsterRenderer -> 
+
+
+
+
+
+}
 
 void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 {
@@ -749,20 +726,26 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 	switch (MonsterDirState)
 	{
 	case EMonsterDir::Left:
-		CheckPos.X -= 30;
+		CheckPos.X -= 50;
 		break;
 	case EMonsterDir::Right:
-		CheckPos.X += 30;
+		CheckPos.X += 50;
 		break;
 	default:
 		break;
 	}
 	CheckPos.Y -= 32.0f;
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-
-	if (Color == Color8Bit(0, 255, 255, 0))
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	Color8Bit ColorMagenta = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::MagentaA);
+	if (ColorCyan == Color8Bit(0, 255, 255, 0))
 	{
-		MoveVector.X *= -1.0f; // 컬러가 Cyan이면(땅에 일단 닿으면), MoveVector 는 0, 0
+		if (ColorMagenta == Color8Bit(255, 0, 255, 0))
+		{
+			MonsterDeath(_DeltaTime);
+			// Magenta 추가해서 -> magenta벽 만나면, Destroy되는걸 만들어야함!!
+			//문제
+		}
+		MoveVector.X *= -1.0f; 
 	}
 
 

@@ -17,13 +17,13 @@
       <Filter>Time</Filter>
     </ClInclude>
     <ClInclude Include="EnginePath.h">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClInclude>
     <ClInclude Include="EngineFile.h">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClInclude>
     <ClInclude Include="EngineDirectory.h">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClInclude>
     <ClInclude Include="NameObject.h">
       <Filter>Object</Filter>
@@ -32,7 +32,7 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="EngineSerializer.h">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -52,13 +52,13 @@
       <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="EnginePath.cpp">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClCompile>
     <ClCompile Include="EngineFile.cpp">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClCompile>
     <ClCompile Include="EngineDirectory.cpp">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClCompile>
     <ClCompile Include="NameObject.cpp">
       <Filter>Object</Filter>
@@ -67,7 +67,7 @@
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="EngineSerializer.cpp">
-      <Filter>IO</Filter>
+      <Filter>String\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,11 +83,11 @@
     <Filter Include="Time">
       <UniqueIdentifier>{d7f83226-046b-4713-9ec4-b2f570449b2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="IO">
-      <UniqueIdentifier>{088f05d2-1bc2-45ca-b095-f9c8eb2c1f24}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{40dd519c-dfec-4e66-90e0-bf938d9a56ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String\IO">
+      <UniqueIdentifier>{088f05d2-1bc2-45ca-b095-f9c8eb2c1f24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

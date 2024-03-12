@@ -129,6 +129,7 @@ private:
 	void MonsterGravityVector(float _DeltaTime);
 
 	void SnowBallMoveVector(float _DeltaTime);
+	void MonsterDeath(float _Deltatime);
 
 	void MonsterGroundUp(float _DeltaTime);
 };

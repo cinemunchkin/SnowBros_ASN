@@ -30,10 +30,12 @@ void APlay_Player::BeginPlay()
 		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
 		BodyCollision->SetScale({ 32, 72 });
 		BodyCollision->SetColType(ECollisionType::Rect);
+		// 플레이어 평상시
 
 		PushCheckCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		PushCheckCollision->SetScale({ 30, 30 });
+		PushCheckCollision->SetScale({ 40, 40 });
 		PushCheckCollision->SetColType(ECollisionType::Rect);
+		// 스노우볼 밀 때의 충돌 collision
 	}
 
 
@@ -777,6 +779,7 @@ void APlay_Player::Jump(float _DeltaTime)
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);
 	}
+
 	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		AddMoveVector(FVector::Right * _DeltaTime);
