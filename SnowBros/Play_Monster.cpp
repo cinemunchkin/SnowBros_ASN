@@ -495,14 +495,14 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 	DirCheck();
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n¹øÂ°
-	int StackNum = 4;
+	int StackNum = 3;
 	if (SnowStack < StackNum)
 	{
 		return;
 	}
 	else
 	{
-		SnowBallRenderer->SetImage("Snowball_01_R.png", 4);
+		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
 		MonsterColPhysics(_DeltaTime);
 	}

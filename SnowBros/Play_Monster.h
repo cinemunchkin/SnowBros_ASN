@@ -27,7 +27,7 @@ public:
 
 	bool IsRolling()
 	{
-		return State == EMonsterState::Snowball && SnowStack > 3;
+		return State == EMonsterState::Snowball && SnowStack >= 3;
 	}
 
 	void Rolling(float _DeltaTime);
