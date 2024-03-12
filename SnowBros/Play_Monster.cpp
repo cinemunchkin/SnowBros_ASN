@@ -635,7 +635,7 @@ void APlay_Monster::SnowBallMoveVector(float _DeltaTime)
 		//Destroy();
 		BallAngleReverse(_DeltaTime);
 
-		//Destroy(_DeltaTime);
+		Destroy(_DeltaTime);
 		//이제 여기서, Snowball 터지는 애니메이션으로 ㄱㄱ 한다음에
 		// 로직 ;컬러 magenta 닿으면 반대방향으로 바꾸고
 		//    지금처럼 yellow닿으면 그 안에서 destroy 하기
@@ -703,6 +703,7 @@ void APlay_Monster::BallAngleReverse(float _DeltaTime)
   Snowball상태일 때 벽에 닿으면 AddActorLocation방향을 반대로 바꾸자
    ReverseMonsterDir = MonsterDir.X * -1
   */
+	MoveCheck(_DeltaTime);
 	switch (MonsterDirState)
 	{
 	case EMonsterDir::Left:
@@ -714,7 +715,6 @@ void APlay_Monster::BallAngleReverse(float _DeltaTime)
 	default:
 		break;
 	}
-		MoveCheck(_DeltaTime);
 	return;
 }
 

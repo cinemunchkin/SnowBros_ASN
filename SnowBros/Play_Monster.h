@@ -110,6 +110,7 @@ private:
 
 	UCollision* BodyCollision= nullptr;
 	UImageRenderer* MonsterRenderer = nullptr;
+
 	FVector TotalLastMoveVector = FVector::Zero;
 	
 	

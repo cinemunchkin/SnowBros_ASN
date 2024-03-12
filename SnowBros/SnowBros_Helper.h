@@ -10,8 +10,8 @@ enum class SnowBrosRenderOrder
 	UI,
 	Player,
 	Bullet,
-	Snowball,
 	Monster,
+	Snowball,
 };
 
 
