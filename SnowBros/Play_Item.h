@@ -41,6 +41,7 @@ protected:
 	void ItemColCheck(float _Deltatime);
 	void ItemMoveUpdate(float _DeltaTime);
 	void ItemLastMoveVector(float _DeltaTime);
+	void ItemGravityCheck(float _DeltaTime);
 
 
 	void ItemSushi(float _DeltaTime);

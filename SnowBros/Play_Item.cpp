@@ -132,22 +132,14 @@ std::string APlay_Item::GetAnimationFullName(std::string _Name)
 
 void APlay_Item::ItemMoveUpdate(float _DeltaTime)
 {
-ItemLastMoveVector(_DeltaTime);
-AddActorLocation(TotalLastMoveVector * _DeltaTime );
+	ItemGravityCheck(_DeltaTime);
+	ItemLastMoveVector(_DeltaTime);
+	AddActorLocation(TotalLastMoveVector * _DeltaTime);
 }
 
 void APlay_Item::ItemLastMoveVector(float _DeltaTime)
 {
-	{
-		ItemGravityVector += ItemGravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
-		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
-			GetActorLocation().iY(), Color8Bit::CyanA);
-		if (Color == Color8Bit(0, 255, 255, 0))
-		{
-			GravityVector = FVector::Zero;// 땅에 닿으면 0으로 초기화
-		}
 
-	}
 	
 	TotalLastMoveVector = FVector::Zero;
 	TotalLastMoveVector = TotalLastMoveVector + ItemMoveVector;
@@ -155,6 +147,18 @@ void APlay_Item::ItemLastMoveVector(float _DeltaTime)
 
 }
 
+
+void APlay_Item::ItemGravityCheck(float _DeltaTime)
+{ //문제 ; 왜 띠용하면서 없어져버리지..  바닥에 내려앉아야하는뎅.. 
+	ItemGravityVector += ItemGravityAcc * _DeltaTime; 
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
+			GetActorLocation().iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			TotalLastMoveVector = FVector::Zero;
+		}
+
+}
 
 void APlay_Item::ItemColCheck(float _Deltatime)
 {//Item과 플레이어가 충돌했는지 
@@ -165,6 +169,5 @@ void APlay_Item::ItemColCheck(float _Deltatime)
 	{
 		Destroy();
 	}
-
-	
+		
 }
