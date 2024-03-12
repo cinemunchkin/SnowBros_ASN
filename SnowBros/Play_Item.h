@@ -28,14 +28,27 @@ public:
 
 protected:
 
+	EActorDir ItemDirState = EActorDir::Left;	
 
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
-
-	EActorDir ItemDirState = EActorDir::Left;	
+	
+	void StateChange(EItemState _State);
+	void StateUpdate(float _DeltaTime);
 
 	void ItemColCheck(float _Deltatime);
 	void ItemPosVector(float _DeltaTime);
+
+
+	void ItemSushi(float _DeltaTime);
+	void ItemScore(float _DeltaTime);
+
+
+	void ItemSushiStart();
+	void ItemScoreStart();
+
+	EItemState State = EItemState::None;
+
 
 private:
 

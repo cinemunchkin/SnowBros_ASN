@@ -56,7 +56,6 @@ protected:
 
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterMoveUpdate(float _DeltaTime);
-	void BallAngleReverse(float _DeltaTime);
 
 	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
 

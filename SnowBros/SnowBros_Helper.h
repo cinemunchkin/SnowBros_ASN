@@ -92,6 +92,15 @@ enum class EMonsterState
 
 };
 
+enum class EItemState
+{
+	None,
+	ItemSushi,
+	ItemScore,
+	
+
+};
+
 
 
 enum class EBulletState

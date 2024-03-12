@@ -25,7 +25,7 @@ void APlay_Item::BeginPlay()
 	ItemRenderer->SetTransform({ {0,-26}, {48 * 0.6f, 48 * 0.6f} });
 
 
-	ItemRenderer->CreateAnimation("MonSushi", "Monster_Item_01.png", 0, 11, 1.0f, true);
+	ItemRenderer->CreateAnimation("ItemSushi", "Monster_Item_01.png", 0, 11, 1.0f, true);
 	}
 
 
@@ -36,6 +36,7 @@ void APlay_Item::BeginPlay()
 		BodyCollision->SetColType(ECollisionType::Rect);
 	}
 
+	StateChange(EItemState::ItemSushi);
 
 }
 
@@ -43,14 +44,88 @@ void APlay_Item::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
-	ItemPosVector(_DeltaTime);
-	//ItemColCheck(_DeltaTime); => CollisionCheck Tick에 넣어서 테스트함1!
+	StateUpdate(_DeltaTime);
 }
+
+
+
+void APlay_Item::StateUpdate(float _DeltaTime)
+{
+	switch (State)
+	{
+	case EItemState::ItemSushi:
+		ItemSushi(_DeltaTime);
+		break;
+
+	case EItemState::ItemScore:
+		ItemScore(_DeltaTime);
+		break;
+
+	default:
+		break;
+
+	}
+
+}
+
+
+void APlay_Item::StateChange(EItemState _State)
+{
+	// 애니메이션 -스시일 때, 점수일 때 
+
+	if (State != _State)
+	{
+		switch (_State)
+		{
+		case EItemState::ItemSushi:
+
+			ItemSushiStart();
+			break;
+
+		case EItemState::ItemScore:
+			ItemScoreStart();
+			break;
+
+		default:
+			break;
+
+		}
+	}
+	State = _State;
+}
+
+void APlay_Item::ItemSushi(float _DeltaTime)
+{
+	ItemPosVector(_DeltaTime);
+	ItemColCheck(_DeltaTime);
+
+}
+
+void APlay_Item::ItemScore(float _DeltaTime)
+{
+
+}
+
+
+void APlay_Item::ItemSushiStart()
+{
+	//ItemRenderer->ChangeAnimation(GetAnimationFullName("ItemSushi"));
+		this->SetAnimation("ItemSushi");
+}
+void APlay_Item::ItemScoreStart(){}
+
+
+
+
+
+
+
 
 void APlay_Item::ItemPosVector(float _DeltaTime)
 {
 	AddActorLocation(ItemMoveVector * _DeltaTime * 150.0f);
-	/* 위치 잡는 함수..!*/
+	/* 위치 잡는 함수..!
+	어디에 놔!!!*/
 }
 
 void APlay_Item::SetAnimation(std::string _Name)
@@ -76,5 +151,5 @@ void APlay_Item::ItemColCheck(float _Deltatime)
 		Destroy();
 	}
 
-
+	
 }
