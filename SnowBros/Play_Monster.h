@@ -19,7 +19,6 @@ public:
 	APlay_Monster& operator=(const APlay_Monster& _Other) = delete;
 	APlay_Monster& operator=(APlay_Monster&& _Other) noexcept = delete;
 
-	FVector MonsterDir = FVector::Zero;
 
 	EMonsterState GetState()
 	{
@@ -30,13 +29,18 @@ public:
 	{
 		return State == EMonsterState::Snowball && SnowStack > 4;
 	}
-	int SnowStack = -1;
 
 	void Rolling(float _DeltaTime);
-
 	void StateChange(EMonsterState _State);
 	void ColMoveUpdate(float _DeltaTime);
 
+	void SetMoveVector(FVector _MoveVector)
+	{
+		MoveVector = _MoveVector;
+	}
+
+	int SnowStack = -1;
+	FVector MonsterDir = FVector::Zero;
 	EMonsterDir MonsterDirState = EMonsterDir::Right;
 	FVector RollingSpeed = FVector::Right * 250.0f;
 
@@ -47,8 +51,11 @@ public:
 protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
+
+	bool BulletColCheck(float _DeltaTime);
+
 	void MonsterColPhysics(float _DeltaTime);
-	void MonsterGravity(float _DeltaTime);
+	void MonsterMoveUpdate(float _DeltaTime);
 	void BallAngleReverse(float _DeltaTime);
 
 	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
@@ -123,7 +130,6 @@ private:
 
 	void SnowBallMoveVector(float _DeltaTime);
 
-	void MonsterDirVector(float _DeltaTime);
 	void MonsterGroundUp(float _DeltaTime);
 };
 

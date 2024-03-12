@@ -38,6 +38,12 @@ public:
 	// 그 레벨이 끝나는 순간 실행된다.
 	virtual void LevelEnd(ULevel* _NextLevel) {};
 
+	template<typename ActorType, typename EnumType>
+	ActorType* SpawnActor(EnumType _Order)
+	{
+		return SpawnActor<ActorType>(static_cast<int>(_Order));
+	}
+
 	template<typename ActorType>
 	ActorType* SpawnActor(int _Order = 0)
 	{
@@ -94,7 +100,7 @@ public:
 	template<typename EnumType>
 	void SetTimeScale(EnumType _Value, float _Scale)
 	{
-		SetTimeScale(_Value, _Scale);
+		SetTimeScale(static_cast<int>(_Value), _Scale);
 	}
 
 	void SetTimeScale(int _Value, float _Scale)

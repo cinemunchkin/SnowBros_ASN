@@ -179,6 +179,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="EngineSerializer.h" />
     <ClInclude Include="EngineString.h">
       <SubType>
       </SubType>
@@ -218,6 +219,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="EngineSerializer.cpp" />
     <ClCompile Include="EngineString.cpp">
       <SubType>
       </SubType>

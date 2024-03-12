@@ -3,6 +3,13 @@
 #include <EnginePlatform\WindowImage.h>
 #include <map>
 
+enum class EImageSortType
+{
+	Center,
+	Left,
+	Right,
+};
+
 class UAnimationInfo
 {
 public:
@@ -43,6 +50,8 @@ public:
 	// 이미지를 세팅하는 역할만 하고
 	void SetImage(std::string_view _Name, int _InfoIndex = 0);
 
+	bool IsAnimation(std::string_view _Name);
+
 	void SetImageIndex(int _InfoIndex)
 	{
 		InfoIndex = _InfoIndex;
@@ -74,6 +83,15 @@ public:
 		float _Inter,
 		bool _Loop = true
 	);
+
+	void CreateAnimation(
+		std::string_view _AnimationName,
+		std::string_view _ImageName,
+		std::vector<int> _Indexs,
+		std::vector<float> _Inters,
+		bool _Loop = true
+	);
+
 
 	void ChangeAnimation(std::string_view _AnimationName, bool _IsForce = false, int _StartIndex = 0, float _Time = -1.0f);
 	void AnimationReset();
@@ -173,6 +191,23 @@ public:
 		TextEffect = _Effect;
 	}
 
+	void SetTextSortOption(Gdiplus::StringAlignment _SortOption1, Gdiplus::StringAlignment _SortOption2)
+	{
+		SortOption1 = _SortOption1;
+		SortOption2= _SortOption2;
+	}
+
+	void SetSortType(EImageSortType _SortType)
+	{
+		SortType = _SortType;
+	}
+
+	void AutoImageScale(float _AutoScale = 1.0f)
+	{
+		AutoImageScaleValue = true;
+		AutoImageScaleRatio = _AutoScale;
+	}
+
 protected:
 	void BeginPlay() override;
 	void Tick(float _Time) override;
@@ -198,6 +233,15 @@ private:
 	Color8Bit TextColor = Color8Bit::BlackA;
 	Color8Bit TextColor2 = Color8Bit::BlackA; //추가
 	int TextEffect = 0;
+
+	bool AutoImageScaleValue = false;
+	float AutoImageScaleRatio = 1.0f;
+
+	EImageSortType SortType = EImageSortType::Center;
+
+	Gdiplus::StringAlignment SortOption1 = Gdiplus::StringAlignment::StringAlignmentCenter;
+	Gdiplus::StringAlignment SortOption2 = Gdiplus::StringAlignment::StringAlignmentCenter;
+
 	// Default : 0, 
 	// Bold & Italic : 1, (custom)
 	// Bold : 2,

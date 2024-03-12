@@ -19,7 +19,6 @@ const Color8Bit Color8Bit::Blue = { 0, 0, 255, 255 };
 const Color8Bit Color8Bit::Yellow = { 255, 255, 0, 255 };
 const Color8Bit Color8Bit::White = { 255, 255, 255, 255 };
 const Color8Bit Color8Bit::Magenta = { 255, 0, 255, 255 };
-const Color8Bit Color8Bit::Cyan = { 0, 255, 255, 255 };
 const Color8Bit Color8Bit::Orange = { 255, 170, 46, 255 };
 
 
@@ -30,8 +29,9 @@ const Color8Bit Color8Bit::BlueA = { 0, 0, 255, 0 };
 const Color8Bit Color8Bit::YellowA = { 255, 255, 0, 0 };
 const Color8Bit Color8Bit::WhiteA = { 255, 255, 255, 0 };
 const Color8Bit Color8Bit::MagentaA = { 255, 0, 255, 0 };
-const Color8Bit Color8Bit::CyanA = { 0, 255, 255, 0 };
 const Color8Bit Color8Bit::OrangeA = { 255, 170, 46, 0 };
+const Color8Bit Color8Bit::CyanA = { 0, 255, 255, 0 };
+
 UEngineMath::UEngineMath() 
 {
 }

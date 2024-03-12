@@ -27,16 +27,17 @@ public:
 	APlay_Player& operator=(const APlay_Player& _Other) = delete;
 	APlay_Player& operator=(APlay_Player&& _Other) noexcept = delete;
 
-	EPlayState State = EPlayState::None;
-	EActorDir DirState = EActorDir::Right;
-	
-	void PlayerColState(EPlayState _State);
-	FVector PlayerRollingSpeed = FVector::Right * 150.0f;
 	EPlayState GetState()
 	{
 		return State;
 	}
+	
+	void PlayerColState(EPlayState _State);
 	void DirCheck();
+
+	EPlayState State = EPlayState::None;
+	EActorDir DirState = EActorDir::Right;
+	FVector PlayerRollingSpeed = FVector::Right * 150.0f;
 	UImageRenderer* Renderer = nullptr;
 
 protected:
@@ -103,6 +104,7 @@ protected:
 	std::string CurAnimationName = "None";
 
 private:
+	UCollision* PushCheckCollision = nullptr;
 	UCollision* BodyCollision = nullptr;
 	UCollision* BulletCollision = nullptr;
 
@@ -150,6 +152,11 @@ private:
 
 	// 내가 나갈 모든 방향의 합
 	FVector LastMoveVector = FVector::Zero;
+
+	bool DamageCheck();
+
+	bool PushCheck();
+	bool RollingCheck();
 
 	// 무브 업데이트는 상태가 아닙니다.
 	// 이동

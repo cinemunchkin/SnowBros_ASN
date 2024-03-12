@@ -30,6 +30,11 @@ void UImageRenderer::SetOrder(int _Order)
 
 int UAnimationInfo::Update(float _DeltaTime)
 {
+	if (false == Loop && true == IsEnd)
+	{
+		return Indexs[CurFrame];
+	}
+
 	IsEnd = false;
 	CurTime -= _DeltaTime;
 
@@ -42,9 +47,14 @@ int UAnimationInfo::Update(float _DeltaTime)
 		{
 			IsEnd = true;
 		}
+
+		if (false == Loop && Indexs.size() <= CurFrame)
+		{
+			IsEnd = true;
+		}
 	}
 
-	//  6                 6
+
 	if (Indexs.size() <= CurFrame)
 	{
 		if (1 < Indexs.size())
@@ -53,15 +63,10 @@ int UAnimationInfo::Update(float _DeltaTime)
 		}
 		if (true == Loop)
 		{
-			// //            0  1  2  3  4  5 
-			//    Indexs => 20 21 22 23 24 25
 			CurFrame = 0;
 		}
 		else
 		{
-			//                               
-			//               0  1  2  3  4  5 
-			//    Indexs => 20 21 22 23 24 25
 			--CurFrame;
 		}
 	}
@@ -136,13 +141,33 @@ void UImageRenderer::CreateAnimation(
 
 }
 
-
 void UImageRenderer::CreateAnimation(
 	std::string_view _AnimationName,
 	std::string_view _ImageName,
 	std::vector<int> _Indexs,
 	float _Inter,
 	bool _Loop/* = true*/
+)
+{
+	
+	std::vector<float> Inters;
+	//          12         0
+	int Size = static_cast<int>(_Indexs.size());
+	Inters.reserve(Size);
+	for (int i = 0; i <= Size; i++)
+	{
+		Inters.push_back(_Inter);
+	}
+
+	CreateAnimation(_AnimationName, _ImageName, _Indexs, Inters, _Loop);
+}
+
+void UImageRenderer::CreateAnimation(
+	std::string_view _AnimationName,
+	std::string_view _ImageName,
+	std::vector<int> _Indexs,
+	std::vector<float> _Inters,
+	bool _Loop /*= true*/
 )
 {
 	UWindowImage* FindImage = UEngineResourcesManager::GetInst().FindImg(_ImageName);
@@ -167,15 +192,7 @@ void UImageRenderer::CreateAnimation(
 	Info.CurFrame = 0;
 	Info.CurTime = 0.0f;
 	Info.Loop = _Loop;
-
-	//          12         0
-	int Size = static_cast<int>(_Indexs.size());
-	Info.Times.reserve(Size);
-	for (int i = 0; i <= Size; i++)
-	{
-		Info.Times.push_back(_Inter);
-	}
-
+	Info.Times = _Inters;
 	Info.Indexs = _Indexs;
 }
 
@@ -240,9 +257,16 @@ void UImageRenderer::TextRender(float _DeltaTime)
 		GEngine->MainWindow.GetBackBufferImage()->TextCopyBold(Text, Font, Size, RendererTrans, TextColor);
 		break;
 	default:
-		GEngine->MainWindow.GetBackBufferImage()->TextCopy(Text, Font, Size, RendererTrans, TextColor);
+		GEngine->MainWindow.GetBackBufferImage()->TextCopy(Text, Font, Size, RendererTrans, SortOption1, SortOption1, TextColor);
 		break;
 	}
+}
+
+bool UImageRenderer::IsAnimation(std::string_view _Name)
+{
+	std::string UpperAniName = UEngineString::ToUpper(_Name);
+
+	return AnimationInfos.contains(UpperAniName);
 }
 
 void UImageRenderer::ImageRender(float _DeltaTime)
@@ -256,6 +280,28 @@ void UImageRenderer::ImageRender(float _DeltaTime)
 	FTransform RendererTrans = GetRenderTransForm();
 
 	EWIndowImageType ImageType = Image->GetImageType();
+	const UImageInfo& Info = Image->ImageInfo(InfoIndex);
+
+	switch (SortType)
+	{
+	case EImageSortType::Left:
+	{
+		RendererTrans.AddPosition({ RendererTrans.GetScale().hX() , 0.0f});
+		break;
+	}
+	case EImageSortType::Right:
+	{
+		RendererTrans.AddPosition({ -RendererTrans.GetScale().hX() , 0.0f });
+		break;
+	}
+	default:
+		break;
+	}
+
+	if (true == AutoImageScaleValue)
+	{
+		RendererTrans.SetScale(Info.CuttingTrans.GetScale() * AutoImageScaleRatio);
+	}
 
 	switch (ImageType)
 	{

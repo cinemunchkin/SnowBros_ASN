@@ -27,6 +27,18 @@ void APlay_Player::BeginPlay()
 
 
 	{
+		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		BodyCollision->SetScale({ 32, 72 });
+		BodyCollision->SetColType(ECollisionType::Rect);
+
+		PushCheckCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		PushCheckCollision->SetScale({ 30, 30 });
+		PushCheckCollision->SetColType(ECollisionType::Rect);
+	}
+
+
+
+	{
 		Renderer = CreateImageRenderer(SnowBrosRenderOrder::Player);
 		Renderer->SetImage("SnowBros_Run_R.png");
 		Renderer->SetImage("SnowBros_Run_L.png");
@@ -76,14 +88,6 @@ void APlay_Player::BeginPlay()
 	}
 
 
-	{
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
-		BodyCollision->SetPosition(Renderer->GetPosition());
-		BodyCollision->SetScale({ 32, 72 });
-		BodyCollision->SetColType(ECollisionType::Rect);
-
-	}
-
 	/*
 
 
@@ -95,14 +99,6 @@ void APlay_Player::BeginPlay()
 void APlay_Player::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-
-
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-	if (nullptr == Player)
-	{
-		MsgBoxAssert("플레이어가 존재하지 않습니다.");
-	}
-
 	// PlayerColPhysics(_DeltaTime);
 	// 이걸 여기에 넣어서 자꾸 미는구나 이거 주석거니깐 바로 잘됨
 	// -> 해결된거 ; 스노우볼 1개씩 밀고, 몬스터/플레이어 겹쳤을때도 안움직임
@@ -135,6 +131,18 @@ void APlay_Player::DirCheck()
 		Renderer->ChangeAnimation(Name, true, Renderer->GetCurAnimationFrame(), Renderer->GetCurAnimationTime());
 		//특정 프레임입력 => 애니메이션 전체가 아니라, 특정 프레임 넘버만 애니메이션. 
 		Renderer->ChangeAnimation(Name);
+	}
+
+	switch (DirState)
+	{
+	case EActorDir::Left:
+		PushCheckCollision->SetPosition(FVector::Left * 10.0f);
+		break;
+	case EActorDir::Right:
+		PushCheckCollision->SetPosition(FVector::Right * 10.0f);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -359,7 +367,6 @@ void APlay_Player::PlayerRollingStart()
 void APlay_Player::PlayerPushStart()
 {
 	Renderer->ChangeAnimation(GetAnimationName("PlayerPush"));
-
 	DirCheck();
 }
 
@@ -435,53 +442,23 @@ void APlay_Player::PlayerPush(float _DeltaTime)
 {//문제 많음 Rolling이랑  push랑 구분좀
 	
 	DirCheck();
-//	PlayerColPhysics(_DeltaTime);
-	MoveUpdate(_DeltaTime);
-
-	//-------------
-
 
 	if (true == UEngineInput::IsFree(VK_LEFT)
 		&& true == UEngineInput::IsFree(VK_RIGHT)
 		)
 	{
 		StateChange(EPlayState::Idle);
-		//MoveUpdate(_DeltaTime);
 		return;
 	}
-	//----------------------------------
+
+	if (true == UEngineInput::IsDown('X') && true == RollingCheck())
+	{
+		StateChange(EPlayState::Idle);
+		return;
+	}
 
 	MoveUpdate(_DeltaTime);
-	FVector CheckPos = GetActorLocation();
-
-	switch (DirState)
-	{
-	case EActorDir::Left:
-		CheckPos.X -= 35;
-		break;
-	case EActorDir::Right:
-		CheckPos.X += 35;
-		break;
-	default:
-		break;
-	}
-	CheckPos.Y -= 10;
-	//if (Color) // 플레이어 x의 +-15, y의 -15가 cyan이 아니면, 계속 감. cyan이면 멈춤
-	std::vector<UCollision*> SnowballResult;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowballResult))
-	{	
-		AActor* Owner = SnowballResult[0]->GetOwner();
-		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
-		
-		MoveUpdate(_DeltaTime);
-		return;
-	}
-
 	return;
-
-
-
-
 }
 
 
@@ -515,14 +492,122 @@ void APlay_Player::Idle(float _DeltaTime)
 	}
 }
 
+bool APlay_Player::DamageCheck()
+{
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
+	{//플레이어가 몬스터랑 충돌했을때, 
+
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		if (Monster->GetState() == EMonsterState::Snowball)
+		{
+			return false;
+		}
+
+		return true;
+		// 피해입는다는 여기서
+	}
+
+	return false;
+
+}
+
+bool APlay_Player::PushCheck()
+{
+	FVector NextCheckPos = FVector::Zero;
+	std::vector<UCollision*> MonsterResult;
+	if (true == PushCheckCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
+	{//플레이어가 몬스터랑 충돌했을때, 
+
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		if (false == Monster->IsRolling())
+		{
+			return false;
+		}
+
+
+		StateChange(EPlayState::PlayerPush);
+
+		return true;
+		// 피해입는다는 여기서
+	}
+
+	return false;
+
+}
+
+bool APlay_Player::RollingCheck()
+{
+	FVector NextCheckPos = FVector::Zero;
+	std::vector<UCollision*> MonsterResult;
+	if (true == PushCheckCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
+	{//플레이어가 몬스터랑 충돌했을때, 
+
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		if (false == Monster->IsRolling())
+		{
+			return false;
+		}
+
+
+		Monster->StateChange(EMonsterState::Rolling);
+		switch (DirState)
+		{
+		case EActorDir::Left:
+			Monster->MonsterDir = FVector::Left;
+			Monster->SetMoveVector(FVector::Left * 500.0f);
+			break;
+		case EActorDir::Right:
+			Monster->MonsterDir = FVector::Right;
+			Monster->SetMoveVector(FVector::Right * 500.0f);
+			break;
+		default:
+			break;
+		}
+
+		return true;
+	}
+
+	return false;
+}
 
 
 void APlay_Player::Run(float _DeltaTime)
 {
 	DirCheck();
-	PlayerColPhysics(_DeltaTime);
 
-
+	if (true == PushCheck())
+	{
+		StateChange(EPlayState::PlayerPush);
+		return;
+	}
 
 	//양쪽 방향키 둘다 안눌렸으면 ; Idle
 	if (true == UEngineInput::IsFree(VK_LEFT)
@@ -530,17 +615,9 @@ void APlay_Player::Run(float _DeltaTime)
 		)
 	{
 		StateChange(EPlayState::Idle);
-		//MoveUpdate(_DeltaTime);
 		return;
 	}
 
-	//뛰는 동안에 점프키 누르면 점프
-	//방향키 누르는 방향으로 전진 - 가속도 필요없음
-	/*if (true == UEngineInput::IsDown('Z'))
-	{
-		StateChange(EPlayState::Jump);
-		return;
-	}*/
 	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);

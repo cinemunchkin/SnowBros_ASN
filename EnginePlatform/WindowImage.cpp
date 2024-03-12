@@ -120,6 +120,9 @@ bool UWindowImage::Load(UWindowImage* _Image)
 			MsgBoxAssert("Png 형식 리소스 로드에 실패했습니다.");
 		}
 
+		delete pBitMap;
+		delete pImage;
+
 		ImageType = EWIndowImageType::IMG_PNG;
 	}
 
@@ -198,6 +201,9 @@ bool UWindowImage::LoadFolder(UWindowImage* _Image)
 			{
 				MsgBoxAssert("Png 형식 리소스 로드에 실패했습니다.");
 			}
+
+			delete pBitMap;
+			delete pImage;
 
 			ImageType = EWIndowImageType::IMG_PNG;
 		}
@@ -391,6 +397,15 @@ void UWindowImage::TextCopy(const std::string& _Text, const std::string& _Font, 
 			graphics.DrawString(WText.c_str(), -1, &fnt, borderRect, &stringFormat, &fillBrush);
 		}
 	}
+}
+
+
+void UWindowImage::TextCopy(const std::string& _Text, const std::string& _Font, float _Size, const FTransform& _Trans, Gdiplus::StringAlignment _SortOption1, Gdiplus::StringAlignment _SortOption2, Color8Bit _FillColor)
+{
+	Gdiplus::StringFormat stringFormat;
+	stringFormat.SetAlignment(_SortOption1);
+	stringFormat.SetLineAlignment(_SortOption2);
+	TextCopyFormat(_Text, _Font, stringFormat, _Size, _Trans, _FillColor);  //출력
 }
 
 void UWindowImage::TextCopyBold(const std::string& _Text, const std::string& _Font, float _Size, const FTransform& _Trans, Color8Bit _Color)

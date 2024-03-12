@@ -15,10 +15,10 @@ void UEngineInput::EngineKey::KeyCheck(float _DeltaTime)
 	// A키가 눌렸다면
 	if (0 != GetAsyncKeyState(Key))
 	{
+		PressTime += _DeltaTime;
 		if (true == Free)
 		{
 			UpTime;
-			PressTime = 0.0f;
 			// 이전까지 이 키는 눌리고 있지 않았다
 			Down = true;
 			Press = true;
@@ -28,7 +28,6 @@ void UEngineInput::EngineKey::KeyCheck(float _DeltaTime)
 		else if(true == Down)
 		{
 			UpTime = 0.0f;
-			PressTime += _DeltaTime;
 			// 이전까지 이 키는 눌리고 있었다.
 			Down = false;
 			Press = true;
@@ -91,8 +90,8 @@ void UEngineInput::InputInit()
 	AllKeys[VK_IME_ON] = EngineKey(VK_IME_ON);
 	AllKeys[VK_JUNJA] = EngineKey(VK_JUNJA);
 	AllKeys[VK_FINAL] = EngineKey(VK_FINAL);
-	AllKeys[VK_HANJA] = EngineKey(VK_HANJA);
-	AllKeys[VK_KANJI] = EngineKey(VK_KANJI);
+	//AllKeys[VK_HANJA] = EngineKey(VK_HANJA);
+	//AllKeys[VK_KANJI] = EngineKey(VK_KANJI);
 	AllKeys[VK_IME_OFF] = EngineKey(VK_IME_OFF);
 	AllKeys[VK_ESCAPE] = EngineKey(VK_ESCAPE);
 	AllKeys[VK_CONVERT] = EngineKey(VK_CONVERT);
