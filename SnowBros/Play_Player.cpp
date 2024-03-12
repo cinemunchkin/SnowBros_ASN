@@ -676,7 +676,7 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	float Strobetime = _StrobeTime;
-	StrobeUpdate(_StrobeTime);
+	StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
 }
 
 
@@ -826,7 +826,7 @@ void APlay_Player::Fly(float _DeltaTime)
 
 
 void APlay_Player::StrobeColCheck(float _DeltaTime)
-{
+{ //문제 이것도 bool로 바꾸자??
 
 	DirCheck();
 	std::vector<UCollision*> MonsterResult;
