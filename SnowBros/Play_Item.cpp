@@ -2,6 +2,8 @@
 #include <EngineBase\EngineDebug.h>
 #include <EngineCore/Level.h>
 
+#include <vector>
+
 
 #include "Play_Item.h"
 
@@ -35,16 +37,20 @@ void APlay_Item::BeginPlay()
 	}
 
 
-
 }
 
 void APlay_Item::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
+	ItemPosVector(_DeltaTime);
+	//ItemColCheck(_DeltaTime); => CollisionCheck Tick에 넣어서 테스트함1!
+}
 
-
-
+void APlay_Item::ItemPosVector(float _DeltaTime)
+{
+	AddActorLocation(ItemMoveVector * _DeltaTime * 150.0f);
+	/* 위치 잡는 함수..!*/
 }
 
 void APlay_Item::SetAnimation(std::string _Name)
@@ -63,6 +69,12 @@ std::string APlay_Item::GetAnimationFullName(std::string _Name)
 void APlay_Item::ItemColCheck(float _Deltatime)
 {//Item과 플레이어가 충돌했는지 
 	
+
+	std::vector<UCollision*> PlayerResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
+	{
+		Destroy();
+	}
 
 
 }

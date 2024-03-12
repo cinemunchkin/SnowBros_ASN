@@ -616,21 +616,11 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 
 void APlay_Monster::MonsterDeath(float _DeltaTime)
 { //문제
-	SnowBallRenderer->ActiveOff();
+	//SnowBallRenderer->ActiveOff();
 
+	//this->SetAnimation("SnowBomb");
 	Spawn_Item();
-
-	/*
-	monster -> death 
-	item으로 
-	*/
-
-	//this->SetAnimation("MonSushi");
-	/*GravityVector = FVector::Zero;
-	MoveVector = FVector::Zero;
-	spawn_Item();
-	*/
-
+	Destroy();
 }
 
 void APlay_Monster::Spawn_Item()
@@ -640,6 +630,8 @@ void APlay_Monster::Spawn_Item()
 	APlay_Item* Item = GetWorld()->SpawnActor<APlay_Item>();
 	Item->SetName("Item");
 	Item->SetActorLocation(this->GetActorLocation());
+
+	return;
 }
 
 

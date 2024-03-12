@@ -21,6 +21,8 @@ public:
 	APlay_Item& operator=(APlay_Item&& _Other) noexcept = delete;
 
 	std::string GetAnimationFullName(std::string _Name);
+	FVector ItemMoveVector = FVector::Right;
+
 
 	void SetAnimation(std::string _Name);
 
@@ -33,12 +35,11 @@ protected:
 	EActorDir ItemDirState = EActorDir::Left;	
 
 	void ItemColCheck(float _Deltatime);
+	void ItemPosVector(float _DeltaTime);
 
 private:
 
 	UImageRenderer* ItemRenderer = nullptr;
 	UCollision* BodyCollision = nullptr;
-	EActorDir ItemDir = EActorDir::Right;
-
 
 };
