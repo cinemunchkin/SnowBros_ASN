@@ -535,7 +535,7 @@ bool APlay_Monster::BulletColCheck(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
-		Bullet->SetAnimation("BulletCol");
+		//Bullet->SetAnimation("BulletCol");
 		++SnowStack;
 		Bullet->Destroy();
 		return true;
@@ -544,12 +544,35 @@ bool APlay_Monster::BulletColCheck(float _DeltaTime)
 	return false;
 }
 
+
+bool APlay_Monster::SnowballtoMonColCheck(float _DeltaTime)
+{ // 몬스터가 스노우볼과 충돌했을때,
+	// 몬스터 collision 이랑 snowball collision 
+	std::vector<UCollision*> MontoSnowResult;
+	
+
+		std::vector<UCollision*> MontoSnowballResult;
+		std::vector<UCollision*> SnowBallResult;
+		if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MontoSnowballResult))
+		{
+			if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
+			{
+				SetAnimation("MonFlying_Right");
+				return false;
+			}
+		}
+
+		return false;
+}
+
+
+
+
 void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 {
 
-
 	std::vector<UCollision*> PlayerResult;
-	// 플레이어가 몬스터와 충돌했을때, 
+	// 몬스터가 플레이어와 충돌했을때 , 
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
 
@@ -561,29 +584,14 @@ void APlay_Monster::MonsterColPhysics(float _DeltaTime)
 			{
 			case EActorDir::Left:
 				MonsterDir = FVector::Left;
-
 				break;
-
 			case EActorDir::Right:
 				MonsterDir = FVector::Right;
-
 				break;
-
 			default:
 				break;
-
 			}
 
-			std::vector<UCollision*> MontoSnowballResult;
-			std::vector<UCollision*> SnowBallResult;
-			if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MontoSnowballResult))
-			{
-				if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Snowball, SnowBallResult))
-				{
-					SetAnimation("MonFlying_Right");
-					return;
-				}
-			}
 
 		}
 

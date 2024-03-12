@@ -53,6 +53,7 @@ protected:
 	void Tick(float _DeltaTime) override;
 
 	bool BulletColCheck(float _DeltaTime);
+	bool SnowballtoMonColCheck(float _DeltaTime);
 
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterMoveUpdate(float _DeltaTime);
@@ -122,7 +123,7 @@ private:
 	FVector TotalLastMoveVector = FVector::Zero;
 	
 	
-	//UCollision* SnowCollision = nullptr;
+	UCollision* SnowCollision = nullptr;
 	EActorDir SnowBallDir = EActorDir::Right;
 
 	void MonsterMoveVector(float _DeltaTime);
