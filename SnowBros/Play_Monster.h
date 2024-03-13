@@ -53,7 +53,6 @@ protected:
 	void Tick(float _DeltaTime) override;
 
 	bool BulletColCheck(float _DeltaTime);
-	void SnowballtoMonColCheck(float _DeltaTime);
 
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterMoveUpdate(float _DeltaTime);
@@ -94,7 +93,6 @@ protected:
 	void JumpStart();
 	void DownJumpStart();
 	void SnowballStart();
-	void SnowCollsionSpawn();
 	void RollingStart();
 	void MonFlyingStart();
 	void SnowBombStart();
@@ -106,7 +104,7 @@ protected:
 	
 	std::string CurAnimationName = "None";
 	
-
+	float OutTime = 3.0f;
 
 private:
 

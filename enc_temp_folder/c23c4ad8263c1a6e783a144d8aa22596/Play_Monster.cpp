@@ -434,7 +434,6 @@ void APlay_Monster::MonFlying(float _DeltaTime)
 	//MonsterColPhysics(_DeltaTime);
 	if (true == MonsterRenderer->IsCurAnimationEnd())
 	{
-
 		MonsterDeath(0.0f);
 		return;
 	}
