@@ -34,6 +34,13 @@ void ULevel_Title::Tick(float _DeltaTime)
 
 	
 }
+
+//void ATitle_Logo::Strobe(float _DeltaTime)
+//{
+//
+//}
+
+
 void ULevel_Title::LevelStart(ULevel* _Level)
 {
 	int a = 0;
