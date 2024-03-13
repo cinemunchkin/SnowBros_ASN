@@ -841,7 +841,7 @@ void APlay_Player::DownJump(float _DeltaTime)
 	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::YellowA);
 	if (ColorCyan == Color8Bit(0, 255, 255, 0) || ColorYellow == Color8Bit(255, 255,0 , 0))
 	{
-		if (this->GetActorLocation().Y < 448)
+		if (this->GetActorLocation().Y < 448) // 윈도우 높이 아래로 내려가지 않게 막아버림
 		{
 			AddActorLocation(FVector::Down * _DeltaTime * 150.0f);
 			MoveUpdate(_DeltaTime);
