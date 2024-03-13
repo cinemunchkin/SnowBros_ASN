@@ -676,7 +676,7 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	float Strobetime = _StrobeTime;
-	StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
+	//StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
 }
 
 
@@ -700,11 +700,11 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 	}
 	if (AlphaTime > 5.0f)
 	{
+		bool Dir = false;
+		//Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		StateChange(EPlayState::Idle);
-		Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		return;
 	}
-
 	//MoveUpdate(_DeltaTime);
 }
 
@@ -846,6 +846,7 @@ void APlay_Player::StrobeColCheck(float _DeltaTime)
 		if (EMonsterState::Snowball != Monster->GetState())
 			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
+			true == Dir;
 			Strobe(_DeltaTime);
 			return;
 		}
