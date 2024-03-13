@@ -135,19 +135,16 @@ std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
 
 
 void APlay_Bullet::BulletPhysics(float _DeltaTime)
-{
+{//Monster랑 Bullet이랑 collision
 	IsBulletCol = true;
 	BulletMoveVector(_DeltaTime);
 	//문제 bullet 포물선 함수 추가하기 
-	//		//지금은 tick에 AddActorLocation(Dir * _DeltaTime * 150.0f);// Dir가 Left임 이것만 넣어둠
 
 	std::vector<UCollision*> MonsterResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
 		BulletRenderer->SetTransform({ {16,-24}, {80 * 0.9f, 64 * 0.9f} });
 		this->SetAnimation("BulletCol"); 
-		// 이거 하면 함수 bulletcol로 들어가긴하나?
-		//StateChange(EBulletState::BulletCol);
 		
 		return;
 	}

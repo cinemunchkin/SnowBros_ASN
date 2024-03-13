@@ -476,34 +476,45 @@ void APlay_Monster::SnowBomb(float _DeltaTime)
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
-	
-
-	//if (SnowStackOutTime >= 0)
-	//{//0보다 클 때는 계속 마이너스
-	//	SnowStackOutTime -= 0.5f*_DeltaTime;
-	//}
-	//else
-	//{//0보다 작아지면 3.0으로 초기화 
-	//	if (SnowStack < StackNum)
-	//	{
-	//		return;
-	//	}
-	//	SnowStack -= 1; //0보다 작아질 때마다 
-	//	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
-
-	//	SnowStackOutTime = 3.0f; // 초기화
-
-	//	//if (SnowStack < 1)
-	//	//{//SnowStack이 1보다 작으면, Monmove
-	//	//	StateChange(EMonsterState::MonMove);
-	//	//	return;
-	//	//}
-
-	//	return;
-	//}
-
 
 	int StackNum = 3;
+
+	if (SnowStackOutTime >= 0)
+	{//0보다 클 때는 계속 마이너스
+		SnowStackOutTime -= _DeltaTime*1.5;
+	}
+	else
+	{//0보다 작아지면 3.0으로 초기화 
+		SnowStackOutTime = 3.0f;
+		if (SnowStack >= 0)
+		{
+			SnowStack -= 1; //0보다 작아질 때마다 
+			if (SnowStack != -1) // -1이 아니면 일단
+			{
+				SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
+				SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+			}
+			else if (SnowStack == -1)
+			{
+				SnowBallRenderer->SetActive(false); // Begin할때는 off해두었다가 
+				MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
+				StateChange(EMonsterState::MonMove);
+			}
+			else if (SnowStack >= 3)
+			{
+			MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
+			}
+		}
+		else if (SnowStack == -1) 
+		{
+			SnowBallRenderer->SetActive(false); // Begin할때는 off해두었다가 
+
+			StateChange(EMonsterState::MonMove);
+		}
+
+	}
+
+
 	if (true == BulletColCheck(_DeltaTime))
 	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
 		return;
@@ -518,7 +529,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 	else
 	{
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
-		
+
 		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
 		MonsterColPhysics(_DeltaTime);
 	}
@@ -537,12 +548,12 @@ void APlay_Monster::Rolling(float _DeltaTime)
 	std::vector<UCollision*> Result;
 
 	// 대박 여기서 Snowball하고 Monster 부딪히면 -> Death
-	if(SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, Result))
+	if (SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, Result))
 	{
 		for (UCollision* Collision : Result) {
-		APlay_Monster* Monster = static_cast<APlay_Monster*>(Collision->GetOwner());
-		Monster->MonsterDeath(0.0f);
-		//Monster->MonFlying(_DeltaTime);
+			APlay_Monster* Monster = static_cast<APlay_Monster*>(Collision->GetOwner());
+			Monster->MonsterDeath(0.0f);
+			//Monster->MonFlying(_DeltaTime);
 		}
 	}
 }
@@ -570,7 +581,10 @@ bool APlay_Monster::BulletColCheck(float _DeltaTime)
 	{
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
 		//Bullet->SetAnimation("BulletCol");
-		++SnowStack;
+		if (SnowStack < 4) {
+			++SnowStack;
+		}
+
 		Bullet->Destroy();
 		return true;
 	}
@@ -651,7 +665,7 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 
 
 void APlay_Monster::MonsterDeath(float _DeltaTime)
-{ 
+{
 	Spawn_Item();
 	Destroy();
 }

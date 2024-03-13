@@ -696,7 +696,7 @@ void APlay_Player::Strobe(float _DeltaTime)
 	}
 	if (true == Dir)
 	{
-		Renderer->SetAlpha(0.5f - AlphaTime);
+		Renderer->SetAlpha(0.7f - AlphaTime);
 		//Renderer->SetAlpha(AlphaTime);
 	}
 	else
