@@ -368,7 +368,7 @@ void APlay_Monster::SnowballStart()
 
 void APlay_Monster::MonIdle(float _DeltaTime)
 {
-	if (true == BulletColCheck(_DeltaTime))
+	if (true == BulletColMonCheck(_DeltaTime))
 	{
 		return;
 	}
@@ -378,7 +378,7 @@ void APlay_Monster::MonIdle(float _DeltaTime)
 void APlay_Monster::MonMove(float _DeltaTime)
 {
 
-	if (true == BulletColCheck(_DeltaTime))
+	if (true == BulletColMonCheck(_DeltaTime))
 	{
 		StateChange(EMonsterState::Snowball);
 		return;
@@ -476,8 +476,7 @@ void APlay_Monster::SnowBomb(float _DeltaTime)
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
-
-	int StackNum = 3;
+	// 문제 ; 눈덩어리는  -1씩 되는데,  몬스터는 아둥바둥이 안먹힘..
 
 	if (SnowStackOutTime >= 0)
 	{//0보다 클 때는 계속 마이너스
@@ -489,48 +488,53 @@ void APlay_Monster::Snowball(float _DeltaTime)
 		if (SnowStack >= 0)
 		{
 			SnowStack -= 1; //0보다 작아질 때마다 
-			if (SnowStack != -1) // snowstack이 일단 -1이 아니면, active하고, 
-			{
-				SnowBallRenderer->SetActive(true); // Begin할때는 off해두었다가 
-				SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
-			}
-			else if (SnowStack == -1) // snowstack이 -1로 원복되면, 
-			{
-				SnowBallRenderer->SetActive(false); 
-				MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
-				StateChange(EMonsterState::MonMove);
-			}
-			else if (SnowStack >= 3)
-			{
-			SnowBallRenderer->SetActive(true);
-			MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
-			}
+
+				if (SnowStack != -1) // snowstack이 일단 -1이 아니면, active하고, 
+				{
+					SnowBallRenderer->SetActive(true); 
+					//MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
+					SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+				}
+				else if (SnowStack == -1) // snowstack이 -1로 원복되면, 
+				{
+					SnowBallRenderer->SetActive(false); 
+					MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
+					StateChange(EMonsterState::MonMove);
+				}
+				else if (SnowStack >= 3)// snowstack이 3이상이 되면, 
+				{
+				SnowBallRenderer->SetActive(true);
+				MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
+				}
 		}
 		else if (SnowStack == -1) 
 		{
-			SnowBallRenderer->SetActive(false); // Begin할때는 off해두었다가 
+			SnowBallRenderer->SetActive(false); 
 			StateChange(EMonsterState::MonMove);
 		}
 
 	}
 
-	if (true == BulletColCheck(_DeltaTime))
+	int StackNum = 4;
+
+	if (true == BulletColMonCheck(_DeltaTime))
 	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
 		return;
 	}
 	DirCheck();
+
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
 	if (SnowStack < StackNum)
-	{// SnowStack이 3을 넘으면
+	{// SnowStack이 3 under
 		return;
 	}
-	else
-	{
+	else 
+	{// SnowStack이 
+
 		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
 		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
 		MonsterColPhysics(_DeltaTime);
 	}
-	//SnowStack = -1;
 	return;
 }
 
@@ -572,17 +576,22 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // 몬스터가 snowball상태일 �
 }
 
 
-bool APlay_Monster::BulletColCheck(float _DeltaTime)
+bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 {
 	std::vector<UCollision*> BulletResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
-		//Bullet->SetAnimation("BulletCol");
-		if (SnowStack < 4) {
+		if (SnowStack < 4) 
+		{
 			++SnowStack;
 		}
+		else if(SnowStack >= 4)
+		{
+			SnowStack = 3;
+		}
 
+		Bullet->BulletColCheck(_DeltaTime);
 		Bullet->Destroy();
 		return true;
 	}
@@ -675,7 +684,7 @@ void APlay_Monster::Spawn_Item()
 	Item->SetName("Item");
 	Item->SetActorLocation(this->GetActorLocation());
 
-	//Item->ItemMoveVector.X = MoveVector.X * -1.0f;
+	Item->ItemMoveVector.X = MoveVector.X * -1.0f;
 
 	return;
 }

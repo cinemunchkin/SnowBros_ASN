@@ -8,10 +8,10 @@ enum class SnowBrosRenderOrder
 {
 	Map,
 	UI,
-	Bullet,
 	Monster,
 	Player,
 	Snowball,
+	Bullet,
 	Item,
 };
 
@@ -107,7 +107,7 @@ enum class EItemState
 enum class EBulletState
 {	None,
 	Bullet,
-	BulletCol
+	BulletBomb
 
 };
 

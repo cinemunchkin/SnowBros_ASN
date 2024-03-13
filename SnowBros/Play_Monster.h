@@ -52,7 +52,7 @@ protected:
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
 
-	bool BulletColCheck(float _DeltaTime);
+	bool BulletColMonCheck(float _DeltaTime);
 
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterMoveUpdate(float _DeltaTime);

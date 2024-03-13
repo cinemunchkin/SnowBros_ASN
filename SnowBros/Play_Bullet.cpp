@@ -31,13 +31,14 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer->SetImage("SnowBros_BulletCol_R.png");
 		BulletRenderer->SetImage("SnowBros_BulletCol_L.png");
 
-		BulletRenderer->SetTransform({ {16,-24}, {32*1.2f, 68*1.2f} });
-		
-		BulletRenderer->CreateAnimation("Bullet_Right","SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
+		BulletRenderer->SetTransform({ {16,-24}, {32 * 1.2f, 68 * 1.2f} });
+		BulletRenderer->CreateAnimation("Bullet_Right", "SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
+		
 
-		BulletRenderer->CreateAnimation("BulletCol", "SnowBros_BulletCol_R.png", 0, 6, 0.03f, true);
-			
+		
+		BulletRenderer->CreateAnimation("BulletBomb_Right", "SnowBros_BulletCol_R.png", 0, 6, 10.0f, true);
+		BulletRenderer->CreateAnimation("BulletBomb_Left", "SnowBros_BulletCol_L.png", 0, 6, 10.0f, true);
 	}
 
 	{
@@ -55,23 +56,126 @@ void APlay_Bullet::Tick(float _DeltaTime)
 	AActor::Tick(_DeltaTime);
 	//이것도 곡선으로 나가는거.. 해야함.. 포물선
 
-	//AddActorLocation(Dir * _DeltaTime * 150.0f);// Dir가 Left임 
-	BulletMoveVector(_DeltaTime);
-	//BulletPhysics(_DeltaTime); //왜 여기다가 놓으면 자꾸.. Col이미지로 렌더되는거임
+	StateUpdate(_DeltaTime);
 }
 
-void APlay_Bullet::BulletMoveVector(float _DeltaTime)
+
+void APlay_Bullet::StateUpdate(float _DeltaTime)
 {
+	switch (State)
+	{
+	case EBulletState::Bullet:
+		Bullet(_DeltaTime);
+		break;
+
+		case EBulletState::BulletBomb:
+		BulletBomb(_DeltaTime);
+		break;
+
+	default:
+		break;
+
+	}
+
+}
+
+
+void APlay_Bullet::StateChange(EBulletState _State)
+{//애니메이션 - 보통상태 / collision일때 
+	if (State != _State)
+	{
+		switch (_State)
+		{
+		case EBulletState::Bullet:
+			BulletStart();
+			break;
+
+		case EBulletState::BulletBomb:
+			BulletBombStart();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	State = _State;
+}
+
+
+
+
+void APlay_Bullet::BulletStart()
+{
+	BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
+
+}
+
+
+void APlay_Bullet::BulletBombStart()
+{
+	BulletRenderer->ChangeAnimation(GetAnimationName("BulletBomb"));
+}
+
+
+
+void APlay_Bullet::Bullet(float _DeltaTime)
+{
+	BulletMoveUpdate(_DeltaTime);
+	BulletColCheck(_DeltaTime);
+}
+
+void APlay_Bullet::BulletBomb(float _DeltaTime)
+{
+	//BulletPhysics(_DeltaTime);
+	if (BulletRenderer->IsCurAnimationEnd())
+	{
+		//Monster -> BulletColCheck
+		Destroy();
+
+	}
+}
+
+
+
+void APlay_Bullet::BulletMoveUpdate(float _DeltaTime)
+{
+	BulletGravityCheck(_DeltaTime);
+	BulletLastMoveVector(_DeltaTime);
 	AddActorLocation(Dir * _DeltaTime * 150.0f);
 	//Gravity
 
 }
 
+
+void APlay_Bullet::BulletGravityCheck(float _DeltaTime)
+{
+	BulletGravityVector += BulletGravityAcc * _DeltaTime;
+	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
+		GetActorLocation().iY(), Color8Bit::CyanA);
+	if (Color == Color8Bit(0, 255, 255, 0))
+	{
+		BulletGravityVector = FVector::Zero;
+		BulletMoveVector = FVector::Zero;
+	}
+}
+
+void APlay_Bullet::BulletLastMoveVector(float _DeltaTime)
+{
+	TotalLastMoveVector = FVector::Zero;
+	TotalLastMoveVector = TotalLastMoveVector + BulletMoveVector;
+	TotalLastMoveVector = TotalLastMoveVector + BulletGravityVector;
+}
+
+
+
+
+
 std::string APlay_Bullet::GetAnimationName(std::string _Name)
 {
 	std::string DirName = "";
 
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
+	//APlay_Player* Player = APlay_Player::GetMainPlayer();
 
 	switch (BulletDirState)
 	{
@@ -92,33 +196,10 @@ std::string APlay_Bullet::GetAnimationName(std::string _Name)
 
 	return _Name + DirName;
 
+
+
+
 }
-
-
-
-void APlay_Bullet::StateChange(EBulletState _State)
-{//애니메이션
-	if (State != _State)
-	{
-		switch (_State)
-		{
-		case EBulletState::Bullet:
-			BulletStart();
-			break;
-
-		case EBulletState::BulletCol:
-			BulletColStart();
-			break;
-
-		default:
-			break;
-		}
-	}
-
-	State = _State;
-}
-
-
 
 
 void APlay_Bullet::SetAnimation(std::string _Name)
@@ -134,50 +215,21 @@ std::string APlay_Bullet::GetAnimationFullName(std::string _Name)
 }
 
 
-void APlay_Bullet::BulletPhysics(float _DeltaTime)
+bool APlay_Bullet::BulletColCheck(float _DeltaTime)
 {//Monster랑 Bullet이랑 collision
-	IsBulletCol = true;
-	BulletMoveVector(_DeltaTime);
 	//문제 bullet 포물선 함수 추가하기 
 
 	std::vector<UCollision*> MonsterResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
-		BulletRenderer->SetTransform({ {16,-24}, {80 * 0.9f, 64 * 0.9f} });
-		this->SetAnimation("BulletCol"); 
 		
-		return;
+		StateChange(EBulletState::BulletBomb);
+
+		return IsBulletBomb = true;
 	}
 
-	IsBulletCol = false;
+	return IsBulletBomb = false;
 }
 
 
-
-void APlay_Bullet::Bullet(float _DeltaTime)
-{
-	
-}
-
-void APlay_Bullet::BulletCol(float _DeltaTime)
-{
-	//BulletPhysics(_DeltaTime);
-	if (IsBulletCol = false)
-	{
-		
-	}
-}
-
-
-void APlay_Bullet::BulletStart()
-{
-	BulletRenderer->ChangeAnimation(GetAnimationName("Bullet"));
-
-}
-
-
-void APlay_Bullet::BulletColStart()
-{
-	BulletRenderer->ChangeAnimation(GetAnimationName("BulletCol"));
-}
 

@@ -37,7 +37,7 @@ public:
 
 	void SetAnimation(std::string _Name);
 	
-	bool IsBulletCol = false;
+	bool IsBulletBomb = false;
 
 protected:
 	void BeginPlay() override;
@@ -46,6 +46,8 @@ protected:
 	
 
 	void StateChange(EBulletState _State);
+	void StateUpdate(float _DeltaTime);
+
 	std::string GetAnimationName(std::string _Name);
 	std::string GetAnimationFullName(std::string _Name);
 
@@ -57,6 +59,12 @@ protected:
 
 	EBulletState State = EBulletState::None;
 
+	FVector BulletMoveVector = FVector::Zero;
+	FVector BulletGravityVector = FVector::Zero;
+	FVector BulletGravityAcc = FVector::Down * 1000.0f;
+	FVector TotalLastMoveVector = FVector::Zero;
+
+
 	////이게 왜 문제가 잡힐까 이해가 안되네 
 	//ㅁㅊㅁㅊㅁㅊㅁㅊㅁㅊㅁ헤더를 추가 안했네 enumclass 아오 멍청이
 
@@ -65,14 +73,19 @@ protected:
 	//공격파티클 일반
 	void Bullet(float _DeltaTime);
 	//공격파티클 충돌시
-	void BulletCol(float _DeltaTime);
-	//공격 파티클 소멸
+	void BulletBomb(float _DeltaTime);
 	
 
-	void BulletPhysics(float _DeltaTime);
-	void BulletMoveVector(float _DeltaTime);
+	bool BulletColCheck(float _DeltaTime);
+	void BulletMoveUpdate(float _DeltaTime);
+	void BulletGravityCheck(float _DeltaTime);
+	void BulletLastMoveVector(float _DeltaTime);
+
+
+
 	void BulletStart();
-	void BulletColStart();
+	void BulletBombStart();
+
 
 private:
 	UCollision* BodyCollision = nullptr;

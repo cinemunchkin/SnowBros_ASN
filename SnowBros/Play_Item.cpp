@@ -22,7 +22,7 @@ void APlay_Item::BeginPlay()
 	{
 		ItemRenderer = CreateImageRenderer(SnowBrosRenderOrder::Item);
 	ItemRenderer->SetImage("Monster_Item_01.png");
-	ItemRenderer->SetTransform({ {0,-26}, {48 * 0.6f, 48 * 0.6f} });
+	ItemRenderer->SetTransform({ {0,-26}, {48 * 0.7f, 48 * 0.7f} });
 
 
 	ItemRenderer->CreateAnimation("ItemSushi", "Monster_Item_01.png", 0, 11, 1.0f, true);
