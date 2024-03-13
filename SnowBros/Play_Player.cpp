@@ -46,6 +46,8 @@ void APlay_Player::BeginPlay()
 		Renderer->SetImage("SnowBros_Run_L.png");
 
 		Renderer->SetImage("SnowBros_Jump_R.png");
+		Renderer->SetImage("SnowBros_Jump_L.png");
+
 		Renderer->SetImage("SnowBros_Melt.png");
 
 		Renderer->SetImage("SnowBros_Attack_R.png");
@@ -70,7 +72,8 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
 
-		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Melt.png", 0, 6, 0.1f, true);
+		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Jump_L.png", 0, 0, 0.1f, true);
+		Renderer->CreateAnimation("DownJump_Right", "SnowBros_Jump_R.png", 0, 0, 0.1f, true);
 
 		Renderer->CreateAnimation("Attack_Right", "SnowBros_Attack_R.png", 0, 3, 0.02f, true);
 		Renderer->CreateAnimation("Attack_Left", "SnowBros_Attack_L.png", 0, 3, 0.02f, true);
@@ -470,7 +473,7 @@ void APlay_Player::Idle(float _DeltaTime)
 	//MoveVector = FVector::Zero;
 	DirCheck();
 	//PlayerColPhysics(_DeltaTime);
-	StrobeColCheck(_DeltaTime);
+	//StrobeColCheck(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -482,11 +485,19 @@ void APlay_Player::Idle(float _DeltaTime)
 		return;
 	}
 	///왼쪽Shift로 점프
+	if (true == (UEngineInput::IsDown('Z')&&UEngineInput::IsPress(VK_DOWN)))
+	{
+		StateChange(EPlayState::DownJump);
+		return;
+	}
+
+	
 	if (true == UEngineInput::IsDown('Z'))
 	{
 		StateChange(EPlayState::Jump);
 		return;
 	}
+
 	/// 공격
 	if (true == UEngineInput::IsDown('X'))
 	{
@@ -517,7 +528,7 @@ bool APlay_Player::DamageCheck()
 		}
 
 		return true;
-		// 피해입는다는 여기서
+		// 피해입는다는 여기서 // strobe 여기로 옮기기
 	}
 
 	return false;
@@ -676,7 +687,7 @@ void APlay_Player::FastRun(float _DeltaTime)
 void APlay_Player::Strobe(float _StrobeTime)
 {
 	float Strobetime = _StrobeTime;
-	//StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
+	StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
 }
 
 
@@ -700,10 +711,10 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 	}
 	if (AlphaTime > 5.0f)
 	{
-		bool Dir = false;
-		//Renderer->ChangeAnimation(GetAnimationName("Idle"));
+		//bool Dir = false;
+		Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		StateChange(EPlayState::Idle);
-		return;
+		//return;
 	}
 	//MoveUpdate(_DeltaTime);
 }
@@ -811,9 +822,33 @@ void APlay_Player::DownJump(float _DeltaTime)
 {
 
 	DirCheck();
-	PlayerColPhysics(_DeltaTime);
 
 
+
+	if (true == UEngineInput::IsPress(VK_LEFT))
+	{
+		AddMoveVector(FVector::Left * _DeltaTime);
+	}
+
+	if (true == UEngineInput::IsPress(VK_RIGHT))
+	{
+		AddMoveVector(FVector::Right * _DeltaTime);
+	}
+	
+	//GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. \
+
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::YellowA);
+	if (ColorCyan == Color8Bit(0, 255, 255, 0) || ColorYellow == Color8Bit(255, 255,0 , 0))
+	{
+		AddActorLocation(FVector::Down * _DeltaTime * 50.0f);
+		return;
+	}
+
+	MoveUpdate(_DeltaTime);
+
+	StateChange(EPlayState::Idle);
+	return;
 
 }
 
@@ -846,7 +881,6 @@ void APlay_Player::StrobeColCheck(float _DeltaTime)
 		if (EMonsterState::Snowball != Monster->GetState())
 			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
-			true == Dir;
 			Strobe(_DeltaTime);
 			return;
 		}

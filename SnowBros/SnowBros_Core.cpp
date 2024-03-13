@@ -55,6 +55,7 @@ void USnowBros_Core::BeginPlay()
 	//플레이어 애니메이션
 	///점프
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Jump_R.png", 8, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Jump_L.png", 8, 1);
 
 	///Idle
 	UEngineResourcesManager::GetInst().CuttingImage("SnowBros_Idle_R.png", 1, 1);
