@@ -316,6 +316,7 @@ void APlay_Monster::RollingStart()
 	SnowCollision->SetColType(ECollisionType::Rect);*/
 
 	BodyCollision->Destroy();
+	// 구르기 시작하면,  Monster의 BodyCollision destroy
 	SnowBallRenderer->ChangeAnimation(GetAnimationName("Rolling"));
 	DirCheck();
 }
@@ -459,7 +460,6 @@ void APlay_Monster::DownJump(float _DeltaTime)
 
 void APlay_Monster::SnowBomb(float _DeltaTime)
 {
-	
 
 	SnowBallRenderer->ActiveOff();
 	if (true == MonsterRenderer->IsCurAnimationEnd())
@@ -476,19 +476,34 @@ void APlay_Monster::SnowBomb(float _DeltaTime)
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
+	
 
-	if (OutTime >= 0) {
-		OutTime -= _DeltaTime;
-	}
-	else {
-		OutTime = 3.0f;
-		//하고싶은거
-	/*	if (stack == -1) {
-			setstate("idle");
-		}*/
-	}
+	//if (SnowStackOutTime >= 0)
+	//{//0보다 클 때는 계속 마이너스
+	//	SnowStackOutTime -= 0.5f*_DeltaTime;
+	//}
+	//else
+	//{//0보다 작아지면 3.0으로 초기화 
+	//	if (SnowStack < StackNum)
+	//	{
+	//		return;
+	//	}
+	//	SnowStack -= 1; //0보다 작아질 때마다 
+	//	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
+
+	//	SnowStackOutTime = 3.0f; // 초기화
+
+	//	//if (SnowStack < 1)
+	//	//{//SnowStack이 1보다 작으면, Monmove
+	//	//	StateChange(EMonsterState::MonMove);
+	//	//	return;
+	//	//}
+
+	//	return;
+	//}
 
 
+	int StackNum = 3;
 	if (true == BulletColCheck(_DeltaTime))
 	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
 		return;
@@ -496,7 +511,6 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 	DirCheck();
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-	int StackNum = 3;
 	if (SnowStack < StackNum)
 	{
 		return;
@@ -513,6 +527,7 @@ void APlay_Monster::Snowball(float _DeltaTime)
 
 
 
+
 void APlay_Monster::Rolling(float _DeltaTime)
 // Rolling으로 들어와서, Snowball정지이미지
 // 플레이어가  push상태면 굴릴 수 있도록
@@ -526,8 +541,8 @@ void APlay_Monster::Rolling(float _DeltaTime)
 	{
 		for (UCollision* Collision : Result) {
 		APlay_Monster* Monster = static_cast<APlay_Monster*>(Collision->GetOwner());
-		//Monster->MonsterDeath(0.0f);
-		Monster->MonFlying(_DeltaTime);
+		Monster->MonsterDeath(0.0f);
+		//Monster->MonFlying(_DeltaTime);
 		}
 	}
 }
@@ -648,7 +663,7 @@ void APlay_Monster::Spawn_Item()
 	Item->SetName("Item");
 	Item->SetActorLocation(this->GetActorLocation());
 
-	Item->ItemMoveVector.X = MoveVector.X * -1.0f;
+	//Item->ItemMoveVector.X = MoveVector.X * -1.0f;
 
 	return;
 }

@@ -4,7 +4,7 @@
 
 #include <vector>
 
-
+#include "Play_Player.h"
 #include "Play_Item.h"
 
 
@@ -30,10 +30,10 @@ void APlay_Item::BeginPlay()
 
 
 	{
-		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Item);
-		BodyCollision->SetPosition(ItemRenderer->GetPosition());
-		BodyCollision->SetScale({ 40,40 });
-		BodyCollision->SetColType(ECollisionType::Rect);
+		ItemCollision = CreateCollision(SnowBrosCollisionOrder::Item);
+		ItemCollision->SetPosition(ItemRenderer->GetPosition());
+		ItemCollision->SetScale({ 40,40 });
+		ItemCollision->SetColType(ECollisionType::CirCle);
 	}
 
 	StateChange(EItemState::ItemSushi);
@@ -43,7 +43,7 @@ void APlay_Item::BeginPlay()
 void APlay_Item::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
-
+	
 	StateUpdate(_DeltaTime);
 }
 
@@ -78,7 +78,6 @@ void APlay_Item::StateChange(EItemState _State)
 		switch (_State)
 		{
 		case EItemState::ItemSushi:
-
 			ItemSushiStart();
 			break;
 
@@ -98,7 +97,6 @@ void APlay_Item::ItemSushi(float _DeltaTime)
 {
 	ItemMoveUpdate(_DeltaTime);
 	ItemColCheck(_DeltaTime);
-
 }
 
 void APlay_Item::ItemScore(float _DeltaTime)
@@ -109,9 +107,10 @@ void APlay_Item::ItemScore(float _DeltaTime)
 
 void APlay_Item::ItemSushiStart()
 {
-	//ItemRenderer->ChangeAnimation(GetAnimationFullName("ItemSushi"));
-		this->SetAnimation("ItemSushi");
+	ItemRenderer->ChangeAnimation(GetAnimationFullName("ItemSushi"));
+	//	this->SetAnimation("ItemSushi");
 }
+
 void APlay_Item::ItemScoreStart(){}
 
 
@@ -161,14 +160,16 @@ void APlay_Item::ItemGravityCheck(float _DeltaTime)
 
 }
 
-void APlay_Item::ItemColCheck(float _Deltatime)
-{//Item과 플레이어가 충돌했는지 
-	
+bool APlay_Item::ItemColCheck(float _Deltatime)
+{//Item과 플레이어가 충돌했는지 이게 왜 안뜸,,
 
+	APlay_Player* Player = APlay_Player::GetMainPlayer();
 	std::vector<UCollision*> PlayerResult;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
+	if (true == ItemCollision->CollisionCheck(SnowBrosCollisionOrder::Player, PlayerResult))
 	{
 		Destroy();
+		return true;
 	}
-		
+	
+	return false;
 }

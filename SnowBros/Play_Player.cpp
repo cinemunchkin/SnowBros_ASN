@@ -27,12 +27,12 @@ void APlay_Player::BeginPlay()
 
 
 	{
-		BodyCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Player);
 		BodyCollision->SetScale({ 32, 72 });
 		BodyCollision->SetColType(ECollisionType::Rect);
 		// 플레이어 평상시
 
-		PushCheckCollision = CreateCollision(SnowBrosRenderOrder::Player);
+		PushCheckCollision = CreateCollision(SnowBrosCollisionOrder::Player);
 		PushCheckCollision->SetScale({ 40, 40 });
 		PushCheckCollision->SetColType(ECollisionType::Rect);
 		// 스노우볼 밀 때의 충돌 collision

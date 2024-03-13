@@ -38,7 +38,7 @@ protected:
 	void StateChange(EItemState _State);
 	void StateUpdate(float _DeltaTime);
 
-	void ItemColCheck(float _Deltatime);
+	bool ItemColCheck(float _Deltatime);
 	void ItemMoveUpdate(float _DeltaTime);
 	void ItemLastMoveVector(float _DeltaTime);
 	void ItemGravityCheck(float _DeltaTime);
@@ -59,6 +59,6 @@ private:
 	FVector TotalLastMoveVector = FVector::Zero;
 
 	UImageRenderer* ItemRenderer = nullptr;
-	UCollision* BodyCollision = nullptr;
+	UCollision* ItemCollision = nullptr;
 
 };

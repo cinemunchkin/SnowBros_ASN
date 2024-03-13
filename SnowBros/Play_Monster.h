@@ -104,7 +104,7 @@ protected:
 	
 	std::string CurAnimationName = "None";
 	
-	float OutTime = 3.0f;
+	float SnowStackOutTime = 3.0f;
 
 private:
 
