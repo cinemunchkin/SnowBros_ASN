@@ -696,17 +696,15 @@ void APlay_Player::Strobe(float _DeltaTime)
 	}
 	if (true == Dir)
 	{
-		Renderer->SetAlpha(AlphaTime);
+		Renderer->SetAlpha(0.5f - AlphaTime);
+		//Renderer->SetAlpha(AlphaTime);
 	}
 	else
 	{
-		Renderer->SetAlpha(0.5f - AlphaTime);
+		//Renderer->SetAlpha(0.5f - AlphaTime);
 	}
 	if (AlphaTime > 1.0f)
 	{
-		//Renderer->SetAlpha(0.0f);
-		//bool Dir = false;
-		//Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		StateChange(EPlayState::Idle);
 		//return;
 	}
