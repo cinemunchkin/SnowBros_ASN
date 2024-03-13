@@ -841,11 +841,14 @@ void APlay_Player::DownJump(float _DeltaTime)
 	Color8Bit ColorYellow = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::YellowA);
 	if (ColorCyan == Color8Bit(0, 255, 255, 0) || ColorYellow == Color8Bit(255, 255,0 , 0))
 	{
-		AddActorLocation(FVector::Down * _DeltaTime * 50.0f);
-		return;
+		if (this->GetActorLocation().Y < 448)
+		{
+			AddActorLocation(FVector::Down * _DeltaTime * 150.0f);
+			MoveUpdate(_DeltaTime);
+			return;
+		}
 	}
 
-	MoveUpdate(_DeltaTime);
 
 	StateChange(EPlayState::Idle);
 	return;
