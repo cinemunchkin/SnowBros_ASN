@@ -74,7 +74,7 @@ protected:
 	void DownJump(float _DeltaTime);
 	void Attack(float _DeltaTime);
 
-	void Strobe(float _StrobeTime);
+	void Strobe(float _DeltaTime);
 	void Fly(float _DeltaTime); // 스테이지 이동할때 쓰네.. 
 
 	void PlayerRolling(float _DeltaTime);
@@ -168,7 +168,6 @@ private:
 	void CalGravityVector(float _DeltaTime);
 	void CamMoveLastMoveVector(float _DeltaTime);
 	void MoveUpdate(float _DeltaTime);
-	void StrobeUpdate(float _DeltaTime);
 	
 	void Fire_Bullet();
 	FVector PlayerDir = FVector::Zero;

@@ -472,8 +472,9 @@ void APlay_Player::Idle(float _DeltaTime)
 {
 	//MoveVector = FVector::Zero;
 	DirCheck();
+	Renderer->SetAlpha(1.0f);
 	//PlayerColPhysics(_DeltaTime);
-	//StrobeColCheck(_DeltaTime);
+	StrobeColCheck(_DeltaTime);
 	MoveUpdate(_DeltaTime);
 
 	//Idle상태에서
@@ -684,16 +685,8 @@ void APlay_Player::FastRun(float _DeltaTime)
 }
 
 
-void APlay_Player::Strobe(float _StrobeTime)
+void APlay_Player::Strobe(float _DeltaTime)
 {
-	float Strobetime = _StrobeTime;
-	StrobeUpdate(_StrobeTime); // 이거 그냥 합쳐도 될텐데
-}
-
-
-void APlay_Player::StrobeUpdate(float _DeltaTime)
-{//깜빡깜빡 어떻게? 
-
 	AlphaTime += _DeltaTime;
 
 	if (0.1f <= AlphaTime)
@@ -709,14 +702,49 @@ void APlay_Player::StrobeUpdate(float _DeltaTime)
 	{
 		Renderer->SetAlpha(0.5f - AlphaTime);
 	}
-	if (AlphaTime > 5.0f)
+	if (AlphaTime > 1.0f)
 	{
+		//Renderer->SetAlpha(0.0f);
 		//bool Dir = false;
-		Renderer->ChangeAnimation(GetAnimationName("Idle"));
+		//Renderer->ChangeAnimation(GetAnimationName("Idle"));
 		StateChange(EPlayState::Idle);
 		//return;
 	}
-	//MoveUpdate(_DeltaTime);
+}
+
+
+void APlay_Player::StrobeColCheck(float _DeltaTime)
+{ //문제 이것도 bool로 바꾸자??
+
+	DirCheck();
+	std::vector<UCollision*> MonsterResult;
+	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
+	{//플레이어가 몬스터랑 충돌했을때, 
+		AActor* Owner = MonsterResult[0]->GetOwner();
+		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
+		// 첫번째= [0]
+		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
+
+		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
+		{
+			MsgBoxAssert("몬스터가 아닙니다");
+		}
+
+		if (EMonsterState::Snowball != Monster->GetState())
+			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
+		{
+			true == Dir;
+			Strobe(_DeltaTime);
+			return;
+		}
+
+		else if (EMonsterState::Snowball == Monster->GetState())
+		{// 몬스터가 Snowball 상태일 때, 
+			return;
+		}
+		return;
+	}
+
 }
 
 
@@ -789,12 +817,16 @@ void APlay_Player::Jump(float _DeltaTime)
 
 	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
+		
 		AddMoveVector(FVector::Left * _DeltaTime);
+		MoveUpdate(_DeltaTime);
+
 	}
 
 	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		AddMoveVector(FVector::Right * _DeltaTime);
+		MoveUpdate(_DeltaTime);
 	}
 
 
@@ -823,8 +855,6 @@ void APlay_Player::DownJump(float _DeltaTime)
 
 	DirCheck();
 
-
-
 	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
 		AddMoveVector(FVector::Left * _DeltaTime);
@@ -849,7 +879,6 @@ void APlay_Player::DownJump(float _DeltaTime)
 		}
 	}
 
-
 	StateChange(EPlayState::Idle);
 	return;
 
@@ -862,36 +891,6 @@ void APlay_Player::Fly(float _DeltaTime)
 {
 }
 
-
-void APlay_Player::StrobeColCheck(float _DeltaTime)
-{ //문제 이것도 bool로 바꾸자??
-
-	DirCheck();
-	std::vector<UCollision*> MonsterResult;
-	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
-	{//플레이어가 몬스터랑 충돌했을때, 
-
-		AActor* Owner = MonsterResult[0]->GetOwner();
-		//몬스터와 플레이어가 충돌한 결과 = MonsterResult
-		// 첫번째= [0]
-		APlay_Monster* Monster = dynamic_cast<APlay_Monster*>(Owner);
-
-		if (nullptr == Monster) // 디버그 체크; 몬스터가 만약에 nullptr일 경우!
-		{
-			MsgBoxAssert("몬스터가 아닙니다");
-		}
-
-		if (EMonsterState::Snowball != Monster->GetState())
-			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
-		{
-			Strobe(_DeltaTime);
-			return;
-		}
-
-		return;
-	}
-
-}
 
 
 //플레이어 충돌시 
@@ -912,16 +911,16 @@ void APlay_Player::PlayerColPhysics(float _DeltaTime)
 						MsgBoxAssert("몬스터가 아닙니다");
 					}
 
-		if (EMonsterState::Snowball != Monster->GetState())
-			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
-		{
-			Strobe(_DeltaTime);
-			return;
-		}
+		//if (EMonsterState::Snowball != Monster->GetState()) ==============>StrobeColcheck로 따로 분리해버림!!
+		//	// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
+		//{
+		//	Strobe(_DeltaTime);
+		//	return;
+		//}
 
-		else if (EMonsterState::Rolling == Monster->GetState())
+		if (EMonsterState::Rolling == Monster->GetState())
 		{
-			this->StateChange(EPlayState::PlayerStuck);
+			this->StateChange(EPlayState::PlayerStuck); // ==============> 플레이어 눈덩이에 끼었을 때ㅜㅜ
 		}
 
 		else if (EMonsterState::Snowball == Monster->GetState())

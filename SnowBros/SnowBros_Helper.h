@@ -8,9 +8,9 @@ enum class SnowBrosRenderOrder
 {
 	Map,
 	UI,
-	Player,
 	Bullet,
 	Monster,
+	Player,
 	Snowball,
 	Item,
 };
