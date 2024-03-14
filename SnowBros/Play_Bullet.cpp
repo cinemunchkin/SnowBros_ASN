@@ -37,8 +37,8 @@ void APlay_Bullet::BeginPlay()
 		
 
 		
-		BulletRenderer->CreateAnimation("BulletBomb_Right", "SnowBros_BulletCol_R.png", 0, 6, 10.0f, true);
-		BulletRenderer->CreateAnimation("BulletBomb_Left", "SnowBros_BulletCol_L.png", 0, 6, 10.0f, true);
+		BulletRenderer->CreateAnimation("BulletBomb_Right", "SnowBros_BulletCol_R.png", 0, 6, 0.1f, true);
+		BulletRenderer->CreateAnimation("BulletBomb_Left", "SnowBros_BulletCol_L.png", 0, 6, 0.1f, true);
 	}
 
 	{

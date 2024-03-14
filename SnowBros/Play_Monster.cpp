@@ -442,7 +442,7 @@ void APlay_Monster::MonFlying(float _DeltaTime)
 	if (MonDeathTime >= 0)
 	{//0보다 클 때는 계속 마이너스
 		MonDeathTime -= _DeltaTime ;
-		AddActorLocation(FVector::Up * _DeltaTime*50.0f);
+		AddActorLocation(FVector::Up * MonDeathTime *5.0f);
 	}
 	
 	else // 0보다 작아지면  Time 초기화
@@ -640,7 +640,7 @@ bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
 		if (SnowStack < 4) 
 		{
-			++SnowStack;
+			SnowStack++;// 헐 고쳤다 
 		}
 		else if(SnowStack >= 4)
 		{
