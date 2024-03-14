@@ -40,8 +40,8 @@ enum class EActorDir
 enum class EMonsterDir
 {
 	None,
-	Left,
-	Right,
+	Left = -1,
+	Right = 1,
 	Mid
 };
 

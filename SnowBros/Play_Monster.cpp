@@ -429,40 +429,121 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 void APlay_Monster::MonFlying(float _DeltaTime)
 {
-	FVector FlyingSpeed = FVector::Up;
-	FVector FlyingDir = FVector::Right;
-	FlyingDir.X += 20 * _DeltaTime;
-
-	GravityVector += GravityAcc * _DeltaTime;
 	MonFlyingColVector(_DeltaTime);
-
-	if (MonDeathTime >= 0)
-	{//0보다 클 때는 계속 마이너스
-
-		MonDeathTime -= _DeltaTime ;
-		AddActorLocation(FlyingSpeed * _DeltaTime *200.0f);
-	}
+	MonDeathCheck(_DeltaTime);
 	
-	else 
-	{// 0보다 작아지면
-		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-		if (Color == Color8Bit(0, 255, 255, 0))
+
+	TotalGravity += GravitySpeed * _DeltaTime;
+	TotalSpeed = JumpSpeed + TotalGravity;
+
+	HorizonTotal += HorizonRight * _DeltaTime;
+
+	int DirState = static_cast<int>(MonsterDirState);
+
+
+
+	if (/*DirState **/HorizonLeft.X < HorizonTotal.X)
+	{ //아니 절대값을 비교해야되ㄴ는데 이걸 왜 못하고 있음 
+		if (true == MonFlyingColVector(_DeltaTime))
 		{
-			MonDeathCheck(_DeltaTime);
-			return;
+			MoveVector.X *= -1.0f;
+
 		}
-		GravityVector = FVector::Zero;
-		AddActorLocation(- FlyingSpeed * _DeltaTime * 50.0f); 
-		//MonDeathTime = 1.5f;
+		else if (false == MonFlyingColVector(_DeltaTime))
+		{
+			HorizonTotal -= HorizonRight * _DeltaTime;
+			
+		}
+		
+	}
+	if(TotalGravity.Y > JumpSpeed.Y)
+	{
+		if (true == MonFlyingColVector(_DeltaTime))
+		{
+			MoveVector.X *= -1.0f;
+
+		}
 
 	}
 
-	//MoveCheck(_DeltaTime);
+	TotalXSpeed = HorizonTotal + HorizonLeft;
+	//이렇게 함수에 담아두고 쓰기!!
+	AddActorLocation((TotalXSpeed + TotalSpeed) * _DeltaTime);
+	return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//tqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
+	//
+
+
+	/*HorizonRightTotal X방향으로 가는 total
+	 == *_Deltatime으로 계속 가속이 붙음 ( 0~ ) */
+	                
+	/*전체 속도는 그럼 HorizonLeft에 의해서 점점 줄어들게됨
+	조건이 붙어야함 부딪히기 전까지는 Left > Right 될 수 없도록!*/
+	
+	// TotalXSpeed => if MonFlyingColVector ( true = -1 / false = 1 )
+	//	int DirState = static_cast<int>(MonsterDirState);
+	//Left = -1,  Right = 1
+
+
+
+	//FVector MonFlyingVector = MonsterPosA - MonsterPosB;
+	//FVector MonNormal = MonFlyingVector.Normalize2DReturn();
+
+	/*GravityVector += FlyingGravityAcc * _DeltaTime;*/
+	//FVector FlyingVector = MonsterPosB + GravityVector;
+
+
+	
+	
+	//FVector MonsterPosA = this->GetActorLocation();
+	//FVector MonFlyingVector = { 1.0f, -2.0f, 0.0f, 0.0f };
+	//FVector MonFlyingSpeed = MonFlyingVector*100.0f;
+
+	
+
+	//if (MonDeathTime >= 0)
+	//{//0보다 클 때는 계속 마이너스
+
+	//	MonDeathTime -= _DeltaTime ;
+	//	AddActorLocation(MonFlyingSpeed * _DeltaTime);
+	//}
+	//
+	//else 
+	//{// 0보다 작아지면
+	//	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	//	if (Color == Color8Bit(0, 255, 255, 0))
+	//	{
+	//		MonDeathCheck(_DeltaTime);
+	//		return;
+	//	}
+	//	//MonDeathTime = 1.5f;
+
+	//}
+
+	//AddActorLocation(MonFlyingSpeed * _DeltaTime);
+
 
 	
 }
 
-void APlay_Monster::MonFlyingColVector(float _DeltaTime)
+bool APlay_Monster::MonFlyingColVector(float _DeltaTime)
 {
 
 	FVector CheckPos = GetActorLocation();
@@ -479,11 +560,14 @@ void APlay_Monster::MonFlyingColVector(float _DeltaTime)
 	}
 	CheckPos.Y -= 32.0f;
 	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
-	if (ColorCyan == Color8Bit(0, 255, 255, 0))
+	if (ColorCyan == Color8Bit(0, 255, 255, 0) )
 	{
-		MoveVector.X *= -1.0f;
+		//MoveVector.X *= -1.0f;
+		return true ;
 	}
 
+	return false;
+	// bool -> 부딪혔을때 return true 하도록!!
 
 }
 

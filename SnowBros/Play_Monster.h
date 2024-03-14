@@ -103,7 +103,7 @@ protected:
 	std::string CurAnimationName = "None";
 	
 	float SnowStackOutTime = 3.0f;
-	float MonDeathTime = 1.5f;
+	float MonDeathTime = 1.0f;
 
 private:
 
@@ -114,6 +114,20 @@ private:
 	FVector GravityVector = FVector::Zero;
 
 	FVector GravityAcc = FVector::Down * 2500.0f;
+	
+
+	//------Monflying ÇÔ¼ö¿ë
+	FVector JumpSpeed = FVector::Up * 400.f;
+	FVector GravitySpeed = FVector::Down * 400.f;
+	FVector TotalGravity = {};
+
+	FVector HorizonRight = FVector::Right * 300.f;
+	FVector HorizonLeft = FVector::Left * 300.f;
+	FVector HorizonTotal = {};
+	FVector TotalXSpeed = {};
+
+	FVector TotalSpeed = {};
+
 
 	UCollision* BodyCollision= nullptr;
 	UImageRenderer* MonsterRenderer = nullptr;
@@ -129,7 +143,7 @@ private:
 	void MonsterGravityVector(float _DeltaTime);
 	void MonsterGroundUp(float _DeltaTime);
 
-	void MonFlyingColVector(float _DeltaTime);
+	bool MonFlyingColVector(float _DeltaTime);
 
 	void MonsterDeath(float _Deltatime);
 	void Spawn_Item();
