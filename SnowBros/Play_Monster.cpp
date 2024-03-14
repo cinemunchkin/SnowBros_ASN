@@ -554,8 +554,9 @@ void APlay_Monster::Rolling(float _DeltaTime)
 	{
 		for (UCollision* Collision : Result) {
 			APlay_Monster* Monster = static_cast<APlay_Monster*>(Collision->GetOwner());
-			Monster->MonsterDeath(0.0f);
-			//Monster->MonFlying(_DeltaTime);
+			//Monster->MonsterDeath(0.0f);
+			Monster->StateChange(EMonsterState::MonFlying);
+			// snowball이 아니라, monster (collision의 getowner)
 		}
 	}
 }
