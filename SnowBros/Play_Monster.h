@@ -49,23 +49,24 @@ public:
 	UImageRenderer* SnowBallRenderer = nullptr;
 
 protected:
+
+
+	std::string GetAnimationName(std::string _Name);
+	std::string GetAnimationFullName(std::string _Name);
+
 	void BeginPlay() override;
 	void Tick(float _DeltaTime) override;
-
-	bool BulletColMonCheck(float _DeltaTime);
 
 	void MonsterColPhysics(float _DeltaTime);
 	void MonsterMoveUpdate(float _DeltaTime);
 
 	void AddMoveVector(const FVector& _DirDelta); // 가속도 -> 등속으로 바꿈
+	void SetAnimation(std::string _Name);
+
+	bool BulletColMonCheck(float _DeltaTime);
+	bool MonDeathCheck(float _DeltaTime);
 
 	void DirCheck();
-
-
-
-	std::string GetAnimationName(std::string _Name);
-	std::string GetAnimationFullName(std::string _Name);
-	void SetAnimation(std::string _Name);
 
 
 	// 상태 주요 업데이트
@@ -82,9 +83,6 @@ protected:
 	void SnowBomb(float _DeltaTime);
 	
 
-	//void StackSnowball(float _DeltaTime);
-	//void SnowballStackCheck(float _DeltaTime);
-	
 	
 
 	// 상태 시작 함수들
@@ -105,6 +103,7 @@ protected:
 	std::string CurAnimationName = "None";
 	
 	float SnowStackOutTime = 3.0f;
+	float MonDeathTime = 3.0f;
 
 private:
 

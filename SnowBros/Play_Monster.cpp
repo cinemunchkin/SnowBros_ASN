@@ -84,8 +84,8 @@ void APlay_Monster::BeginPlay()
 
 
 		// 몬스터가 스노우볼에 맞아서 날아갈때 
-		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 10.0f, true);
-		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 10.0f, true);
+		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 1.0f, true);
+		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 1.0f, true);
 
 		//눈 렌더 //맨 아랫층 벽에 닿으면 터짐
 		MonsterRenderer->CreateAnimation("SnowBomb_Right", "SnowBomb_01.png", 0, 3, 0.05f, true);
@@ -427,19 +427,74 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 
 
+
 void APlay_Monster::MonFlying(float _DeltaTime)
 {
+	DirCheck();
+	
 
-	//DirCheck();
+	/*
+	1) 점프처럼 포물선 
+	2) 벽에 맞으면 반대방향
+	맞고 날아가서 -> 땅에 닿으면 DeathCheck = true 
+	*/
+
+	if (MonDeathTime >= 0)
+	{//0보다 클 때는 계속 마이너스
+		MonDeathTime -= _DeltaTime ;
+		AddActorLocation(FVector::Up * _DeltaTime*50.0f);
+	}
+	
+	else // 0보다 작아지면  Time 초기화
+	{
+		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+		if (Color == Color8Bit(0, 255, 255, 0))
+		{
+			MonDeathCheck(_DeltaTime);
+			return;
+		}
+		AddActorLocation(FVector::Down * _DeltaTime * 1000.0f); // 
+		//MonDeathTime = 3.0f;
+
+	}
+
+	//TotalLastMoveVector = FVector::Up * 100.0f; 
 	//MoveCheck(_DeltaTime);
-	//MonsterColPhysics(_DeltaTime);
+
+	
+}
+
+
+
+bool APlay_Monster::MonDeathCheck(float _DeltaTime)
+{
 	if (true == MonsterRenderer->IsCurAnimationEnd())
 	{
-
 		MonsterDeath(0.0f);
-		return;
+		return true;
 	}
+
+	return false;
 }
+
+void APlay_Monster::MonsterDeath(float _DeltaTime)
+{
+	Spawn_Item();
+	Destroy();
+}
+
+void APlay_Monster::Spawn_Item()
+{
+
+	APlay_Item* Item = GetWorld()->SpawnActor<APlay_Item>();
+	Item->SetName("Item");
+	Item->SetActorLocation(this->GetActorLocation());
+
+	Item->ItemMoveVector.X = MoveVector.X * -1.0f;
+
+	return;
+}
+
 
 
 void APlay_Monster::Jump(float _DeltaTime)
@@ -592,7 +647,7 @@ bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 			SnowStack = 3;
 		}
 
-		Bullet->BulletColCheck(_DeltaTime);
+		//Bullet->BulletColCheck(_DeltaTime);
 		Bullet->Destroy();
 		return true;
 	}
@@ -670,25 +725,6 @@ void APlay_Monster::MonsterGroundUp(float _DeltaTime)
 	}
 }
 
-
-
-void APlay_Monster::MonsterDeath(float _DeltaTime)
-{
-	Spawn_Item();
-	Destroy();
-}
-
-void APlay_Monster::Spawn_Item()
-{
-
-	APlay_Item* Item = GetWorld()->SpawnActor<APlay_Item>();
-	Item->SetName("Item");
-	Item->SetActorLocation(this->GetActorLocation());
-
-	Item->ItemMoveVector.X = MoveVector.X * -1.0f;
-
-	return;
-}
 
 
 

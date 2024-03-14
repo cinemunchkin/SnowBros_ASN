@@ -223,7 +223,7 @@ bool APlay_Bullet::BulletColCheck(float _DeltaTime)
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
 		
-		StateChange(EBulletState::BulletBomb);
+		//StateChange(EBulletState::BulletBomb);
 
 		return IsBulletBomb = true;
 	}
