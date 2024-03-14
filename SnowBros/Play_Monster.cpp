@@ -401,7 +401,6 @@ void APlay_Monster::MonMove(float _DeltaTime)
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
 	//	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
-		// 여기도 문제 있음 -> Idle에서 Right로 놔둔거 고치기
 
 	if (MonsterDirState == EMonsterDir::Left)
 	{
@@ -430,39 +429,64 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 void APlay_Monster::MonFlying(float _DeltaTime)
 {
-	DirCheck();
-	
+	FVector FlyingSpeed = FVector::Up;
+	FVector FlyingDir = FVector::Right;
+	FlyingDir.X += 20 * _DeltaTime;
 
-	/*
-	1) 점프처럼 포물선 
-	2) 벽에 맞으면 반대방향
-	맞고 날아가서 -> 땅에 닿으면 DeathCheck = true 
-	*/
+	GravityVector += GravityAcc * _DeltaTime;
+	MonFlyingColVector(_DeltaTime);
 
 	if (MonDeathTime >= 0)
 	{//0보다 클 때는 계속 마이너스
+
 		MonDeathTime -= _DeltaTime ;
-		AddActorLocation(FVector::Up * MonDeathTime *5.0f);
+		AddActorLocation(FlyingSpeed * _DeltaTime *200.0f);
 	}
 	
-	else // 0보다 작아지면  Time 초기화
-	{
+	else 
+	{// 0보다 작아지면
 		Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
 		if (Color == Color8Bit(0, 255, 255, 0))
 		{
 			MonDeathCheck(_DeltaTime);
 			return;
 		}
-		AddActorLocation(FVector::Down * _DeltaTime * 1000.0f); // 
-		//MonDeathTime = 3.0f;
+		GravityVector = FVector::Zero;
+		AddActorLocation(- FlyingSpeed * _DeltaTime * 50.0f); 
+		//MonDeathTime = 1.5f;
 
 	}
 
-	//TotalLastMoveVector = FVector::Up * 100.0f; 
 	//MoveCheck(_DeltaTime);
 
 	
 }
+
+void APlay_Monster::MonFlyingColVector(float _DeltaTime)
+{
+
+	FVector CheckPos = GetActorLocation();
+	switch (MonsterDirState)
+	{
+	case EMonsterDir::Left:
+		CheckPos.X -= 1;
+		break;
+	case EMonsterDir::Right:
+		CheckPos.X += 1;
+		break;
+	default:
+		break;
+	}
+	CheckPos.Y -= 32.0f;
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	if (ColorCyan == Color8Bit(0, 255, 255, 0))
+	{
+		MoveVector.X *= -1.0f;
+	}
+
+
+}
+
 
 
 
@@ -760,7 +784,7 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 
 void APlay_Monster::MonsterGravityVector(float _DeltaTime)
 {
-	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. \
+	GravityVector += GravityAcc * _DeltaTime; // 중력가속도에 의해 움직인 위치. 
 
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
 		GetActorLocation().iY(), Color8Bit::CyanA);

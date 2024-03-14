@@ -731,7 +731,7 @@ void APlay_Player::StrobeColCheck(float _DeltaTime)
 		if (EMonsterState::Snowball != Monster->GetState())
 			// 몬스터가 snowball state가 아닐때는, 충돌하면 strobe
 		{
-			true == Dir;
+			//true == Dir;
 			Strobe(_DeltaTime);
 			return;
 		}

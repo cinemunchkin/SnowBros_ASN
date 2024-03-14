@@ -103,7 +103,7 @@ protected:
 	std::string CurAnimationName = "None";
 	
 	float SnowStackOutTime = 3.0f;
-	float MonDeathTime = 3.0f;
+	float MonDeathTime = 1.5f;
 
 private:
 
@@ -128,6 +128,8 @@ private:
 	void MonsterLastMoveVector(float _DeltaTime);
 	void MonsterGravityVector(float _DeltaTime);
 	void MonsterGroundUp(float _DeltaTime);
+
+	void MonFlyingColVector(float _DeltaTime);
 
 	void MonsterDeath(float _Deltatime);
 	void Spawn_Item();
