@@ -114,7 +114,7 @@ enum class EBulletState
 enum class EUIState
 {
 	None,
-	TotalScore,
+	UI_Head,
 	PlayerScore,
 	PlayerLife
 };

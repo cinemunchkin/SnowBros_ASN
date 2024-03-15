@@ -26,7 +26,7 @@ protected:
 	void StateChange(EUIState _State);
 
 	void StateUpdate(float _DeltaTime);
-	void TotalScoreStart();
+	void UI_HeadStart();
 	void PlayerScoreStart();
 	void PlayerLifeStart();
 

@@ -51,6 +51,8 @@ void USnowBros_Core::BeginPlay()
 
 	UEngineResourcesManager::GetInst().CuttingImage("LetterTest_01.png", 26, 1);
 	UEngineResourcesManager::GetInst().CuttingImage("NumUI_01.png", 10, 1);
+	UEngineResourcesManager::GetInst().CuttingImage("UI_Head_01.png", 1, 1);
+	
 
 	//플레이어 애니메이션
 	///점프

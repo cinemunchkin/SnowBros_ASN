@@ -30,10 +30,10 @@ void APlay_UI::BeginPlay()
 		UIRenderer = CreateImageRenderer(SnowBrosRenderOrder::UI);
 		UIRenderer->SetImage("UI_Head_01.png");
 
-		UIRenderer->SetTransform({ {1440 / 2,996 / 2}, {1280,100} });
+		UIRenderer->SetTransform({ {720/2,42}, {1320/2,100/2} });
 		//1440 / 2/* * 1.5f*/, 996 / 2/* * 1.5f*/
 		//UIRenderer->CreateAnimation("TotalScore", "LetterTest_01.png", 0,25, 1.0f, true);
-		UIRenderer->CreateAnimation("UI_Head", "UI_Head_01.png", 0, 25, 1.0f, true);
+		UIRenderer->CreateAnimation("UI_Head", "UI_Head_01.png", 0, 0, 1.0f, true);
 	}
 
 	//{
@@ -63,7 +63,7 @@ void APlay_UI::BeginPlay()
 
 	//}
 
-	StateChange(EUIState::TotalScore);
+	StateChange(EUIState::UI_Head);
 
 }
 
@@ -107,8 +107,8 @@ void APlay_UI::StateChange(EUIState _State)
 	{
 		switch (_State)
 		{
-		case EUIState::TotalScore:
-			TotalScoreStart();
+		case EUIState::UI_Head:
+			UI_HeadStart();
 			break;
 		
 		case EUIState::PlayerScore:
@@ -133,7 +133,7 @@ void APlay_UI::StateUpdate(float _DeltaTime)
 {
 	switch (UIState)
 	{
-	case EUIState::TotalScore:
+	case EUIState::UI_Head:
 		TotalScore(_DeltaTime);
 		break;
 
@@ -150,9 +150,9 @@ void APlay_UI::StateUpdate(float _DeltaTime)
 
 	}
 }
-void APlay_UI::TotalScoreStart()
+void APlay_UI::UI_HeadStart()
 {
-	this->SetAnimation("TotalScore");
+	this->SetAnimation("UI_Head");
 }
 
 void APlay_UI::PlayerScoreStart()
