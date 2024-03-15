@@ -67,8 +67,8 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->CreateAnimation("MonIdle", "Monster_01_R.png", 6, 6, 0.1f, true);
 
 		// 몬스터 기본 ; 이동
-		MonsterRenderer->CreateAnimation("MonMove_Right", "Monster_01_R.png", 0, 5, 0.1f, true);
-		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_01_L.png", 0, 5, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonMove_Right", "Monster_02_R.png", 1, 4, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonMove_Left", "Monster_02_L.png", 0, 3, 0.1f, true);
 
 		//눈 속에 갇히고 있을때 아둥바둥
 		MonsterRenderer->CreateAnimation("Snowball_Right", "Monster_02_R.png", 8, 9, 0.07f, true);
@@ -642,65 +642,35 @@ void APlay_Monster::Snowball(float _DeltaTime)
 {
 	// 문제 ; 눈덩어리는  -1씩 되는데,  몬스터는 아둥바둥이 안먹힘..
 
-	if (SnowStackOutTime >= 0)
-	{//0보다 클 때는 계속 마이너스
-		SnowStackOutTime -= _DeltaTime*1.5;
-	}
-	else
-	{//0보다 작아지면 3.0으로 초기화 
+	if (-1 == SnowStack)
+	{
 		SnowStackOutTime = 3.0f;
-		if (SnowStack >= 0)
-		{
-			SnowStack -= 1; //0보다 작아질 때마다 
-
-				if (SnowStack != -1) // snowstack이 일단 -1이 아니면, active하고, 
-				{
-					SnowBallRenderer->SetActive(true); 
-					//MonsterRenderer->ChangeAnimation(GetAnimationName("Snowball"));
-					SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack);
-				}
-				else if (SnowStack == -1) // snowstack이 -1로 원복되면, 
-				{
-					SnowBallRenderer->SetActive(false); 
-					MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
-					StateChange(EMonsterState::MonMove);
-				}
-				else if (SnowStack >= 3)// snowstack이 3이상이 되면, 
-				{
-				SnowBallRenderer->SetActive(true);
-				MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
-				}
-				
-
-		}
-		else if (SnowStack == -1) 
-		{
-			SnowBallRenderer->SetActive(false); 
-			StateChange(EMonsterState::MonMove);
-		}
-
-	}
-
-	int StackNum = 4;
-
-	if (true == BulletColMonCheck(_DeltaTime))
-	{ //Snowball상태에서 BulletColCheck -> true면 그냥 그대로 return;
+		StateChange(EMonsterState::MonMove);
+		SnowBallRenderer->SetActive(false);
+		MonsterRenderer->SetActive(true);
+		MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
 		return;
 	}
+
+	SnowStackOutTime -= _DeltaTime;
+
+	BulletColMonCheck(_DeltaTime);
 	DirCheck();
-
 	SnowBallRenderer->SetImage("Snowball_01_R.png", SnowStack); // SnowStack n번째
-	if (SnowStack < StackNum)
-	{// SnowStack이 3 under
-		return;
+	MonsterColPhysics(_DeltaTime);
+	if (SnowStack >= 3)
+	{
+		MonsterRenderer->SetTransform({ {0,-30}, {48 * 0.1f, 48 * 0.1f} });
+	} else {
+		MonsterRenderer->SetTransform({ {0,-30}, {48 * 1.3f, 48 * 1.3f} });
 	}
-	else 
-	{// SnowStack이 
 
-		SnowBallRenderer->SetImage("Snowball_01_R.png", 3);
-		MonsterRenderer->SetTransform({ this->GetActorLocation(), {48 * 0.1f, 48 * 0.1f} });
-		MonsterColPhysics(_DeltaTime);
+	if (0.0f >= SnowStackOutTime)
+	{
+		SnowStackOutTime = 3.0f;
+		--SnowStack;
 	}
+
 	return;
 }
 
