@@ -424,14 +424,19 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 
 }
-
-
+//
+//void APlay_Monster::MonFlying(float _DeltaTime)
+//{
+//	SnowBallRenderer->SetActive(false);
+//	MonFlyingColVector(_DeltaTime);
+//
+//	AddActorLocation(FVector::Right * _DeltaTime*100);
+//}
 
 
 void APlay_Monster::MonFlying(float _DeltaTime)
-{
+{// 
 	MonFlyingColVector(_DeltaTime);
-	
 	SnowBallRenderer->SetActive(false);
 	//눈덩어리 맞고 날아갈 때 -> Snowstack 쌓이던 렌더러 끄도록!
 	
@@ -444,8 +449,7 @@ void APlay_Monster::MonFlying(float _DeltaTime)
 
 	if (HorizonLeft.X + HorizonTotal.X>0)
 	{ //아니 절대값을 비교해야되ㄴ는데 이걸 왜 못하고 있음 
-		MonDeathCheck(_DeltaTime);
-		
+			// 
 		if (true == MonFlyingColVector(_DeltaTime))
 		{
 
@@ -457,22 +461,25 @@ void APlay_Monster::MonFlying(float _DeltaTime)
 		else if (false == MonFlyingColVector(_DeltaTime))
 		{
 			//HorizonTotal -= HorizonRight * _DeltaTime;
-			HorizonLeftTotal -= HorizonLeft * _DeltaTime*5;
-			return;
+			HorizonLeftTotal += HorizonLeft * _DeltaTime;
+			
 		}
+		MonDeathCheck(_DeltaTime);
 
 	}
-	else if(TotalGravity.Y > JumpSpeed.Y)
-	{
-		if (true == MonFlyingColVector(_DeltaTime))
-		{
-			MoveVector.X *= DirState;
-			MoveVector.Y *= DirState;
-			//MoveVector.X *= -1.0f;
-		}
-	}
 
-	DirCheck();
+
+	//if(TotalGravity.Y > JumpSpeed.Y)
+	//{
+	//	if (true == MonFlyingColVector(_DeltaTime))
+	//	{
+	//		MoveVector.X *= DirState;
+	//		MoveVector.Y *= DirState;
+	//		//MoveVector.X *= -1.0f;
+	//	}
+	//}
+
+	//DirCheck();
 
 	TotalXSpeed = HorizonTotal + HorizonLeftTotal;
 	//이렇게 함수에 담아두고 쓰기!!
@@ -556,7 +563,7 @@ bool APlay_Monster::MonFlyingColVector(float _DeltaTime)
 	{
 		/*int DirState = static_cast<int>(MonsterDirState);
 		MoveVector.X *= DirState;*/
-		return true ;
+		return true;
 	}
 
 	return false;

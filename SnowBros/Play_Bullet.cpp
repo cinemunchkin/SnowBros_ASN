@@ -121,8 +121,22 @@ void APlay_Bullet::BulletBombStart()
 
 void APlay_Bullet::Bullet(float _DeltaTime)
 {
-	BulletMoveUpdate(_DeltaTime);
+	//BulletMoveUpdate(_DeltaTime);
+	BulletGravityCheck(_DeltaTime);
+	FVector BulletSpeed = Dir * 300.f;
+	BulletTotal = BulletSpeed + BulletGravityVector;
+	ReverseDir = -Dir * _DeltaTime;
+	BulletDirSpeed = Dir + (ReverseDir);
+
 	BulletColCheck(_DeltaTime);
+	BulletColorCheck(_DeltaTime);
+
+	
+	
+
+	AddActorLocation((BulletTotal+BulletDirSpeed)*_DeltaTime);
+
+
 }
 
 void APlay_Bullet::BulletBomb(float _DeltaTime)
@@ -142,7 +156,7 @@ void APlay_Bullet::BulletMoveUpdate(float _DeltaTime)
 {
 	BulletGravityCheck(_DeltaTime);
 	BulletLastMoveVector(_DeltaTime);
-	AddActorLocation(Dir * _DeltaTime * 150.0f);
+	//AddActorLocation(Dir * _DeltaTime * 150.0f);
 	//Gravity
 
 }
@@ -151,13 +165,13 @@ void APlay_Bullet::BulletMoveUpdate(float _DeltaTime)
 void APlay_Bullet::BulletGravityCheck(float _DeltaTime)
 {
 	BulletGravityVector += BulletGravityAcc * _DeltaTime;
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
+	/*Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
 		GetActorLocation().iY(), Color8Bit::CyanA);
 	if (Color == Color8Bit(0, 255, 255, 0))
 	{
 		BulletGravityVector = FVector::Zero;
 		BulletMoveVector = FVector::Zero;
-	}
+	}*/
 }
 
 void APlay_Bullet::BulletLastMoveVector(float _DeltaTime)
@@ -231,5 +245,20 @@ bool APlay_Bullet::BulletColCheck(float _DeltaTime)
 	return IsBulletBomb = false;
 }
 
+bool APlay_Bullet::BulletColorCheck(float _DeltaTime)
+{
 
+	FVector CheckPos = GetActorLocation();
+	CheckPos.Y -= 10.0f;
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
+	if (ColorCyan == Color8Bit(0, 255, 255, 0))
+	{
+		/*int DirState = static_cast<int>(MonsterDirState);
+		MoveVector.X *= DirState;*/
+		Destroy();
+		return true;
+	}
 
+	return false;
+	// bool -> ºÎµúÇûÀ»¶§ return true ÇÏµµ·Ï!!
+}

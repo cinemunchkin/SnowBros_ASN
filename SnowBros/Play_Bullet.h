@@ -60,10 +60,17 @@ protected:
 	EBulletState State = EBulletState::None;
 
 	FVector BulletMoveVector = FVector::Zero;
-	FVector BulletGravityVector = FVector::Zero;
-	FVector BulletGravityAcc = FVector::Down * 1000.0f;
+	FVector BulletGravityVector = {};
+	FVector BulletGravityAcc = FVector::Down * 250.0f;
 	FVector TotalLastMoveVector = FVector::Zero;
+	FVector ReverseDir = {};
+	FVector BulletDirSpeed = {};
 
+
+
+
+	FVector BulletTotal = {};
+	// = 450.f;
 
 	////이게 왜 문제가 잡힐까 이해가 안되네 
 	//ㅁㅊㅁㅊㅁㅊㅁㅊㅁㅊㅁ헤더를 추가 안했네 enumclass 아오 멍청이
@@ -77,6 +84,7 @@ protected:
 	
 
 	bool BulletColCheck(float _DeltaTime);
+	bool BulletColorCheck(float _DeltaTime);
 	void BulletMoveUpdate(float _DeltaTime);
 	void BulletGravityCheck(float _DeltaTime);
 	void BulletLastMoveVector(float _DeltaTime);
