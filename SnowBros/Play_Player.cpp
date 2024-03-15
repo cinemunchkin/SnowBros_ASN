@@ -473,6 +473,7 @@ void APlay_Player::Idle(float _DeltaTime)
 	//MoveVector = FVector::Zero;
 	DirCheck();
 	Renderer->SetAlpha(1.0f);
+	JumpVector = FVector::Zero;
 	//PlayerColPhysics(_DeltaTime);
 	StrobeColCheck(_DeltaTime);
 	MoveUpdate(_DeltaTime);
@@ -617,6 +618,7 @@ bool APlay_Player::RollingCheck()
 void APlay_Player::Run(float _DeltaTime)
 {
 	DirCheck();
+	MoveUpdate(_DeltaTime);
 
 	if (true == PushCheck())
 	{
@@ -633,23 +635,24 @@ void APlay_Player::Run(float _DeltaTime)
 		return;
 	}
 
+	//-----------------------------------
+	if (true == UEngineInput::IsDown('Z'))
+	{
+		
+		StateChange(EPlayState::Jump);
+		return;
+	}
+	
+	//-----------------------------------
 	if (true == UEngineInput::IsPress(VK_LEFT))
 	{
+		
 		AddMoveVector(FVector::Left * _DeltaTime);
-		if (true == UEngineInput::IsDown('Z'))
-		{
-			JumpVector += FVector::Right * _DeltaTime;
-		}
-
 	}
 
 	if (true == UEngineInput::IsPress(VK_RIGHT))
 	{
 		AddMoveVector(FVector::Right * _DeltaTime);
-		if (true == UEngineInput::IsDown('Z'))
-		{
-			JumpVector += FVector::Right * _DeltaTime;
-		}
 	}
 
 
@@ -810,25 +813,39 @@ void APlay_Player::Jump(float _DeltaTime)
 {
 	DirCheck();
 	//PlayerColPhysics(_DeltaTime);
-
-
-
-	if (true == UEngineInput::IsPress(VK_LEFT))
-	{
-		
-		AddMoveVector(FVector::Left * _DeltaTime);
-		MoveUpdate(_DeltaTime);
-
-	}
-
-	if (true == UEngineInput::IsPress(VK_RIGHT))
-	{
-		AddMoveVector(FVector::Right * _DeltaTime);
-		MoveUpdate(_DeltaTime);
-	}
-
-
 	MoveUpdate(_DeltaTime);
+
+	/*
+	좌우 + 상하만 움직임 
+
+	-> 
+	*/
+
+	if (true == UEngineInput::IsPress(VK_LEFT) || true == UEngineInput::IsPress(VK_RIGHT))
+	{
+		switch (DirState)
+		{
+		case EActorDir::Left:
+			AddMoveVector(FVector::Left * _DeltaTime * 500);
+			break;
+		case EActorDir::Right:
+			AddMoveVector(FVector::Right * _DeltaTime * 500);
+			break;
+		default:
+			break;
+		}
+
+	}
+	/*
+	if (true == UEngineInput::IsPress(VK_LEFT)&& true == UEngineInput::IsDown('Z'))
+	{
+		AddMoveVector(FVector::Left* _DeltaTime + JumpVector);
+	}
+	if (true == UEngineInput::IsPress(VK_RIGHT)&&true == UEngineInput::IsDown('Z'))
+	{
+		AddMoveVector(FVector::Right * _DeltaTime + JumpVector);
+	}
+	*/
 
 
 	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
@@ -837,11 +854,11 @@ void APlay_Player::Jump(float _DeltaTime)
 		//if (true == UEngineInput::IsDown('Z'))
 
 		GroundUp(_DeltaTime); // 땅에 박히는거 해결!!
-		JumpVector = FVector::Zero;
 		StateChange(EPlayState::Idle);
+		
 		return;
-
 	}
+	
 	//	MoveUpdate(_DeltaTime);
 
 }

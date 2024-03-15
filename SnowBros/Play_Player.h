@@ -146,7 +146,7 @@ private:
 	FVector JumpVector = FVector::Zero;
 	
 
-	FVector GravityAcc = FVector::Down * 2500.0f;
+	FVector GravityAcc = FVector::Down * 2000.0f;
 	FVector GravityVector = FVector::Zero;
 
 	int CollisionNum = 0;

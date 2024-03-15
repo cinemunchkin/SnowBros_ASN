@@ -38,24 +38,24 @@ void ULevel_Play::BeginPlay()
 		 Player->SetName("Player");
 	 }
 
-	 //{
-		// APlay_Monster* Monster1 = SpawnActor<APlay_Monster>();
-		// Monster1->SetName("Monster");
-		// Monster1->SetActorLocation({ 150, 50 });
-	 //}
+	 {
+		 APlay_Monster* Monster1 = SpawnActor<APlay_Monster>();
+		 Monster1->SetName("Monster");
+		 Monster1->SetActorLocation({ 150, 50 });
+	 }
 
-	 //{
-		// APlay_Monster* Monster2 = SpawnActor<APlay_Monster>();
-		// Monster2->SetName("Monster");
-		// Monster2->SetActorLocation({ 450-150, 50 });
-	 //}
+	 {
+		 APlay_Monster* Monster2 = SpawnActor<APlay_Monster>();
+		 Monster2->SetName("Monster");
+		 Monster2->SetActorLocation({ 450-150, 50 });
+	 }
 
 
-	 //{
-		// APlay_Monster* Monster3 = SpawnActor<APlay_Monster>();
-		// Monster3->SetName("Monster");
-		// Monster3->SetActorLocation({ 250, 250 });
-	 //}
+	 {
+		 APlay_Monster* Monster3 = SpawnActor<APlay_Monster>();
+		 Monster3->SetName("Monster");
+		 Monster3->SetActorLocation({ 250, 250 });
+	 }
 
 	 {
 		 APlay_Monster* Monster4 = SpawnActor<APlay_Monster>();
