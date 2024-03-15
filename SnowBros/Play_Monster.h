@@ -117,13 +117,14 @@ private:
 	
 
 	//------Monflying ÇÔ¼ö¿ë
-	FVector JumpSpeed = FVector::Up * 400.f;
+	FVector JumpSpeed = FVector::Up * 450.f;
 	FVector GravitySpeed = FVector::Down * 400.f;
 	FVector TotalGravity = {};
 
 	FVector HorizonRight = FVector::Right * 300.f;
 	FVector HorizonLeft = FVector::Left * 300.f;
 	FVector HorizonTotal = {};
+	FVector HorizonLeftTotal = {};
 	FVector TotalXSpeed = {};
 
 	FVector TotalSpeed = {};

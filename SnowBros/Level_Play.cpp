@@ -34,33 +34,33 @@ void ULevel_Play::BeginPlay()
 	 {
 		 APlay_Player* Player = SpawnActor<APlay_Player>();
 		 // 아오 이걸 계속 APlay_Map으로 놨었네
-		 Player->SetActorLocation({ 300, 300 });
+		 Player->SetActorLocation({ 966/2, 300 });
 		 Player->SetName("Player");
 	 }
 
 	 {
 		 APlay_Monster* Monster1 = SpawnActor<APlay_Monster>();
 		 Monster1->SetName("Monster");
-		 Monster1->SetActorLocation({ 50, 50 });
+		 Monster1->SetActorLocation({ 150, 50 });
 	 }
 
-	/* {
+	 {
 		 APlay_Monster* Monster2 = SpawnActor<APlay_Monster>();
 		 Monster2->SetName("Monster");
-		 Monster2->SetActorLocation({ 100, 50 });
+		 Monster2->SetActorLocation({ 450-150, 50 });
 	 }
 
 
 	 {
 		 APlay_Monster* Monster3 = SpawnActor<APlay_Monster>();
 		 Monster3->SetName("Monster");
-		 Monster3->SetActorLocation({ 300, 150 });
-	 }*/
+		 Monster3->SetActorLocation({ 250, 250 });
+	 }
 
 	 {
 		 APlay_Monster* Monster4 = SpawnActor<APlay_Monster>();
 		 Monster4->SetName("Monster");
-		 Monster4->SetActorLocation({ 400, 200 });
+		 Monster4->SetActorLocation({ 450-250, 250 });
 	 }
 
 	 

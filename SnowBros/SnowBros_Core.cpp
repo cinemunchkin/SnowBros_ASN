@@ -88,6 +88,9 @@ void USnowBros_Core::BeginPlay()
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_02_L.png", 5, 7);
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_02_R.png", 5, 7);
 
+	UEngineResourcesManager::GetInst().CuttingImage("MonFlying_01_L.png", 4, 1);
+	
+
 	//몬스터 아이템
 	
 	UEngineResourcesManager::GetInst().CuttingImage("Monster_Item_01.png", 12, 1);

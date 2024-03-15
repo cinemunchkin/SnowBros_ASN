@@ -46,6 +46,7 @@ void APlay_Monster::BeginPlay()
 		MonsterRenderer->SetImage("Monster_02_R.png");
 		MonsterRenderer->SetImage("Monster_02_L.png");
 
+		MonsterRenderer->SetImage("MonFlying_01_L.png");
 		MonsterRenderer->SetImage("Monster_Item_01.png");
 
 		MonsterRenderer->SetImage("SnowBomb_01.png");
@@ -84,8 +85,8 @@ void APlay_Monster::BeginPlay()
 
 
 		// 몬스터가 스노우볼에 맞아서 날아갈때 
-		MonsterRenderer->CreateAnimation("MonFlying_Right", "Monster_02_L.png", 15, 16, 1.0f, true);
-		MonsterRenderer->CreateAnimation("MonFlying_Left", "Monster_02_L.png", 15, 16, 1.0f, true);
+		MonsterRenderer->CreateAnimation("MonFlying_Right", "MonFlying_01_L.png", 0, 3, 0.1f, true);
+		MonsterRenderer->CreateAnimation("MonFlying_Left", "MonFlying_01_L.png", 0, 3, 0.1f, true);
 
 		//눈 렌더 //맨 아랫층 벽에 닿으면 터짐
 		MonsterRenderer->CreateAnimation("SnowBomb_Right", "SnowBomb_01.png", 0, 3, 0.05f, true);
@@ -430,65 +431,56 @@ void APlay_Monster::MonMove(float _DeltaTime)
 void APlay_Monster::MonFlying(float _DeltaTime)
 {
 	MonFlyingColVector(_DeltaTime);
-	MonDeathCheck(_DeltaTime);
 	
-
+	SnowBallRenderer->SetActive(false);
+	//눈덩어리 맞고 날아갈 때 -> Snowstack 쌓이던 렌더러 끄도록!
+	
 	TotalGravity += GravitySpeed * _DeltaTime;
 	TotalSpeed = JumpSpeed + TotalGravity;
-
 	HorizonTotal += HorizonRight * _DeltaTime;
-
 	int DirState = static_cast<int>(MonsterDirState);
 
 
 
-	if (/*DirState **/HorizonLeft.X < HorizonTotal.X)
+	if (HorizonLeft.X + HorizonTotal.X>0)
 	{ //아니 절대값을 비교해야되ㄴ는데 이걸 왜 못하고 있음 
+		MonDeathCheck(_DeltaTime);
+		
 		if (true == MonFlyingColVector(_DeltaTime))
 		{
-			MoveVector.X *= -1.0f;
+
+			MoveVector.X *= DirState;
+			MoveVector.Y *= DirState;
+			//MoveVector.X *= -1.0f;
 
 		}
 		else if (false == MonFlyingColVector(_DeltaTime))
 		{
-			HorizonTotal -= HorizonRight * _DeltaTime;
-			
+			//HorizonTotal -= HorizonRight * _DeltaTime;
+			HorizonLeftTotal -= HorizonLeft * _DeltaTime*5;
+			return;
 		}
-		
+
 	}
-	if(TotalGravity.Y > JumpSpeed.Y)
+	else if(TotalGravity.Y > JumpSpeed.Y)
 	{
 		if (true == MonFlyingColVector(_DeltaTime))
 		{
-			MoveVector.X *= -1.0f;
-
+			MoveVector.X *= DirState;
+			MoveVector.Y *= DirState;
+			//MoveVector.X *= -1.0f;
 		}
-
 	}
 
-	TotalXSpeed = HorizonTotal + HorizonLeft;
+	DirCheck();
+
+	TotalXSpeed = HorizonTotal + HorizonLeftTotal;
 	//이렇게 함수에 담아두고 쓰기!!
 	AddActorLocation((TotalXSpeed + TotalSpeed) * _DeltaTime);
-	return;
+	//return;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//tqtqtqtqtqtqtqtqtqtqtqtqtqtqtqt
-	//
+//
 
 
 	/*HorizonRightTotal X방향으로 가는 total
@@ -558,11 +550,12 @@ bool APlay_Monster::MonFlyingColVector(float _DeltaTime)
 	default:
 		break;
 	}
-	CheckPos.Y -= 32.0f;
+	//CheckPos.Y -= 32.0f;
 	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 	if (ColorCyan == Color8Bit(0, 255, 255, 0) )
 	{
-		//MoveVector.X *= -1.0f;
+		/*int DirState = static_cast<int>(MonsterDirState);
+		MoveVector.X *= DirState;*/
 		return true ;
 	}
 
@@ -576,6 +569,7 @@ bool APlay_Monster::MonFlyingColVector(float _DeltaTime)
 
 bool APlay_Monster::MonDeathCheck(float _DeltaTime)
 {
+
 	if (true == MonsterRenderer->IsCurAnimationEnd())
 	{
 		MonsterDeath(0.0f);
