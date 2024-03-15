@@ -110,7 +110,7 @@ private:
 	FVector MoveAcc = FVector::Right * 50.0f;
 
 	FVector JumpVector = FVector::Zero;
-	FVector MoveVector = FVector::Zero;
+	FVector MoveVector = FVector::Right;
 	FVector GravityVector = FVector::Zero;
 
 	FVector GravityAcc = FVector::Down * 2500.0f;

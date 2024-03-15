@@ -387,43 +387,33 @@ void APlay_Monster::MonMove(float _DeltaTime)
 
 	DirCheck();
 	ColMoveUpdate(_DeltaTime);
-	//SetAnimation("Idle_Left");
 	MoveCheck(_DeltaTime);
-	//SetAnimation("Idle_Right");
 
 
-	APlay_Player* Player = APlay_Player::GetMainPlayer();
-	FVector PlayerPos = Player->GetActorLocation();
-	FVector MonsterPos = GetActorLocation();
-
-	//FVector MonsterDir = MonsterDIrState
-	// MonsterDir -> case∑Œ πŸ≤Ÿ±‚
 	MonsterDir.Y = 0.0f;
 	FVector MonsterDirNormal = MonsterDir.Normalize2DReturn();
 
 	//	AddActorLocation(FVector::Right * MonsterDirNormal * MoveAcc * _DeltaTime);
+	
 
 	if (MonsterDirState == EMonsterDir::Left)
 	{
 		SetAnimation("MonMove_Left");
-		AddActorLocation(FVector::Left * _DeltaTime * MoveAcc);
+		AddActorLocation(MoveVector * _DeltaTime * MoveAcc);
 		return;
+
 	}
-	if (MonsterDirState == EMonsterDir::Right)
+	else if (MonsterDirState == EMonsterDir::Right)
 	{
 		SetAnimation("MonMove_Right");
-		AddActorLocation(FVector::Right * _DeltaTime * MoveAcc);
+		AddActorLocation(MoveVector * _DeltaTime * MoveAcc);
+
 		return;
 	}
-
-	else if (MonsterDirState == EMonsterDir::None)
-	{
-		SetAnimation("MonIdle");
-		return;
-	}
-
 
 }
+
+
 //
 //void APlay_Monster::MonFlying(float _DeltaTime)
 //{
@@ -640,15 +630,16 @@ void APlay_Monster::SnowBomb(float _DeltaTime)
 
 void APlay_Monster::Snowball(float _DeltaTime)
 {
-	// πÆ¡¶ ; ¥´µ¢æÓ∏Æ¥¬  -1æø µ«¥¬µ•,  ∏ÛΩ∫≈Õ¥¬ æ∆µ’πŸµ’¿Ã æ»∏‘»˚..
 
 	if (-1 == SnowStack)
 	{
 		SnowStackOutTime = 3.0f;
 		StateChange(EMonsterState::MonMove);
+		
 		SnowBallRenderer->SetActive(false);
 		MonsterRenderer->SetActive(true);
 		MonsterRenderer->SetTransform({ {0,-26}, {48 * 1.3f, 48 * 1.3f} });
+
 		return;
 	}
 
@@ -670,7 +661,6 @@ void APlay_Monster::Snowball(float _DeltaTime)
 		SnowStackOutTime = 3.0f;
 		--SnowStack;
 	}
-
 	return;
 }
 
@@ -716,12 +706,16 @@ void APlay_Monster::ColMoveUpdate(float _DeltaTime) // ∏ÛΩ∫≈Õ∞° snowballªÛ≈¬¿œ ∂
 }
 
 
+
+
 bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 {
 	std::vector<UCollision*> BulletResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Bullet, BulletResult))
 	{
+		
 		APlay_Bullet* Bullet = (APlay_Bullet*)BulletResult[0]->GetOwner();
+		
 		if (SnowStack < 4) 
 		{
 			SnowStack++;// «Ê ∞Ì√∆¥Ÿ 
@@ -731,8 +725,8 @@ bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 			SnowStack = 3;
 		}
 
-		Bullet->StateChange(EBulletState::BulletBomb);
-		//Bullet->Destroy();
+		Bullet->Destroy();
+	//	Bullet->StateChange(EBulletState::BulletBomb);
 		return true;
 	}
 
@@ -832,7 +826,7 @@ void APlay_Monster::MonsterMoveVector(float _DeltaTime)
 	Color8Bit ColorMagenta = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::MagentaA);
 	if (ColorCyan == Color8Bit(0, 255, 255, 0))
 	{
-		if (ColorMagenta == Color8Bit(255, 0, 255, 0))
+		if (ColorMagenta == Color8Bit(255, 0, 255, 0) && this->GetState() == EMonsterState::Rolling)
 		{
 			StateChange(EMonsterState::SnowBomb);
 		}

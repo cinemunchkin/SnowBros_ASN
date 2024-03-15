@@ -33,7 +33,8 @@ void APlay_Player::BeginPlay()
 		// 플레이어 평상시
 
 		PushCheckCollision = CreateCollision(SnowBrosCollisionOrder::Player);
-		PushCheckCollision->SetScale({ 40, 40 });
+		PushCheckCollision->SetScale({ 48, 22 });
+		//PushCheckCollision->SetTransform({ {this->GetActorLocation().X,this->GetActorLocation().Y - 10 }, { 54, 32 } });
 		PushCheckCollision->SetColType(ECollisionType::Rect);
 		// 스노우볼 밀 때의 충돌 collision
 	}
