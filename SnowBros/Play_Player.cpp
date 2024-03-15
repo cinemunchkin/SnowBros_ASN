@@ -70,7 +70,7 @@ void APlay_Player::BeginPlay()
 		Renderer->CreateAnimation("Run_Left", "SnowBros_Run_L.png", 0, 3, 0.1f, true);
 
 		Renderer->CreateAnimation("Jump_Right", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
-		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_R.png", 0, 6, 0.05f, true);
+		Renderer->CreateAnimation("Jump_Left", "SnowBros_Jump_L.png", 0, 6, 0.05f, true);
 
 		Renderer->CreateAnimation("DownJump_Left", "SnowBros_Jump_L.png", 0, 0, 0.1f, true);
 		Renderer->CreateAnimation("DownJump_Right", "SnowBros_Jump_R.png", 0, 0, 0.1f, true);
@@ -836,20 +836,12 @@ void APlay_Player::Jump(float _DeltaTime)
 		}
 
 	}
-	/*
-	if (true == UEngineInput::IsPress(VK_LEFT)&& true == UEngineInput::IsDown('Z'))
-	{
-		AddMoveVector(FVector::Left* _DeltaTime + JumpVector);
-	}
-	if (true == UEngineInput::IsPress(VK_RIGHT)&&true == UEngineInput::IsDown('Z'))
-	{
-		AddMoveVector(FVector::Right * _DeltaTime + JumpVector);
-	}
-	*/
-
-
-	Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
-	if (Color == Color8Bit(0, 255, 255, 0))
+	
+	FVector CheckMagenta = GetActorLocation();
+	CheckMagenta.Y -= 20;
+	
+	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), GetActorLocation().iY(), Color8Bit::CyanA);
+	if (ColorCyan == Color8Bit(0, 255, 255, 0))
 	{
 		//if (true == UEngineInput::IsDown('Z'))
 
@@ -858,7 +850,13 @@ void APlay_Player::Jump(float _DeltaTime)
 		
 		return;
 	}
-	
+	Color8Bit ColorMagenta = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(), CheckMagenta.Y, Color8Bit::MagentaA);
+	if (ColorMagenta == Color8Bit(255, 0, 255, 0))
+	{
+
+		JumpVector = FVector::Zero;
+
+	}
 	//	MoveUpdate(_DeltaTime);
 
 }
