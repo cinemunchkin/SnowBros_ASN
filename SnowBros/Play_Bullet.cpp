@@ -31,7 +31,7 @@ void APlay_Bullet::BeginPlay()
 		BulletRenderer->SetImage("SnowBros_BulletCol_R.png");
 		BulletRenderer->SetImage("SnowBros_BulletCol_L.png");
 
-		BulletRenderer->SetTransform({ {16,-24}, {32 * 1.2f, 68 * 1.2f} });
+		BulletRenderer->SetTransform({ {16,-26}, {32 * 1.4f, 32 * 1.4f} });
 		BulletRenderer->CreateAnimation("Bullet_Right", "SnowBros_Bullet_R.png", 0, 1, 0.05f, true);
 		BulletRenderer->CreateAnimation("Bullet_Left", "SnowBros_Bullet_L.png", 0, 1, 0.05f, true);
 		
@@ -44,7 +44,7 @@ void APlay_Bullet::BeginPlay()
 	{
 		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Bullet);
 		BodyCollision->SetPosition(BulletRenderer->GetPosition()); // ¿À!! µÆ´Ù!! Bullet Position = Bullet Collision 
-		BodyCollision->SetScale({ 25, 25 });
+		BodyCollision->SetScale({ 25, 32 });
 		BodyCollision->SetColType(ECollisionType::Rect);
 	}
 
@@ -142,12 +142,12 @@ void APlay_Bullet::Bullet(float _DeltaTime)
 void APlay_Bullet::BulletBomb(float _DeltaTime)
 {
 	//BulletPhysics(_DeltaTime);
-	if (BulletRenderer->IsCurAnimationEnd())
-	{
-		//Monster -> BulletColCheck
-		Destroy();
+	//if (BulletRenderer->IsCurAnimationEnd())
+	//{
+	//	//Monster -> BulletColCheck
+	//	Destroy();
 
-	}
+	//}
 }
 
 
@@ -164,7 +164,7 @@ void APlay_Bullet::BulletMoveUpdate(float _DeltaTime)
 
 void APlay_Bullet::BulletGravityCheck(float _DeltaTime)
 {
-	BulletGravityVector += BulletGravityAcc * _DeltaTime;
+	BulletGravityVector += BulletGravityAcc * _DeltaTime*.9;
 	/*Color8Bit Color = USnowBros_Helper::ColMapImage->GetColor(GetActorLocation().iX(),
 		GetActorLocation().iY(), Color8Bit::CyanA);
 	if (Color == Color8Bit(0, 255, 255, 0))

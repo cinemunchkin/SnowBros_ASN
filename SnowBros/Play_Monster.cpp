@@ -670,6 +670,8 @@ void APlay_Monster::Snowball(float _DeltaTime)
 				SnowBallRenderer->SetActive(true);
 				MonsterRenderer->SetTransform({ {0,-45}, {48 * 1.4f, 48 * 1.4f} });
 				}
+				
+
 		}
 		else if (SnowStack == -1) 
 		{
@@ -716,10 +718,13 @@ void APlay_Monster::Rolling(float _DeltaTime)
 	// 대박 여기서 Snowball하고 Monster 부딪히면 -> Death
 	if (SnowCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, Result))
 	{
-		for (UCollision* Collision : Result) {
-			APlay_Monster* Monster = static_cast<APlay_Monster*>(Collision->GetOwner());
+		
+		for (UCollision* Collision : Result)
+		{
+			APlay_Monster* Monster1 = static_cast<APlay_Monster*>(Collision->GetOwner());
+			
 			//Monster->MonsterDeath(0.0f);
-			Monster->StateChange(EMonsterState::MonFlying);
+			Monster1->StateChange(EMonsterState::MonFlying);
 			// snowball이 아니라, monster (collision의 getowner)
 		}
 	}
