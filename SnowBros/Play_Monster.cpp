@@ -731,8 +731,8 @@ bool APlay_Monster::BulletColMonCheck(float _DeltaTime)
 			SnowStack = 3;
 		}
 
-		//Bullet->BulletColCheck(_DeltaTime);
-		Bullet->Destroy();
+		Bullet->StateChange(EBulletState::BulletBomb);
+		//Bullet->Destroy();
 		return true;
 	}
 

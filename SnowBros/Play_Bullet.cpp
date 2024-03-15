@@ -37,14 +37,14 @@ void APlay_Bullet::BeginPlay()
 		
 
 		
-		BulletRenderer->CreateAnimation("BulletBomb_Right", "SnowBros_BulletCol_R.png", 0, 6, 0.1f, true);
-		BulletRenderer->CreateAnimation("BulletBomb_Left", "SnowBros_BulletCol_L.png", 0, 6, 0.1f, true);
+		BulletRenderer->CreateAnimation("BulletBomb_Right", "SnowBros_BulletCol_R.png", 3, 5, 0.05f, true);
+		BulletRenderer->CreateAnimation("BulletBomb_Left", "SnowBros_BulletCol_R.png", 3, 5, 0.05f, true);
 	}
 
 	{
 		BodyCollision = CreateCollision(SnowBrosCollisionOrder::Bullet);
 		BodyCollision->SetPosition(BulletRenderer->GetPosition()); // ¿À!! µÆ´Ù!! Bullet Position = Bullet Collision 
-		BodyCollision->SetScale({ 25, 32 });
+		BodyCollision->SetScale({ 25*0.5f, 32*0.5f });
 		BodyCollision->SetColType(ECollisionType::Rect);
 	}
 
@@ -122,17 +122,17 @@ void APlay_Bullet::BulletBombStart()
 void APlay_Bullet::Bullet(float _DeltaTime)
 {
 	//BulletMoveUpdate(_DeltaTime);
-	BulletGravityCheck(_DeltaTime);
-	FVector BulletSpeed = Dir * 300.f;
-	BulletTotal = BulletSpeed + BulletGravityVector;
-	ReverseDir = -Dir * _DeltaTime;
-	BulletDirSpeed = Dir + (ReverseDir);
-
 	BulletColCheck(_DeltaTime);
 	BulletColorCheck(_DeltaTime);
 
-	
-	
+
+
+	BulletGravityCheck(_DeltaTime);
+	FVector BulletSpeed = Dir * 300.f;
+
+	BulletTotal = BulletSpeed + BulletGravityVector;
+	ReverseDir = -Dir * _DeltaTime;
+	BulletDirSpeed = Dir + (ReverseDir);
 
 	AddActorLocation((BulletTotal+BulletDirSpeed)*_DeltaTime);
 
@@ -141,13 +141,14 @@ void APlay_Bullet::Bullet(float _DeltaTime)
 
 void APlay_Bullet::BulletBomb(float _DeltaTime)
 {
+	BulletRenderer->SetTransform({ {16,-26}, {32 * 2.0f, 32 * 1.6f} });
 	//BulletPhysics(_DeltaTime);
-	//if (BulletRenderer->IsCurAnimationEnd())
-	//{
-	//	//Monster -> BulletColCheck
-	//	Destroy();
+	if (BulletRenderer->IsCurAnimationEnd())
+	{
+		//Monster -> BulletColCheck
+		Destroy();
 
-	//}
+	}
 }
 
 
@@ -236,13 +237,11 @@ bool APlay_Bullet::BulletColCheck(float _DeltaTime)
 	std::vector<UCollision*> MonsterResult;
 	if (true == BodyCollision->CollisionCheck(SnowBrosCollisionOrder::Monster, MonsterResult))
 	{
-		
-		//StateChange(EBulletState::BulletBomb);
-
-		return IsBulletBomb = true;
+		StateChange(EBulletState::BulletBomb);
+		return  true;
 	}
 
-	return IsBulletBomb = false;
+	return  false;
 }
 
 bool APlay_Bullet::BulletColorCheck(float _DeltaTime)
@@ -253,9 +252,8 @@ bool APlay_Bullet::BulletColorCheck(float _DeltaTime)
 	Color8Bit ColorCyan = USnowBros_Helper::ColMapImage->GetColor(CheckPos.iX(), CheckPos.iY(), Color8Bit::CyanA);
 	if (ColorCyan == Color8Bit(0, 255, 255, 0))
 	{
-		/*int DirState = static_cast<int>(MonsterDirState);
-		MoveVector.X *= DirState;*/
-		Destroy();
+		
+		StateChange(EBulletState::BulletBomb);
 		return true;
 	}
 
