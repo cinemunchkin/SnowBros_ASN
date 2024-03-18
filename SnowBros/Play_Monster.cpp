@@ -347,7 +347,7 @@ void APlay_Monster::SnowBombStart()
 		break;
 	}
 
-	MonsterRenderer->SetTransform({ {reverse,-28}, {48 * 1.7f, 48 * 1.7f} });
+	MonsterRenderer->SetTransform({ {reverse,-28}, {48 * 2.5f, 48 * 2.5f} });
 	MonsterRenderer->ChangeAnimation(GetAnimationName("SnowBomb"));
 	DirCheck();
 }
