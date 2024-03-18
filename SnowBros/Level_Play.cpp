@@ -63,7 +63,14 @@ void ULevel_Play::BeginPlay()
 		 Monster4->SetActorLocation({ 450-250, 250 });
 	 }
 
-	 
+
+	 BGM = UEngineSound::SoundPlay("05.Yukidama-Ondo.mp3");
+	 BGM.SetVolume(0.7f);
+	 BGM.Off();
+
+
+
+
 }
 
 
@@ -89,10 +96,12 @@ void ULevel_Play::LevelStart(ULevel* _Level)
 	// 여기서 리소스를 로드하고
 	// 액터도 여기서 만들고
 	int a = 0;
+	BGM.On();
 }
 void ULevel_Play::LevelEnd(ULevel* _Level)
 {
 	// 리소스도 날려요.
 	// 액터를 삭제한다.
 	int a = 0;
+	BGM.Off();
 }

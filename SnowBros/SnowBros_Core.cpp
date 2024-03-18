@@ -46,6 +46,13 @@ void USnowBros_Core::BeginPlay()
 	{
 		UEngineResourcesManager::GetInst().LoadImg(File.GetFullPath());
 	}
+
+
+	NewList = NewDir.AllFile({ ".wav", ".mp3" }, true);
+	for (UEngineFile& File : NewList)
+	{
+		UEngineSound::Load(File.GetFullPath());
+	}
 	
 	//UI 애니메이션
 

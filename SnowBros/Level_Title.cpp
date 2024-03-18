@@ -32,6 +32,12 @@ void ULevel_Title::Tick(float _DeltaTime)
 	}
 
 
+
+	BGM = UEngineSound::SoundPlay("02.MainTheme.mp3");
+	BGM.SetVolume(0.7f);
+	BGM.Off();
+
+
 	
 }
 
@@ -43,9 +49,11 @@ void ULevel_Title::Tick(float _DeltaTime)
 
 void ULevel_Title::LevelStart(ULevel* _Level)
 {
+	BGM.On();
 	int a = 0;
 }
 void ULevel_Title::LevelEnd(ULevel* _Level)
 {
+	BGM.Off();
 	int a = 0;
 }

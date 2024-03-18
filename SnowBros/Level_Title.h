@@ -1,5 +1,6 @@
 #pragma once
 #include <EngineCore\Level.h>
+#include <EnginePlatform\EngineSound.h>
 
 // Ό³Έν :
 class ULevel_Title : public ULevel
@@ -21,6 +22,8 @@ protected:
 
 	void LevelStart(ULevel* _Level) override;
 	void LevelEnd(ULevel* _Level) override;
+
+	UEngineSoundPlayer BGM;
 
 private:
 
