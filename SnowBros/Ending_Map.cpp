@@ -49,7 +49,6 @@ void AEnding_Map::Tick(float _DeltaTime)
 {
 	AActor::Tick(_DeltaTime);
 
-	Destroy();
 
 	int a = 0;
 }
