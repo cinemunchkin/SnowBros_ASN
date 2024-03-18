@@ -76,6 +76,11 @@ void ULevel_Play::Tick(float _DeltaTime)
 		GEngine->ChangeLevel("End");
 	
 	}
+
+	if (UEngineInput::IsDown('T'))
+	{
+		GEngine->ChangeLevel("Title");
+	}
 		
 }
 
